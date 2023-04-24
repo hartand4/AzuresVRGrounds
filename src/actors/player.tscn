@@ -1,4 +1,4 @@
-[gd_scene load_steps=24 format=2]
+[gd_scene load_steps=26 format=2]
 
 [ext_resource path="res://src/Actors/player.gd" type="Script" id=2]
 [ext_resource path="res://assets/Sprites/Azzy/AzzySheet.png" type="Texture" id=3]
@@ -6,6 +6,12 @@
 [ext_resource path="res://assets/Sprites/Azzy/AzzyHitParticle1.png" type="Texture" id=7]
 
 [sub_resource type="RectangleShape2D" id=1]
+extents = Vector2( 11.5, 41.5332 )
+
+[sub_resource type="RectangleShape2D" id=26]
+extents = Vector2( 11.5, 27 )
+
+[sub_resource type="RectangleShape2D" id=27]
 extents = Vector2( 11.5, 41.5332 )
 
 [sub_resource type="Animation" id=24]
@@ -267,6 +273,11 @@ vframes = 7
 position = Vector2( 0, -42.0664 )
 shape = SubResource( 1 )
 
+[node name="PlayerDashHitbox" type="CollisionShape2D" parent="."]
+position = Vector2( -0.00806808, -27.4613 )
+shape = SubResource( 26 )
+disabled = true
+
 [node name="PlayerHitboxArea" type="Area2D" parent="."]
 position = Vector2( 0, -40 )
 collision_layer = 2
@@ -274,7 +285,7 @@ collision_mask = 101
 
 [node name="PlayerHitbox" type="CollisionShape2D" parent="PlayerHitboxArea"]
 position = Vector2( 0, -2 )
-shape = SubResource( 1 )
+shape = SubResource( 27 )
 
 [node name="Camera2D" type="Camera2D" parent="."]
 current = true

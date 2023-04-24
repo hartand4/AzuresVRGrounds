@@ -4,6 +4,7 @@ export var game_paused := false
 export var lock_input := false
 export var timer := 0
 export var pause_menu_on := false
+export var current_level := 0
 
 # warning-ignore:unused_argument
 func _process(delta: float) -> void:

@@ -24,7 +24,6 @@ export var collected_coins := [false, false, false]
 
 # Hitboxes
 onready var hitbox_collider = $PlayerHitboxArea/PlayerHitbox
-onready var second_collider = $PlayerHitbox
 onready var hitbox := $PlayerHitboxArea
 onready var wjboxl := $WalljumpAreaL
 onready var wjboxr := $WalljumpAreaR
@@ -33,7 +32,7 @@ onready var attack_particle := attack_collision.find_node('AttackParticles')
 
 # Other variables
 onready var normal_hitbox_shape = hitbox_collider.shape.extents
-onready var normal_hitbox_transform = [hitbox_collider.get_position(), second_collider.get_position()]
+onready var normal_hitbox_transform = [hitbox_collider.get_position(), $PlayerHitbox.get_position()]
 onready var normal_wallcheck_shape = $WalljumpAreaL/WalljumpBoxL.shape.extents
 onready var normal_wallcheck_transform = [$WalljumpAreaL/WalljumpBoxL.get_position(), $WalljumpAreaR/WalljumpBoxR.get_position()]
 
@@ -44,6 +43,7 @@ var floor_angle := PI/2
 var last_state := 0
 var shot_damage := 5
 var shot_velocity := Vector2.ZERO
+var max_slope := PI/3
 
 var animation_dict := {ST_IDLE: 'Idle', ST_WALK: 'Run', ST_WALLSLIDE: 'Wallslide', ST_WALLJUMP: 'Walljump',
 					   ST_DASH: 'Dash'}
@@ -125,12 +125,12 @@ func _physics_process(delta: float) -> void:
 		if not is_on_floor() and air_dash_enabled:
 			_velocity.y = 0
 	
-	if dashing: _velocity.x *= 1.8
+	if dashing and state != ST_HURT: _velocity.x *= 1.8
 		
 	# Check for slopes
 	if is_on_floor():
 		var factor = abs(sin(floor_angle))
-		if cos(floor_angle)*recurring_x_dir > 0 and factor > 1/sqrt(2): factor=1/factor
+		if cos(floor_angle)*recurring_x_dir > 0 and factor != 0: factor=1/factor
 		_velocity.x *= factor
 		
 	_velocity = move_and_slide_with_snap(_velocity, snap, FLOOR_NORMAL, true)
@@ -148,7 +148,13 @@ func calculate_move_direction(linear_velocity: Vector2, speed: Vector2, directio
 	out_vel.x = speed.x * direction.x
 	out_vel.y += gravity * get_physics_process_delta_time()
 	if direction.y == -1.0:
-		out_vel.y = 700.0 * direction.y
+		out_vel.y = 700.0 * direction.y - linear_velocity.y
+		
+		# Account for slope jump boost
+		if out_vel.x != 0:
+			var factor = abs(sin(floor_angle))
+			if cos(floor_angle)*recurring_x_dir > 0 and factor != 0: factor=1/factor
+			out_vel.y *= (factor+2)/3
 	if is_jumping:
 		out_vel.y -= 0.6 * pow(jump_timer,2) #First few frames matter more
 	return out_vel
@@ -187,7 +193,7 @@ func animation_handler():
 	if i_frames and Globals.timer % 8 <= 1:
 		$Sprite.visible = false
 	
-	change_dash_hitbox(state == ST_DASH)
+	if health > 0: change_dash_hitbox(state == ST_DASH)
 	
 	if state in animation_dict:
 		_animation.play(animation_dict[state])
@@ -214,7 +220,6 @@ func update_state():
 	
 	# GETTING HURT
 	if state == ST_HURT:
-		dashing = false
 		if animation_timer < 20 or health == 0: return ST_HURT
 		state = 0
 		return update_state()
@@ -360,7 +365,9 @@ func do_hurt_animation(damage):
 	_velocity = move_and_slide(_velocity, FLOOR_NORMAL)
 	if health <= 0:
 		$Camera2D.current = false
-		second_collider.disabled = true
+		$PlayerHitbox.disabled = true
+		$PlayerHitboxArea/PlayerHitbox.disabled = true
+		$PlayerDashHitbox.disabled = true
 		colliding_with_enemy = false
 		Globals.lock_input = true
 	return
@@ -369,23 +376,28 @@ func change_dash_hitbox(dash_state):
 	if dash_state:
 		hitbox_collider.shape.extents = Vector2(11.5, 27.0)
 		hitbox_collider.set_position(Vector2(0.0, 12.0))
-		$PlayerHitbox.set_position(Vector2(0.0, -29.0))
+		#$PlayerHitbox.set_position(Vector2(0.0, -29.0))
+		$PlayerHitbox.disabled = true
+		$PlayerDashHitbox.disabled = false
 		$WalljumpAreaL/WalljumpBoxL.shape.extents = Vector2(13.0,30.0)
 		$WalljumpAreaL/WalljumpBoxL.set_position(Vector2(normal_wallcheck_transform[0][0], -40))
 		$WalljumpAreaR/WalljumpBoxR.set_position(Vector2(normal_wallcheck_transform[1][0], -40))
 		return
 	hitbox_collider.shape.extents = normal_hitbox_shape
 	hitbox_collider.set_position(normal_hitbox_transform[0])
-	$PlayerHitbox.set_position(normal_hitbox_transform[1])
+	#$PlayerHitbox.set_position(normal_hitbox_transform[1])
+	$PlayerHitbox.disabled = false
+	$PlayerDashHitbox.disabled = true
 	$WalljumpAreaL/WalljumpBoxL.shape.extents = normal_wallcheck_shape
 	$WalljumpAreaL/WalljumpBoxL.set_position(normal_wallcheck_transform[0])
 	$WalljumpAreaR/WalljumpBoxR.set_position(normal_wallcheck_transform[1])
 	
 func check_for_collisions():
 	# Record floor normal angle if on floor
-	if is_on_floor():
-		if get_slide_count() > 0:
-			floor_angle = get_slide_collision(0).normal.angle()
+	if is_on_floor() and get_slide_count() > 0:
+		floor_angle = -get_slide_collision(0).normal.angle()
+		if abs(cos(floor_angle)) > cos(PI/2-max_slope):
+			floor_angle = PI/2
 	
 	# Check for crush death
 	for box in hitbox.get_overlapping_bodies():

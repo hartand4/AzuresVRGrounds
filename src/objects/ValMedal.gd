@@ -21,7 +21,9 @@ func _process(delta: float) -> void:
 	
 	if _anim_timer > 18:
 		self.position.y -= pow(_anim_timer, 2)/1000
+		$AnimationPlayer.playback_speed = 6
 	elif _anim_timer <= 18 and _anim_timer >= 2:
+		$AnimationPlayer.playback_speed = 1
 		$AnimationPlayer.play("Sparkle" + str(coin_number))
 	elif _anim_timer == 1:
 		$Sprite.visible = false

@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=2]
+[gd_scene load_steps=13 format=2]
 
 [ext_resource path="res://assets/Sprites/Objects/ValMedal.png" type="Texture" id=1]
 [ext_resource path="res://src/objects/ValMedal.gd" type="Script" id=2]
@@ -72,6 +72,23 @@ tracks/0/keys = {
 "values": [ 16, 17 ]
 }
 
+[sub_resource type="Animation" id=10]
+resource_name = "Sparkle4"
+length = 0.3
+step = 0.05
+tracks/0/type = "value"
+tracks/0/path = NodePath("Sprite:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.15 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 1,
+"values": [ 22, 23 ]
+}
+
 [sub_resource type="Animation" id=3]
 resource_name = "Spin1"
 length = 0.8
@@ -120,13 +137,29 @@ tracks/0/keys = {
 "values": [ 12, 13, 14, 15 ]
 }
 
+[sub_resource type="Animation" id=9]
+resource_name = "Spin4"
+length = 0.8
+tracks/0/type = "value"
+tracks/0/path = NodePath("Sprite:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.2, 0.4, 0.6 ),
+"transitions": PoolRealArray( 1, 1, 1, 1 ),
+"update": 1,
+"values": [ 18, 19, 20, 21 ]
+}
+
 [node name="ValCoin" type="Area2D"]
 script = ExtResource( 2 )
 
 [node name="Sprite" type="Sprite" parent="."]
 texture = ExtResource( 1 )
 hframes = 6
-vframes = 3
+vframes = 4
 
 [node name="ValCollision" type="CollisionShape2D" parent="."]
 shape = SubResource( 1 )
@@ -136,8 +169,10 @@ anims/RESET = SubResource( 2 )
 anims/Sparkle1 = SubResource( 6 )
 anims/Sparkle2 = SubResource( 7 )
 anims/Sparkle3 = SubResource( 8 )
+anims/Sparkle4 = SubResource( 10 )
 anims/Spin1 = SubResource( 3 )
 anims/Spin2 = SubResource( 4 )
 anims/Spin3 = SubResource( 5 )
+anims/Spin4 = SubResource( 9 )
 
 [connection signal="area_entered" from="." to="." method="_on_ValMedal_area_entered"]

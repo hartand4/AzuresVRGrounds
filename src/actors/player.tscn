@@ -1,4 +1,4 @@
-[gd_scene load_steps=26 format=2]
+[gd_scene load_steps=27 format=2]
 
 [ext_resource path="res://src/Actors/player.gd" type="Script" id=2]
 [ext_resource path="res://assets/Sprites/Azzy/AzzySheet.png" type="Texture" id=3]
@@ -13,6 +13,22 @@ extents = Vector2( 11.5, 27 )
 
 [sub_resource type="RectangleShape2D" id=27]
 extents = Vector2( 11.5, 41.5332 )
+
+[sub_resource type="Animation" id=28]
+resource_name = "Climb"
+length = 0.6
+tracks/0/type = "value"
+tracks/0/path = NodePath("Sprite:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.1, 0.2, 0.3, 0.4, 0.5 ),
+"transitions": PoolRealArray( 1, 1, 1, 1, 1, 1 ),
+"update": 1,
+"values": [ 21, 22, 23, 24, 23, 22 ]
+}
 
 [sub_resource type="Animation" id=24]
 resource_name = "Dash"
@@ -295,6 +311,7 @@ limit_bottom = 10000
 drag_margin_v_enabled = true
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+anims/Climb = SubResource( 28 )
 anims/Dash = SubResource( 24 )
 anims/Duck = SubResource( 4 )
 anims/Fall = SubResource( 7 )

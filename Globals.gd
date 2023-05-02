@@ -5,6 +5,7 @@ export var lock_input := false
 export var timer := 0
 export var pause_menu_on := false
 export var current_level := 0
+export var coins_collected_in_level := [false, false, false]
 
 # warning-ignore:unused_argument
 func _process(delta: float) -> void:

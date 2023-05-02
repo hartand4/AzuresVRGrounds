@@ -120,6 +120,7 @@ func _physics_process(delta: float) -> void:
 			self.position.y -= 4
 		elif Input.is_action_pressed("move_down"):
 			self.position.y += 4
+		move_and_slide(_velocity, FLOOR_NORMAL, true)
 		return
 	elif state == ST_DASH:
 		if not is_on_floor() and air_dash_enabled:
@@ -212,6 +213,13 @@ func animation_handler():
 			_animation.play('Kick')
 			if animation_timer == 5:
 				do_punch_effect(true)
+		ST_CLIMB:
+			if Input.is_action_pressed("move_up"):
+				_animation.play('Climb')
+			elif Input.is_action_pressed("move_down"):
+				_animation.play_backwards('Climb')
+			else:
+				_animation.stop(false)
 	
 func update_state():
 	var dir = Vector2(
@@ -303,10 +311,12 @@ func update_state():
 		state < 3 and colliding_with_ladder and dir.y != 0):
 		dashing = false
 		self.position.x = nearest_block(self.position.x)
+		_animation.play('Climb')
 		return ST_CLIMB
 		
 	if state < 3 and colliding_with_ladder_top and dir.y > 0:
 		self.position = Vector2(nearest_block(self.position.x), self.position.y+48)
+		_animation.play('Climb')
 		return ST_CLIMB
 		
 	if state == ST_CLIMB:
@@ -315,6 +325,7 @@ func update_state():
 		if colliding_with_ladder_top and not colliding_with_ladder and dir.y < 0:
 			state = ST_IDLE
 			self.position.y = nearest_block(self.position.y)-24
+			_velocity = Vector2.ZERO
 	
 	### if interaction finished: return ST_IDLE
 	

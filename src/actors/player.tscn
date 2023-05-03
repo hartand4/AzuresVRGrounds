@@ -1,9 +1,9 @@
 [gd_scene load_steps=27 format=2]
 
+[ext_resource path="res://assets/Sprites/Azzy/AzzySlashEffect.png" type="Texture" id=1]
 [ext_resource path="res://src/Actors/player.gd" type="Script" id=2]
 [ext_resource path="res://assets/Sprites/Azzy/AzzySheet.png" type="Texture" id=3]
 [ext_resource path="res://assets/HUD/HUD.tscn" type="PackedScene" id=4]
-[ext_resource path="res://assets/Sprites/Azzy/AzzyHitParticle1.png" type="Texture" id=7]
 
 [sub_resource type="RectangleShape2D" id=1]
 extents = Vector2( 11.5, 41.5332 )
@@ -93,6 +93,23 @@ tracks/0/keys = {
 "values": [ 4 ]
 }
 
+[sub_resource type="Animation" id=29]
+resource_name = "Ground Slash"
+length = 0.4
+step = 0.0166667
+tracks/0/type = "value"
+tracks/0/path = NodePath("Sprite:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.1, 0.2 ),
+"transitions": PoolRealArray( 1, 1, 1 ),
+"update": 1,
+"values": [ 25, 26, 27 ]
+}
+
 [sub_resource type="Animation" id=13]
 resource_name = "Hurt"
 length = 0.1
@@ -154,22 +171,6 @@ tracks/0/keys = {
 "transitions": PoolRealArray( 1, 1, 1 ),
 "update": 1,
 "values": [ 15, 16, 15 ]
-}
-
-[sub_resource type="Animation" id=8]
-resource_name = "Punch"
-length = 0.6
-tracks/0/type = "value"
-tracks/0/path = NodePath("Sprite:frame")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/keys = {
-"times": PoolRealArray( 0, 0.1, 0.3 ),
-"transitions": PoolRealArray( 1, 1, 1 ),
-"update": 1,
-"values": [ 13, 14, 13 ]
 }
 
 [sub_resource type="Animation" id=3]
@@ -236,25 +237,9 @@ tracks/0/keys = {
 }
 
 [sub_resource type="RectangleShape2D" id=21]
-extents = Vector2( 28, 28 )
+extents = Vector2( 40.75, 16 )
 
-[sub_resource type="Animation" id=9]
-resource_name = "Hit Particle"
-length = 0.3
-tracks/0/type = "value"
-tracks/0/path = NodePath(".:frame")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/keys = {
-"times": PoolRealArray( 0, 0.1, 0.2 ),
-"transitions": PoolRealArray( 1, 1, 1 ),
-"update": 1,
-"values": [ 0, 1, 2 ]
-}
-
-[sub_resource type="Animation" id=10]
+[sub_resource type="Animation" id=30]
 length = 0.001
 tracks/0/type = "value"
 tracks/0/path = NodePath(".:frame")
@@ -267,6 +252,22 @@ tracks/0/keys = {
 "transitions": PoolRealArray( 1 ),
 "update": 0,
 "values": [ 0 ]
+}
+
+[sub_resource type="Animation" id=31]
+resource_name = "Slash"
+length = 0.4
+tracks/0/type = "value"
+tracks/0/path = NodePath(".:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.1, 0.2, 0.3 ),
+"transitions": PoolRealArray( 1, 1, 1, 1 ),
+"update": 1,
+"values": [ 3, 0, 1, 2 ]
 }
 
 [sub_resource type="RectangleShape2D" id=20]
@@ -300,6 +301,7 @@ collision_layer = 2
 collision_mask = 101
 
 [node name="PlayerHitbox" type="CollisionShape2D" parent="PlayerHitboxArea"]
+visible = false
 position = Vector2( 0, -2 )
 shape = SubResource( 27 )
 
@@ -316,11 +318,11 @@ anims/Dash = SubResource( 24 )
 anims/Duck = SubResource( 4 )
 anims/Fall = SubResource( 7 )
 "anims/Get up" = SubResource( 15 )
+"anims/Ground Slash" = SubResource( 29 )
 anims/Hurt = SubResource( 13 )
 anims/Idle = SubResource( 2 )
 anims/Jump = SubResource( 6 )
 anims/Kick = SubResource( 12 )
-anims/Punch = SubResource( 8 )
 anims/RESET = SubResource( 3 )
 anims/Run = SubResource( 5 )
 anims/Walljump = SubResource( 23 )
@@ -329,24 +331,24 @@ anims/Wallslide = SubResource( 22 )
 [node name="HUD" parent="." instance=ExtResource( 4 )]
 
 [node name="AttackHitboxArea" type="Area2D" parent="."]
-visible = false
 collision_layer = 16
 collision_mask = 4
 
 [node name="AttackHitbox" type="CollisionShape2D" parent="AttackHitboxArea"]
-position = Vector2( 0, -48 )
+position = Vector2( -40.75, -48 )
 shape = SubResource( 21 )
 
-[node name="AttackParticles" type="Sprite" parent="AttackHitboxArea"]
+[node name="SlashEffect" type="Sprite" parent="AttackHitboxArea"]
 position = Vector2( 0, -48 )
-texture = ExtResource( 7 )
-hframes = 3
+texture = ExtResource( 1 )
+vframes = 4
 
-[node name="AttackPlayer" type="AnimationPlayer" parent="AttackHitboxArea/AttackParticles"]
-"anims/Hit Particle" = SubResource( 9 )
-anims/RESET = SubResource( 10 )
+[node name="SlashPlayer" type="AnimationPlayer" parent="AttackHitboxArea/SlashEffect"]
+anims/RESET = SubResource( 30 )
+anims/Slash = SubResource( 31 )
 
 [node name="WalljumpAreaL" type="Area2D" parent="."]
+visible = false
 collision_layer = 0
 collision_mask = 65
 
@@ -355,6 +357,7 @@ position = Vector2( -13, -46 )
 shape = SubResource( 20 )
 
 [node name="WalljumpAreaR" type="Area2D" parent="."]
+visible = false
 collision_layer = 0
 collision_mask = 65
 
@@ -363,6 +366,7 @@ position = Vector2( 13, -46 )
 shape = SubResource( 20 )
 
 [node name="LadderTopArea" type="Area2D" parent="."]
+visible = false
 
 [node name="LadderTopBox" type="CollisionShape2D" parent="LadderTopArea"]
 shape = SubResource( 25 )

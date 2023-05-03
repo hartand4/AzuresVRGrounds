@@ -28,7 +28,7 @@ onready var hitbox := $PlayerHitboxArea
 onready var wjboxl := $WalljumpAreaL
 onready var wjboxr := $WalljumpAreaR
 onready var attack_collision := $AttackHitboxArea
-onready var attack_particle := attack_collision.find_node('AttackParticles')
+onready var attack_particle := attack_collision.find_node('SlashEffect')
 
 # Other variables
 onready var normal_hitbox_shape = hitbox_collider.shape.extents
@@ -69,7 +69,8 @@ func _physics_process(delta: float) -> void:
 		do_pause_menu()
 		return
 		
-	if state in [0,1,3,5]:
+	# Jump logic
+	if state in [0,1,3,4,5]:
 		if jump_timer > 0:
 			jump_timer -= 1
 		elif is_on_floor():
@@ -77,13 +78,19 @@ func _physics_process(delta: float) -> void:
 			if Input.is_action_just_pressed("jump"):
 				jump_timer = 15
 		is_jumping = Input.is_action_pressed("jump") and jump_timer > 0 and _velocity.y < 0
-			
+		
 		if walljump_momentum_timer == 0:
 			# Get direction of input
 			direction = get_direction_normal()
-			if direction.x != 0.0:
-				recurring_x_dir = direction.x
 		
+		# Exceptions to the direction normal
+		if state == ST_ATTACK:
+			direction.x = 0.0
+		
+		if direction.x != 0.0 and walljump_momentum_timer == 0:
+				recurring_x_dir = direction.x
+			
+			
 		# Check double jump
 		#if is_on_floor():
 		#	double_jumped = false
@@ -104,7 +111,7 @@ func _physics_process(delta: float) -> void:
 		
 	# If still in walljumping state
 	if walljump_momentum_timer:
-		direction = Vector2(recurring_x_dir*(-2),0)
+		direction = Vector2(recurring_x_dir*(-1.5),0)
 	
 	# Update position
 	var snap := 15*Vector2.DOWN if not is_jumping else Vector2.ZERO
@@ -120,6 +127,7 @@ func _physics_process(delta: float) -> void:
 			self.position.y -= 4
 		elif Input.is_action_pressed("move_down"):
 			self.position.y += 4
+		# warning-ignore:return_value_discarded
 		move_and_slide(_velocity, FLOOR_NORMAL, true)
 		return
 	elif state == ST_DASH:
@@ -165,7 +173,12 @@ func _process(delta):
 	if state != ST_ATTACK and state != ST_AIR_ATTACK:
 		do_punch_effect(false)
 		
-	if Globals.get("game_paused"): return
+	if Globals.get("game_paused"):
+		attack_particle.find_node('SlashPlayer').stop(false)
+		return
+		
+	if (state == ST_ATTACK or state == ST_AIR_ATTACK) and animation_timer < 24:
+		attack_particle.find_node('SlashPlayer').play('Slash')
 		
 	if i_frames:
 		i_frames -= 1
@@ -206,9 +219,10 @@ func animation_handler():
 			else:
 				_animation.play('Fall')
 		ST_ATTACK:
-			_animation.play('Punch')
-			if animation_timer == 5:
+			_animation.play('Ground Slash')
+			if animation_timer == 6:
 				do_punch_effect(true)
+			update_slash_hitbox()
 		ST_AIR_ATTACK:
 			_animation.play('Kick')
 			if animation_timer == 5:
@@ -281,7 +295,7 @@ func update_state():
 		return ST_AIR
 	
 	# FLOOR DASHING OR AIR DASHING
-	if ((state == ST_AIR and air_dash_enabled) or state < 2) and Input.is_action_just_pressed("dash"):
+	if ((state == ST_AIR and air_dash_enabled) or state in [0,1,4]) and Input.is_action_just_pressed("dash"):
 		if not(near_wall[int((recurring_x_dir+1)/2)]) and not dashing:
 			dashing = true
 			dash_timer = 40 if is_on_floor() else 20
@@ -299,11 +313,14 @@ func update_state():
 			return update_state()
 	
 	# ATTACKING
-	if state < 3 and Input.is_action_just_pressed("attack"): return ST_ATTACK
+	if state < 3 and Input.is_action_just_pressed("attack"):
+		dashing = false
+		return ST_ATTACK
 	
 	#STOP ATTACK
-	if state == ST_ATTACK and animation_timer >= 25:
+	if state == ST_ATTACK and animation_timer >= 24:
 		state = 0
+		animation_timer = 0
 		return update_state()
 	
 	#CLIMB LADDER
@@ -335,7 +352,7 @@ func update_state():
 		return update_state()
 		
 	# IF JUMPED OR FELL OR AIR ATTACK ENDED
-	if state < 3 and Input.is_action_just_pressed("jump"): 
+	if state in [0,1,2,4] and Input.is_action_just_pressed("jump"): 
 		if is_on_floor() or state < 2:
 			dashing = Input.is_action_pressed("dash")
 			return ST_AIR
@@ -361,14 +378,26 @@ func do_punch_effect(start):
 	if not start:
 		attack_particle.visible = false
 		attack_collision.find_node('AttackHitbox').disabled = true
+		attack_particle.find_node('SlashPlayer').stop(true)
 		return
 	attack_particle.visible = true
-	attack_particle.set_position(Vector2(recurring_x_dir * 6.0,-48.0))
-	attack_particle.find_node('AttackPlayer').play('Hit Particle')
+	attack_particle.flip_h = (recurring_x_dir + 1)/2
+	attack_particle.set_position(Vector2(recurring_x_dir * -48.0,-48.0))
+	attack_particle.find_node('SlashPlayer').play('Slash')
 	
 	attack_collision.set_position(Vector2(recurring_x_dir * 48.0,0))
+	attack_collision.find_node('AttackHitbox').set_position(Vector2(recurring_x_dir * -6.0,-46))
+	attack_collision.find_node('AttackHitbox').shape.extents = Vector2(40.75, 16)
 	attack_collision.find_node('AttackHitbox').disabled = false
 	
+func update_slash_hitbox():
+	if animation_timer >= 12 and animation_timer < 18:
+		attack_collision.find_node('AttackHitbox').set_position(Vector2(recurring_x_dir * -36.0,-40))
+		attack_collision.find_node('AttackHitbox').shape.extents = Vector2(62, 18)
+	elif animation_timer >= 18:
+		attack_collision.find_node('AttackHitbox').set_position(Vector2(recurring_x_dir * -102.0,-38))
+		attack_collision.find_node('AttackHitbox').shape.extents = Vector2(26, 12)
+
 func do_hurt_animation(damage):
 	health -= damage
 	_animation.play("Hurt")

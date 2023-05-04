@@ -27,6 +27,8 @@ const ST_INTERACT := 7 # Necessary?
 const ST_WALLSLIDE := 8
 const ST_WALLJUMP := 9
 const ST_CLIMB := 10
+const ST_WALL_ATTACK := 11
+const ST_LADDER_ATTACK := 12
 
 # Enemy State constants:
 const EN_IDLE := 0

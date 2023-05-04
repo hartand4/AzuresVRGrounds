@@ -1,9 +1,10 @@
-[gd_scene load_steps=27 format=2]
+[gd_scene load_steps=31 format=2]
 
 [ext_resource path="res://assets/Sprites/Azzy/AzzySlashEffect.png" type="Texture" id=1]
 [ext_resource path="res://src/Actors/player.gd" type="Script" id=2]
 [ext_resource path="res://assets/Sprites/Azzy/AzzySheet.png" type="Texture" id=3]
 [ext_resource path="res://assets/HUD/HUD.tscn" type="PackedScene" id=4]
+[ext_resource path="res://assets/Sprites/Azzy/AzzySlashEffectAlt.png" type="Texture" id=5]
 
 [sub_resource type="RectangleShape2D" id=1]
 extents = Vector2( 11.5, 41.5332 )
@@ -13,6 +14,22 @@ extents = Vector2( 11.5, 27 )
 
 [sub_resource type="RectangleShape2D" id=27]
 extents = Vector2( 11.5, 41.5332 )
+
+[sub_resource type="Animation" id=32]
+resource_name = "Air Slash"
+length = 0.4
+tracks/0/type = "value"
+tracks/0/path = NodePath("Sprite:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.1, 0.2 ),
+"transitions": PoolRealArray( 1, 1, 1 ),
+"update": 1,
+"values": [ 28, 29, 30 ]
+}
 
 [sub_resource type="Animation" id=28]
 resource_name = "Climb"
@@ -157,9 +174,9 @@ tracks/0/keys = {
 "values": [ 10 ]
 }
 
-[sub_resource type="Animation" id=12]
-resource_name = "Kick"
-length = 0.6
+[sub_resource type="Animation" id=35]
+resource_name = "Ladder Slash"
+length = 0.3
 tracks/0/type = "value"
 tracks/0/path = NodePath("Sprite:frame")
 tracks/0/interp = 1
@@ -167,10 +184,10 @@ tracks/0/loop_wrap = true
 tracks/0/imported = false
 tracks/0/enabled = true
 tracks/0/keys = {
-"times": PoolRealArray( 0, 0.1, 0.3 ),
-"transitions": PoolRealArray( 1, 1, 1 ),
+"times": PoolRealArray( 0, 0.1 ),
+"transitions": PoolRealArray( 1, 1 ),
 "update": 1,
-"values": [ 15, 16, 15 ]
+"values": [ 34, 33 ]
 }
 
 [sub_resource type="Animation" id=3]
@@ -202,6 +219,22 @@ tracks/0/keys = {
 "transitions": PoolRealArray( 1, 1, 1, 1, 1, 1, 1, 1 ),
 "update": 1,
 "values": [ 9, 5, 6, 5, 9, 7, 8, 7 ]
+}
+
+[sub_resource type="Animation" id=33]
+resource_name = "Wall Slash"
+length = 0.3
+tracks/0/type = "value"
+tracks/0/path = NodePath("Sprite:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.1 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 1,
+"values": [ 31, 32 ]
 }
 
 [sub_resource type="Animation" id=23]
@@ -253,6 +286,18 @@ tracks/0/keys = {
 "update": 0,
 "values": [ 0 ]
 }
+tracks/1/type = "value"
+tracks/1/path = NodePath("../SlashEffectAlt:frame")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ 2 ]
+}
 
 [sub_resource type="Animation" id=31]
 resource_name = "Slash"
@@ -268,6 +313,22 @@ tracks/0/keys = {
 "transitions": PoolRealArray( 1, 1, 1, 1 ),
 "update": 1,
 "values": [ 3, 0, 1, 2 ]
+}
+
+[sub_resource type="Animation" id=34]
+resource_name = "Wall Slash"
+length = 0.3
+tracks/0/type = "value"
+tracks/0/path = NodePath("../SlashEffectAlt:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.1, 0.2 ),
+"transitions": PoolRealArray( 1, 1, 1 ),
+"update": 1,
+"values": [ 2, 0, 1 ]
 }
 
 [sub_resource type="RectangleShape2D" id=20]
@@ -313,6 +374,7 @@ limit_bottom = 10000
 drag_margin_v_enabled = true
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+"anims/Air Slash" = SubResource( 32 )
 anims/Climb = SubResource( 28 )
 anims/Dash = SubResource( 24 )
 anims/Duck = SubResource( 4 )
@@ -322,9 +384,10 @@ anims/Fall = SubResource( 7 )
 anims/Hurt = SubResource( 13 )
 anims/Idle = SubResource( 2 )
 anims/Jump = SubResource( 6 )
-anims/Kick = SubResource( 12 )
+"anims/Ladder Slash" = SubResource( 35 )
 anims/RESET = SubResource( 3 )
 anims/Run = SubResource( 5 )
+"anims/Wall Slash" = SubResource( 33 )
 anims/Walljump = SubResource( 23 )
 anims/Wallslide = SubResource( 22 )
 
@@ -343,9 +406,17 @@ position = Vector2( 0, -48 )
 texture = ExtResource( 1 )
 vframes = 4
 
-[node name="SlashPlayer" type="AnimationPlayer" parent="AttackHitboxArea/SlashEffect"]
+[node name="SlashEffectAlt" type="Sprite" parent="AttackHitboxArea"]
+position = Vector2( -61, -48 )
+texture = ExtResource( 5 )
+vframes = 3
+frame = 2
+
+[node name="SlashPlayer" type="AnimationPlayer" parent="AttackHitboxArea"]
+root_node = NodePath("../SlashEffect")
 anims/RESET = SubResource( 30 )
 anims/Slash = SubResource( 31 )
+"anims/Wall Slash" = SubResource( 34 )
 
 [node name="WalljumpAreaL" type="Area2D" parent="."]
 visible = false

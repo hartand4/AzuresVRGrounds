@@ -1,0 +1,2 @@
+Cascadia Code for the pause text! -> Italics + Bold
+Pause menu options -> Ebrima 12 Bold, Anchor 50,90

@@ -33,6 +33,11 @@ func disable_all():
 	$HealthArea/HealthHitbox2.disabled = true
 	get_parent().remove_child(self)
 
+func get_velocity():
+	return _velocity
+func set_velocity(vel):
+	_velocity = vel
+
 func player_in_health():
 	_velocity = Vector2.ZERO
 	$HealthSprite.visible = false

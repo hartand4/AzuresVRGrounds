@@ -18,3 +18,9 @@ func find_player():
 	for i in root_node.get_children():
 		if 'Level' in i.name:
 			return i.find_node('Player')
+
+func start_transition(pos, forward):
+	var root_node = get_parent()
+	for i in root_node.get_children():
+		if 'Level' in i.name:
+			i.find_node('Transition').start_transition(pos, forward)

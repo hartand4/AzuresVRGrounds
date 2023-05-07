@@ -40,7 +40,7 @@ const EN_DEAD := 5
 
 
 func _physics_process(delta: float) -> void:
-	if _player and Globals.get("game_paused"):
+	if _player and (Globals.get("game_paused") or Globals.pause_menu_on):
 		return
 
 	if _velocity.y > 0: _velocity.y += gravity*delta
@@ -50,7 +50,7 @@ func _physics_process(delta: float) -> void:
 
 # warning-ignore:unused_argument
 func _process(delta):
-	if _player and not Globals.get("game_paused"):
+	if _player and not Globals.get("game_paused") and not Globals.pause_menu_on:
 		animation_handler()
 		animation_timer += 1
 	else:

@@ -19,8 +19,10 @@ var colliding_with_wall_r := false
 var colliding_with_ladder := false
 var colliding_with_ladder_top := false
 var near_wall := [false, false]
-var shot_active := false
 export var collected_coins := [false, false, false]
+
+export var normal_exit_reached = false
+export var secret_exit_reached = false
 
 # Hitboxes
 onready var hitbox_collider = $PlayerHitboxArea/PlayerHitbox
@@ -53,24 +55,23 @@ var damage_doing := 0
 
 func _ready():
 	recurring_x_dir = 1
+	call_deferred("_do_transition")
 
 # warning-ignore:unused_argument
 func _physics_process(delta: float) -> void:
 	var direction := Vector2.ZERO
 	var is_jumping := false
 	
-	if Globals.get("game_paused"):
-		if Input.is_action_just_pressed("pause") and not Globals.lock_input:
-			Globals.set("game_paused", false)
+	if Globals.get("game_paused") or Globals.pause_menu_on:
 		do_pause_menu()
 		return
 	elif Input.is_action_just_pressed("pause") and not Globals.lock_input:
 		Globals.set("game_paused", true)
-		do_pause_menu()
+		Globals.pause_menu_on = true
 		return
 		
 	# Jump logic
-	if state in [0,1,3,4,5]:
+	if state in [0,1,3,4,5,8]:
 		if jump_timer > 0:
 			jump_timer -= 1
 		elif is_on_floor():
@@ -87,7 +88,8 @@ func _physics_process(delta: float) -> void:
 		if state == ST_ATTACK:
 			direction.x = 0.0
 		
-		if direction.x != 0.0 and walljump_momentum_timer == 0 and state != ST_AIR_ATTACK:
+		if direction.x != 0.0 and walljump_momentum_timer == 0 and not (
+			state in [ST_AIR_ATTACK, ST_WALLSLIDE]):
 				recurring_x_dir = direction.x
 			
 			
@@ -119,6 +121,8 @@ func _physics_process(delta: float) -> void:
 	
 	if state in [ST_WALLSLIDE, ST_WALL_ATTACK]:
 		_velocity.y = min(_velocity.y, 250.0)
+		if direction.x * recurring_x_dir > 0:
+			_velocity.x = 0.0
 	elif state == ST_WALLJUMP:
 		_velocity = Vector2.ZERO
 	elif state == ST_CLIMB:
@@ -172,7 +176,7 @@ func calculate_move_direction(linear_velocity: Vector2, speed: Vector2, directio
 # warning-ignore:unused_argument
 func _process(delta):
 	if not (state in [ST_ATTACK, ST_AIR_ATTACK, ST_WALL_ATTACK, ST_LADDER_ATTACK]):
-		do_punch_effect(0)
+		do_slash_effect(0)
 		
 	if Globals.get("game_paused"):
 		$AttackHitboxArea/SlashPlayer.stop(false)
@@ -221,22 +225,22 @@ func animation_handler():
 		ST_ATTACK:
 			_animation.play('Ground Slash')
 			if animation_timer == 6:
-				do_punch_effect(1)
+				do_slash_effect(1)
 			update_slash_hitbox()
 		ST_AIR_ATTACK:
 			_animation.play('Air Slash')
 			if animation_timer == 6:
-				do_punch_effect(1)
+				do_slash_effect(1)
 			update_slash_hitbox()
 		ST_WALL_ATTACK:
 			_animation.play('Wall Slash')
 			if animation_timer == 6:
-				do_punch_effect(2)
+				do_slash_effect(2)
 			update_slash_hitbox()
 		ST_LADDER_ATTACK:
 			_animation.play('Ladder Slash')
 			if animation_timer == 6:
-				do_punch_effect(2)
+				do_slash_effect(2)
 			update_slash_hitbox()
 		ST_CLIMB:
 			if Input.is_action_pressed("move_up"):
@@ -247,6 +251,9 @@ func animation_handler():
 				_animation.stop(false)
 	
 func update_state():
+	if Globals.game_paused or Globals.lock_input:
+		return state
+	
 	var dir = Vector2(
 		-1.0 if Input.is_action_pressed("move_left") else 1.0 if Input.is_action_pressed("move_right") else 0.0,
 		1.0 if Input.is_action_pressed("move_down") else -1.0 if Input.is_action_pressed("move_up") else 0.0)
@@ -282,7 +289,7 @@ func update_state():
 			return ST_WALLSLIDE
 		
 	# CONTINUE SLIDING ON WALL, OR WALLJUMP WHILE SLIDING
-	if state == ST_WALLSLIDE:
+	if state == ST_WALLSLIDE or state == ST_WALL_ATTACK:
 		if is_on_floor():
 			stop_wallslide_timer = 0
 			return ST_IDLE
@@ -419,10 +426,10 @@ func start_walljump():
 	else: dashing = true
 	return ST_WALLJUMP
 
-func do_pause_menu(): #TODO
+func do_pause_menu():
 	return
 
-func do_punch_effect(start):
+func do_slash_effect(start):
 	match start:
 		0:
 			attack_particle.visible = false
@@ -510,6 +517,9 @@ func check_for_collisions():
 			near_wall[1] and not box.get_collision_layer_bit(8)):
 			colliding_with_enemy = true
 			damage_doing = 32
+
+func _do_transition():
+	get_parent().find_node('Transition').start_transition(Vector2(420, 300), false)
 
 func _on_PlayerHitboxArea_area_entered(area: Area2D) -> void:
 	# Check if the player is colliding with other areas (enemies or damage tiles)

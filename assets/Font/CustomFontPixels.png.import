@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/AzzyShotParticles.png-02fef895cc2e2077ad6c11456ced0aee.stex"
+path="res://.import/CustomFontPixels.png-c84fa6125740244e99e4e97ce461e874.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/Sprites/Azzy/AzzyShotParticles.png"
-dest_files=[ "res://.import/AzzyShotParticles.png-02fef895cc2e2077ad6c11456ced0aee.stex" ]
+source_file="res://assets/Font/CustomFontPixels.png"
+dest_files=[ "res://.import/CustomFontPixels.png-c84fa6125740244e99e4e97ce461e874.stex" ]
 
 [params]
 
@@ -20,7 +20,7 @@ compress/hdr_mode=0
 compress/bptc_ldr=0
 compress/normal_map=0
 flags/repeat=0
-flags/filter=false
+flags/filter=true
 flags/mipmaps=false
 flags/anisotropic=false
 flags/srgb=2

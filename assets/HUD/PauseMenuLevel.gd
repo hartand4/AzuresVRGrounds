@@ -108,9 +108,11 @@ func _process(delta: float) -> void:
 			
 			display_controls()
 			
-			if menu_input == 2 or is_editing_control:
+			if is_editing_control:
+				return
+			if menu_input == 2:
 				is_editing_control = true
-				control_config()
+				$Cursor2.modulate = Color(0,1,0)
 			
 		3:
 			selection_cursor = mod_wrap(selection_cursor + int(direction_input.y), 2)
@@ -147,12 +149,76 @@ func mod_wrap(input_num, mod_amt):
 	return mod_wrap(input_num + mod_amt, mod_amt)
 
 func display_controls():
-	pass
+	var input_label_dict = {
+		'UpButtonLabel':'move_up', 'DownButtonLabel':'move_down', 'LeftButtonLabel':'move_left',
+		'RightButtonLabel':'move_right', 'JumpButtonLabel':'jump', 'AttackButtonLabel':'attack',
+		'DashButtonLabel':'dash', 'PauseButtonLabel':'pause'}
+	for label in input_label_dict:
+		$PauseText2.find_node(label).text = OS.get_scancode_string(InputMap.get_action_list(input_label_dict[label])[0].scancode)
+		if InputMap.get_action_list('move_up').size() > 1:
+			if InputMap.get_action_list(input_label_dict[label])[1] is InputEventJoypadButton:
+				$PauseText2.find_node(label).text += ', Joypad: ' + str(InputMap.get_action_list(input_label_dict[label])[1].button_index)
+			elif InputMap.get_action_list(input_label_dict[label])[1] is InputEventJoypadMotion:
+				$PauseText2.find_node(label).text += ', Joypad: ' + str(InputMap.get_action_list(input_label_dict[label])[1].axis)
 
-func control_config():
-	print('EDITING CONTROLS')
+func _unhandled_input(event):
+	if not is_editing_control: return
+	if (event is InputEventKey or event is InputEventJoypadButton) and not event.pressed: return
 	
+	var action_name = input_index_to_str(selection_cursor)
 	
+	if event is InputEventKey:
+		#get_tree().quit()
+		
+		if get_key_action(event) == -1:
+			# This means the key is not assigned to an action
+			var joypad_input
+			if InputMap.get_action_list(action_name).size() > 1:
+				joypad_input = InputMap.get_action_list(action_name)[1]
+			InputMap.action_erase_events(action_name)
+			InputMap.action_add_event(action_name, event)
+			if joypad_input:
+				InputMap.action_add_event(action_name, joypad_input)
 	
+	elif event is InputEventJoypadButton or event is InputEventJoypadMotion:
+		if get_key_action(event) == -1:
+			if InputMap.get_action_list(action_name).size() > 1:
+				InputMap.action_erase_event(action_name, InputMap.get_action_list(action_name)[1])
+			InputMap.action_add_event(action_name, event)
+	 
+	$Cursor2.modulate = Color(1,1,1)
+	is_editing_control = false
+	input_delay = 1
+
+func get_key_action(event):
+	var event_button_index
 	
-	return
+	# Check if button is already assigned to an action (key first)
+	if event is InputEventKey:
+		event_button_index = event.scancode
+		for i in range(8):
+			if event_button_index == InputMap.get_action_list(input_index_to_str(i))[0].scancode:
+				return i
+		return -1
+	
+	# If instead event is a joypad thing
+	elif event is InputEventJoypadButton:
+		event_button_index = event.button_index
+		for i in range(8):
+			var input_on_map = InputMap.get_action_list(input_index_to_str(i))[1]
+			if input_on_map is InputEventJoypadButton and event_button_index == input_on_map.button_index:
+				return i
+		return -1
+	
+	elif event is InputEventJoypadMotion:
+		event_button_index = event.axis
+		for i in range(8):
+			var input_on_map = InputMap.get_action_list(input_index_to_str(i))[1]
+			if input_on_map is InputEventJoypadMotion and event_button_index == input_on_map.axis:
+				return i
+		return -1
+	return -1
+
+func input_index_to_str(n):
+	return ['move_up', 'move_down', 'move_left', 'move_right', 
+		'jump', 'attack', 'dash', 'pause'][n]

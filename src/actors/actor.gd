@@ -64,6 +64,11 @@ func _process(delta):
 		
 func animation_handler():
 	return
+
+func get_velocity():
+	return _velocity
+func set_velocity(vel):
+	_velocity = vel
 	
 func update_state():
 	return state

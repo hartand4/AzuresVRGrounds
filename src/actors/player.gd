@@ -8,6 +8,7 @@ var walljump_momentum_timer := 0
 var i_frames := 0
 var dash_timer := 0
 var attack_timer := 0
+var dash_dust_timer := 0
 
 # Booleans
 export var dashing := false
@@ -47,8 +48,8 @@ var shot_damage := 5
 var shot_velocity := Vector2.ZERO
 var max_slope := PI/3
 
-var animation_dict := {ST_IDLE: 'Idle', ST_WALK: 'Run', ST_WALLSLIDE: 'Wallslide', ST_WALLJUMP: 'Walljump',
-					   ST_DASH: 'Dash'}
+var animation_dict := {ST_IDLE: 'Idle', ST_WALK: 'Run', ST_WALLJUMP: 'Walljump',
+					   ST_DASH: "Dash"}
 
 # From enemy
 var damage_doing := 0
@@ -56,6 +57,7 @@ var damage_doing := 0
 func _ready():
 	recurring_x_dir = 1
 	call_deferred("_do_transition")
+	change_dash_hitbox(false)
 
 # warning-ignore:unused_argument
 func _physics_process(delta: float) -> void:
@@ -65,7 +67,7 @@ func _physics_process(delta: float) -> void:
 	if Globals.get("game_paused") or Globals.pause_menu_on:
 		do_pause_menu()
 		return
-	elif Input.is_action_just_pressed("pause") and not Globals.lock_input:
+	elif Input.is_action_just_pressed("pause") and not Globals.lock_input and not Globals.retry_menu_on:
 		Globals.set("game_paused", true)
 		Globals.pause_menu_on = true
 		return
@@ -114,6 +116,8 @@ func _physics_process(delta: float) -> void:
 	# If still in walljumping state
 	if walljump_momentum_timer:
 		direction = Vector2(recurring_x_dir*(-1.5),0)
+		if is_on_ceiling():
+			walljump_momentum_timer = 0
 	
 	# Update position
 	var snap := 15*Vector2.DOWN if not is_jumping else Vector2.ZERO
@@ -181,7 +185,12 @@ func _process(delta):
 	if Globals.get("game_paused"):
 		$AttackHitboxArea/SlashPlayer.stop(false)
 		return
-		
+	
+	if health == 0:
+		if animation_timer < 40: return
+		Globals.retry_menu_on = true
+		Globals.lock_input = false
+	
 	if (state == ST_ATTACK or state == ST_AIR_ATTACK) and attack_timer < 24:
 		$AttackHitboxArea/SlashPlayer.play('Slash')
 	
@@ -249,6 +258,10 @@ func animation_handler():
 				_animation.play_backwards('Climb')
 			else:
 				_animation.stop(false)
+		ST_WALLSLIDE:
+			_animation.play("Wallslide")
+			if Globals.timer % 7 == 0 and animation_timer > 5:
+				spawn_dust_particle()
 	
 func update_state():
 	if Globals.game_paused or Globals.lock_input:
@@ -339,6 +352,7 @@ func update_state():
 			dashing = true
 			dash_timer = 40 if is_on_floor() else 20
 			started_dash_on_floor = is_on_floor()
+			$DashDust.do_dash()
 			return ST_DASH
 	
 	# WHILE FLOOR DASHING OR AIR DASHING
@@ -377,12 +391,12 @@ func update_state():
 		return ST_CLIMB
 		
 	if state == ST_CLIMB:
-		if not(colliding_with_ladder or colliding_with_ladder_top) or Input.is_action_just_pressed('jump'):
-			state = ST_AIR
 		if colliding_with_ladder_top and not colliding_with_ladder and dir.y < 0:
 			state = ST_IDLE
 			self.position.y = nearest_block(self.position.y)-24
 			_velocity = Vector2.ZERO
+		elif not(colliding_with_ladder or colliding_with_ladder_top) or Input.is_action_just_pressed('jump'):
+			state = ST_AIR
 		if Input.is_action_just_pressed("attack"):
 			if dir.x != 0:
 				recurring_x_dir = dir.x
@@ -472,6 +486,7 @@ func update_slash_hitbox():
 
 func do_hurt_animation(damage):
 	health -= damage
+	change_dash_hitbox(false)
 	_animation.play("Hurt")
 	_velocity = Vector2(recurring_x_dir * -500.0,-500)
 	_velocity = move_and_slide(_velocity, FLOOR_NORMAL)
@@ -482,6 +497,7 @@ func do_hurt_animation(damage):
 		$PlayerDashHitbox.disabled = true
 		colliding_with_enemy = false
 		Globals.lock_input = true
+		animation_timer = 0
 	return
 	
 func change_dash_hitbox(dash_state):
@@ -495,6 +511,7 @@ func change_dash_hitbox(dash_state):
 		$WalljumpAreaL/WalljumpBoxL.set_position(Vector2(normal_wallcheck_transform[0][0], -40))
 		$WalljumpAreaR/WalljumpBoxR.set_position(Vector2(normal_wallcheck_transform[1][0], -40))
 		return
+	
 	hitbox_collider.shape.extents = normal_hitbox_shape
 	hitbox_collider.set_position(normal_hitbox_transform[0])
 	#$PlayerHitbox.set_position(normal_hitbox_transform[1])
@@ -593,3 +610,21 @@ func _on_LadderTopArea_body_exited(body: Node) -> void:
 	for box in $LadderTopArea.get_overlapping_bodies():
 		if box.get_collision_layer_bit(8):
 			colliding_with_ladder_top = true
+
+func reload_level():
+	for i in range(3):
+		collected_coins[i] = false
+	# warning-ignore:return_value_discarded
+	get_tree().change_scene(get_tree().current_scene.filename)
+
+func spawn_dust_particle():
+	var spawn_scene = load("res://src/effects/WallSlideDust.tscn")
+	var spawn := spawn_scene.instance() as Node2D
+	add_child(spawn)
+	
+	spawn.set_as_toplevel(true)
+	spawn.global_position = self.global_position + Vector2(-15 if recurring_x_dir > 0 else 15,-50)
+	
+	var rng = RandomNumberGenerator.new()
+	rng.randomize()
+	spawn.global_position += Vector2(rng.randi_range(0, 6), 0)

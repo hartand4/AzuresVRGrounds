@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/AzzySlash3.png-c6b6d6fc57e9f17f6cecd8029a7955ba.stex"
+path="res://.import/AzzySlash2.png-3e0e0852a37da3add005dd43b0df5f40.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/Sprites/Azzy/AzzySlash3.png"
-dest_files=[ "res://.import/AzzySlash3.png-c6b6d6fc57e9f17f6cecd8029a7955ba.stex" ]
+source_file="res://assets/Sprites/Azzy/sources/AzzySlash2.png"
+dest_files=[ "res://.import/AzzySlash2.png-3e0e0852a37da3add005dd43b0df5f40.stex" ]
 
 [params]
 

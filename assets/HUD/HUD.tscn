@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=2]
+[gd_scene load_steps=18 format=2]
 
 [ext_resource path="res://assets/HUD/Meters HUD.png" type="Texture" id=1]
 [ext_resource path="res://assets/HUD/Health.png" type="Texture" id=2]
@@ -13,6 +13,9 @@
 [ext_resource path="res://assets/HUD/PauseMenuSelect.png" type="Texture" id=11]
 [ext_resource path="res://assets/HUD/PauseMenuControlSelect.png" type="Texture" id=12]
 [ext_resource path="res://assets/Font/AzureVR.ttf" type="DynamicFontData" id=13]
+[ext_resource path="res://assets/HUD/RetryMenu.png" type="Texture" id=14]
+[ext_resource path="res://assets/HUD/RetrySelect.png" type="Texture" id=15]
+[ext_resource path="res://assets/HUD/RetryMenu.gd" type="Script" id=16]
 
 [sub_resource type="DynamicFont" id=1]
 size = 24
@@ -188,3 +191,15 @@ texture = ExtResource( 11 )
 visible = false
 position = Vector2( 564, 285 )
 texture = ExtResource( 12 )
+
+[node name="RetryMenu" type="TextureRect" parent="."]
+margin_left = 256.0
+margin_top = 168.0
+margin_right = 582.0
+margin_bottom = 426.0
+texture = ExtResource( 14 )
+script = ExtResource( 16 )
+
+[node name="RetryCursor" type="Sprite" parent="RetryMenu"]
+position = Vector2( 163, 82 )
+texture = ExtResource( 15 )

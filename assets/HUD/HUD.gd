@@ -19,3 +19,6 @@ func _process(delta):
 		$PauseMenu/ValcoinGreen.visible = Globals.coins_collected_in_level[2] or Globals.find_player().collected_coins[2]
 	else:
 		$PauseMenu.visible = false
+	
+	if Globals.retry_menu_on: $RetryMenu.visible = true
+	else: $RetryMenu.visible = false

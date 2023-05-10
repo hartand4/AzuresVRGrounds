@@ -4,6 +4,7 @@ export var game_paused := false
 export var lock_input := false
 export var timer := 0
 export var pause_menu_on := false
+export var retry_menu_on := false
 export var current_level := 0
 export var coins_collected_in_level := [false, false, false]
 
@@ -24,3 +25,9 @@ func start_transition(pos, forward):
 	for i in root_node.get_children():
 		if 'Level' in i.name:
 			i.find_node('Transition').start_transition(pos, forward)
+
+func level_number_to_obj(n):
+	var boss_level_numbers = [7]
+	if n in boss_level_numbers:
+		return
+	return get_parent() # TODO

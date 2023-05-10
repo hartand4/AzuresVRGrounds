@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/AzzyHitParticle1.png-f5d362b1451bf3d051def776f63619dd.stex"
+path="res://.import/RetryMenu.png-5c94c58052a946afcb57cc319229269d.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/Sprites/Azzy/AzzyHitParticle1.png"
-dest_files=[ "res://.import/AzzyHitParticle1.png-f5d362b1451bf3d051def776f63619dd.stex" ]
+source_file="res://assets/HUD/RetryMenu.png"
+dest_files=[ "res://.import/RetryMenu.png-5c94c58052a946afcb57cc319229269d.stex" ]
 
 [params]
 

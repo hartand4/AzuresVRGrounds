@@ -84,6 +84,7 @@ func _process(delta: float) -> void:
 				is_transitioning = true
 				input_delay = 120
 				Globals.start_transition(Vector2(420, 300), true)
+				$Cursor1.modulate = Color(0,1,0)
 		2:
 			if selection_cursor == 8:
 				if direction_input.y < 0: selection_cursor = 3
@@ -125,7 +126,7 @@ func _process(delta: float) -> void:
 				is_transitioning = true
 				input_delay = 120
 				Globals.start_transition(Vector2(420, 300), true)
-
+				$Cursor1.modulate = Color(0,1,0)
 
 func get_menu_direction():
 	var x_dir = 1 if Input.is_action_just_pressed("move_right") else (
@@ -153,6 +154,7 @@ func display_controls():
 		'UpButtonLabel':'move_up', 'DownButtonLabel':'move_down', 'LeftButtonLabel':'move_left',
 		'RightButtonLabel':'move_right', 'JumpButtonLabel':'jump', 'AttackButtonLabel':'attack',
 		'DashButtonLabel':'dash', 'PauseButtonLabel':'pause'}
+	if is_editing_control: return
 	for label in input_label_dict:
 		$PauseText2.find_node(label).text = OS.get_scancode_string(InputMap.get_action_list(input_label_dict[label])[0].scancode)
 		if InputMap.get_action_list('move_up').size() > 1:
@@ -169,8 +171,10 @@ func _unhandled_input(event):
 	
 	if event is InputEventKey:
 		#get_tree().quit()
+		var assigned_action = get_key_action(event)
+		var assigned_action_name = input_index_to_str(assigned_action)
 		
-		if get_key_action(event) == -1:
+		if assigned_action == -1:
 			# This means the key is not assigned to an action
 			var joypad_input
 			if InputMap.get_action_list(action_name).size() > 1:
@@ -179,12 +183,45 @@ func _unhandled_input(event):
 			InputMap.action_add_event(action_name, event)
 			if joypad_input:
 				InputMap.action_add_event(action_name, joypad_input)
+		else:
+			# Key already assigned to another action
+			var joypad_input
+			if InputMap.get_action_list(action_name).size() > 1:
+				joypad_input = InputMap.get_action_list(action_name)[1]
+			var other_inputs = [InputMap.get_action_list(action_name)[0]]
+			if InputMap.get_action_list(assigned_action_name).size() > 1:
+				other_inputs += [InputMap.get_action_list(assigned_action_name)[1]]
+			InputMap.action_erase_events(action_name)
+			InputMap.action_erase_events(assigned_action_name)
+			InputMap.action_add_event(action_name, event)
+			if joypad_input:
+				InputMap.action_add_event(action_name, joypad_input)
+			InputMap.action_add_event(assigned_action_name, other_inputs[0])
+			if other_inputs.size() > 1:
+				InputMap.action_add_event(assigned_action_name, other_inputs[1])
 	
 	elif event is InputEventJoypadButton or event is InputEventJoypadMotion:
-		if get_key_action(event) == -1:
+		
+		var assigned_action = get_key_action(event)
+		var assigned_action_name = input_index_to_str(assigned_action)
+		
+		if assigned_action == -1:
 			if InputMap.get_action_list(action_name).size() > 1:
 				InputMap.action_erase_event(action_name, InputMap.get_action_list(action_name)[1])
 			InputMap.action_add_event(action_name, event)
+		
+		else:
+			# Key already assigned to another action
+			var joypad_input
+			if InputMap.get_action_list(action_name).size() > 1:
+				joypad_input = InputMap.get_action_list(action_name)[1]
+				InputMap.action_erase_event(action_name, InputMap.get_action_list(action_name)[1])
+			InputMap.action_add_event(action_name, event)
+			
+			# Now swap input with the other assigned action
+			InputMap.action_erase_event(assigned_action_name, InputMap.get_action_list(assigned_action_name)[1])
+			if joypad_input:
+				InputMap.action_add_event(assigned_action_name, joypad_input)
 	 
 	$Cursor2.modulate = Color(1,1,1)
 	is_editing_control = false
@@ -220,5 +257,7 @@ func get_key_action(event):
 	return -1
 
 func input_index_to_str(n):
-	return ['move_up', 'move_down', 'move_left', 'move_right', 
+	if n in range(8):
+		return ['move_up', 'move_down', 'move_left', 'move_right', 
 		'jump', 'attack', 'dash', 'pause'][n]
+	return ''

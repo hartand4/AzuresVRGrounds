@@ -27,6 +27,9 @@ func _process(delta: float) -> void:
 	_velocity.y += 1200.0*delta
 	_velocity.y = min(_velocity.y, 1200.0)
 	_velocity = move_and_slide(_velocity, Vector2.UP, true)
+	
+	# Failsafe for despawning
+	if get_position().y > 999999: call_deferred("disable_all")
 
 func disable_all():
 	$HealthHitbox.disabled = true

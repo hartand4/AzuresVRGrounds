@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/AzzyIdle.png-13d9ced596dcb38541d8b0eecacf19ce.stex"
+path="res://.import/AzzySlash1.png-3fe682d652f748c401551231a80a5cca.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/Sprites/Azzy/AzzyIdle.png"
-dest_files=[ "res://.import/AzzyIdle.png-13d9ced596dcb38541d8b0eecacf19ce.stex" ]
+source_file="res://assets/Sprites/Azzy/sources/AzzySlash1.png"
+dest_files=[ "res://.import/AzzySlash1.png-3fe682d652f748c401551231a80a5cca.stex" ]
 
 [params]
 
@@ -20,7 +20,7 @@ compress/hdr_mode=0
 compress/bptc_ldr=0
 compress/normal_map=0
 flags/repeat=0
-flags/filter=false
+flags/filter=true
 flags/mipmaps=false
 flags/anisotropic=false
 flags/srgb=2

@@ -27,7 +27,7 @@ _global_script_class_icons={
 [application]
 
 config/name="Azure's VR Grounds"
-run/main_scene="res://src/levels/TestLevel.tscn"
+run/main_scene="res://src/levels/LevelMap.tscn"
 boot_splash/show_image=false
 config/icon="res://icon.png"
 

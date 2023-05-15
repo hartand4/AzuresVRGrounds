@@ -58,6 +58,9 @@ func _ready():
 	recurring_x_dir = 1
 	call_deferred("_do_transition")
 	change_dash_hitbox(false)
+	normal_exit_reached = false
+	secret_exit_reached = false
+	state = 0
 
 # warning-ignore:unused_argument
 func _physics_process(delta: float) -> void:
@@ -67,7 +70,8 @@ func _physics_process(delta: float) -> void:
 	if Globals.get("game_paused") or Globals.pause_menu_on:
 		do_pause_menu()
 		return
-	elif Input.is_action_just_pressed("pause") and not Globals.lock_input and not Globals.retry_menu_on:
+	elif Input.is_action_just_pressed("pause") and not Globals.lock_input and (
+		not Globals.retry_menu_on) and not state in [ST_VICTORY]:
 		Globals.set("game_paused", true)
 		Globals.pause_menu_on = true
 		return
@@ -152,7 +156,6 @@ func _physics_process(delta: float) -> void:
 		_velocity.x *= factor
 		
 	_velocity = move_and_slide_with_snap(_velocity, snap, FLOOR_NORMAL, true)
-	
 
 func get_direction_normal() -> Vector2:
 	if Globals.lock_input: return Vector2.DOWN
@@ -184,6 +187,7 @@ func _process(delta):
 		
 	if Globals.get("game_paused"):
 		$AttackHitboxArea/SlashPlayer.stop(false)
+		$Tail/AnimationPlayer.stop(false)
 		return
 	
 	if health == 0:
@@ -202,9 +206,12 @@ func _process(delta):
 	if stop_wallslide_timer: stop_wallslide_timer -= 1
 	if walljump_momentum_timer: walljump_momentum_timer -= 1
 	if dash_timer: dash_timer -= 1
-	elif is_on_floor():dashing = false
+	elif is_on_floor(): dashing = false
 	if attack_timer: attack_timer -= 1
-		
+	
+	if state == ST_VICTORY and is_on_floor():
+		victory_handler()
+		return
 	
 	check_for_collisions()
 	
@@ -216,9 +223,41 @@ func _process(delta):
 func animation_handler():
 	$Sprite.visible = true
 	$Sprite.flip_h = recurring_x_dir + 1
+	$Tail.flip_h = recurring_x_dir + 1
+	$Tail.visible = true
+	$TailWall.visible = false
+	$Tail/AnimationPlayer.play("TailWag")
+	$Tail.z_as_relative = true
+	
 	
 	if i_frames and Globals.timer % 8 <= 1:
 		$Sprite.visible = false
+		$Tail.visible = false
+		$TailWall.visible = false
+	
+	# Tail Animation
+	if state in [ST_CLIMB, ST_LADDER_ATTACK]:
+		$Tail.z_index = 1
+		$Tail.set_position(Vector2(recurring_x_dir*-32,-35))
+	elif state == ST_DASH:
+		$Tail.z_index = 0
+		$Tail/AnimationPlayer.play("TailStraight")
+		if animation_timer > 4:
+			$Tail.set_position(Vector2(recurring_x_dir*-35,-20))
+			
+		else:
+			$Tail.set_position(Vector2(recurring_x_dir*-45,-30))
+	elif state == ST_WALLSLIDE or state == ST_WALL_ATTACK:
+		$TailWall.visible = true
+		$Tail.visible = false
+		$TailWall.flip_h = recurring_x_dir + 1
+		$Tail/AnimationPlayer.play("TailWall")
+		$TailWall.set_position(Vector2(recurring_x_dir*3,-5))
+	else:
+		$Tail.z_index = 0
+		$Tail.set_position(Vector2(recurring_x_dir*-28,-35))
+	
+	
 	
 	if health > 0: change_dash_hitbox(state == ST_DASH)
 	
@@ -262,6 +301,12 @@ func animation_handler():
 			_animation.play("Wallslide")
 			if Globals.timer % 7 == 0 and animation_timer > 5:
 				spawn_dust_particle()
+		ST_VICTORY:
+			if not is_on_floor(): animation_timer = 0
+			elif animation_timer < 20:
+				_animation.play('Victory')
+			else:
+				_animation.play("Victory2")
 	
 func update_state():
 	if Globals.game_paused or Globals.lock_input:
@@ -270,6 +315,8 @@ func update_state():
 	var dir = Vector2(
 		-1.0 if Input.is_action_pressed("move_left") else 1.0 if Input.is_action_pressed("move_right") else 0.0,
 		1.0 if Input.is_action_pressed("move_down") else -1.0 if Input.is_action_pressed("move_up") else 0.0)
+	
+	if normal_exit_reached or secret_exit_reached: return ST_VICTORY
 	
 	# GETTING HURT
 	if state == ST_HURT:
@@ -628,3 +675,11 @@ func spawn_dust_particle():
 	var rng = RandomNumberGenerator.new()
 	rng.randomize()
 	spawn.global_position += Vector2(rng.randi_range(0, 6), 0)
+
+func victory_handler():
+	if animation_timer < 80: return
+	elif animation_timer == 80:
+		Globals.start_transition(get_position() - $Camera2D.get_camera_screen_center() + Vector2(420,260), true)
+	elif animation_timer >= 200:
+		# warning-ignore:return_value_discarded
+		get_tree().change_scene("res://src/levels/LevelMap.tscn")

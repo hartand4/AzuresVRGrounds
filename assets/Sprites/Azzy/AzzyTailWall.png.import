@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/Untitled.png-dcd63c5a433706e2fbd37f99756ed3d5.stex"
+path="res://.import/AzzyTailWall.png-96e34aa860a234e90fd1ff544a355256.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/Font/Untitled.png"
-dest_files=[ "res://.import/Untitled.png-dcd63c5a433706e2fbd37f99756ed3d5.stex" ]
+source_file="res://assets/Sprites/Azzy/AzzyTailWall.png"
+dest_files=[ "res://.import/AzzyTailWall.png-96e34aa860a234e90fd1ff544a355256.stex" ]
 
 [params]
 
@@ -20,7 +20,7 @@ compress/hdr_mode=0
 compress/bptc_ldr=0
 compress/normal_map=0
 flags/repeat=0
-flags/filter=true
+flags/filter=false
 flags/mipmaps=false
 flags/anisotropic=false
 flags/srgb=2

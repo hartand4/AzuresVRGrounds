@@ -193,6 +193,7 @@ position = Vector2( 564, 285 )
 texture = ExtResource( 12 )
 
 [node name="RetryMenu" type="TextureRect" parent="."]
+visible = false
 margin_left = 256.0
 margin_top = 168.0
 margin_right = 582.0

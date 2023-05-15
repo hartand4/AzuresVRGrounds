@@ -6,6 +6,8 @@ var _giving_health := false
 var _health_to_give = 8
 var _animation = 'Idle'
 onready var _player = Globals.find_player()
+export var persistent := false
+var persist_timer := 420
 
 
 func _process(delta: float) -> void:
@@ -30,6 +32,14 @@ func _process(delta: float) -> void:
 	
 	# Failsafe for despawning
 	if get_position().y > 999999: call_deferred("disable_all")
+	
+	if persistent: return
+	
+	persist_timer -= 1
+	visible = true
+	if not persist_timer: call_deferred("disable_all")
+	elif persist_timer < 90 and Globals.timer % 3 > 0:
+		visible = false
 
 func disable_all():
 	$HealthHitbox.disabled = true

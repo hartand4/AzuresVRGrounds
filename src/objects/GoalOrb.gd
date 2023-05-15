@@ -1,6 +1,7 @@
 extends KinematicBody2D
 
 export var secret_exit := false
+export var obey_gravity := true
 var _velocity := Vector2.ZERO
 
 func _ready() -> void:
@@ -16,9 +17,10 @@ func _process(delta: float) -> void:
 		$AnimationPlayer.stop(false)
 		return
 	$AnimationPlayer.play("Hue Changing" if not secret_exit else "Hue Changing S")
-	_velocity.y += 1200.0*delta
-	_velocity.y = min(_velocity.y, 1200.0)
-	_velocity = move_and_slide(_velocity, Vector2.UP, true)
+	if obey_gravity:
+		_velocity.y += 1200.0*delta
+		_velocity.y = min(_velocity.y, 1200.0)
+		_velocity = move_and_slide(_velocity, Vector2.UP, true)
 
 func disable_all():
 	$OrbSprite.visible = false

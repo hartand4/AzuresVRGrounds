@@ -29,6 +29,7 @@ const ST_WALLJUMP := 9
 const ST_CLIMB := 10
 const ST_WALL_ATTACK := 11
 const ST_LADDER_ATTACK := 12
+const ST_VICTORY := 13
 
 # Enemy State constants:
 const EN_IDLE := 0

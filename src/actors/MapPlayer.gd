@@ -17,6 +17,7 @@ var animation_timer := 0
 var entering_level = false
 
 var orig_dir = Vector2.ZERO
+var on_ladder = false
 
 onready var transition_layer = get_parent().find_node('Transition')
 
@@ -32,7 +33,6 @@ func _process(delta: float) -> void:
 	#set_transition_position()
 	
 	if is_moving:
-		animate_direction()
 		
 		if not turning_timer and (turning_ccw or turning_cw):
 			turning_ccw = false
@@ -70,6 +70,8 @@ func _process(delta: float) -> void:
 		if on_level and get_global_position().distance_to(on_level.get_global_position()) < 4:
 			is_moving = false
 			global_position = on_level.get_global_position()
+			
+		animate_direction()
 		return
 	
 	# Rare instance of not being on level
@@ -97,9 +99,11 @@ func _process(delta: float) -> void:
 			get_tree().change_scene("res://src/levels/TestLevel.tscn")
 		return
 	
-	if Globals.lock_input or animation_timer: return
+	if Globals.lock_input: return
 	
 	direction = get_direction_movement()
+	if animation_timer: direction = Vector2.ZERO
+	
 	is_moving = true
 	if direction.y > 0 and on_level.path_list[1]:
 		print('going down')
@@ -115,13 +119,14 @@ func _process(delta: float) -> void:
 		on_level = null
 	else:
 		is_moving = false
+		direction = Vector2.ZERO
 		animate_direction()
 	
 	if not is_moving:
 		if Input.is_action_just_pressed("pause"):
 			Globals.game_paused = true
 	
-	if Input.is_action_just_pressed("jump") or Input.is_action_just_pressed("attack"):
+	if (Input.is_action_just_pressed("jump") or Input.is_action_just_pressed("attack")) and not animation_timer:
 		transition_layer.start_transition(get_position() - $Camera2D.get_camera_screen_center() + Vector2(420,300), true)
 		animation_timer = 120
 		entering_level = true
@@ -140,15 +145,14 @@ func get_direction_movement():
 
 func animate_direction():
 	var dir = closest_right_angle(direction)
-	if dir == Vector2.RIGHT:
-		$MapSprite.flip_h = true
-	else:
-		$MapSprite.flip_h = false
-
+	$MapSprite.flip_h = dir == Vector2.RIGHT
 	if dir == Vector2.ZERO:
 		$AnimationPlayer.play("Forward")
+	elif on_ladder:
+		$AnimationPlayer.play("Backward")
 	else:
 		$AnimationPlayer.play(anim_dict[dir])
+		
 
 func _on_LevelCheckArea_area_entered(area: Area2D) -> void:
 	if not area.get('level_number') == null:
@@ -176,6 +180,8 @@ func _on_LevelCheckArea_area_entered(area: Area2D) -> void:
 			turning_cw = true
 			set_turning_timer()
 			return
+	elif area.get_collision_layer_bit(2):
+		on_ladder = true
 
 func set_turning_timer():
 	turning_timer = TURNING_TIMER_SET
@@ -195,4 +201,8 @@ func do_pause_menu(): #TODO
 	pass
 
 func _do_transition():
-	Globals.start_transition(Vector2(420, 300), false)
+	Globals.start_transition(get_position() - $Camera2D.get_camera_screen_center() + Vector2(420,280), false)
+
+
+func _on_LevelCheckArea_area_exited(area: Area2D) -> void:
+	if area.get_collision_layer_bit(2): on_ladder = false

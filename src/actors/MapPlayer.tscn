@@ -122,3 +122,4 @@ smoothing_enabled = true
 smoothing_speed = 10.0
 
 [connection signal="area_entered" from="LevelCheckArea" to="." method="_on_LevelCheckArea_area_entered"]
+[connection signal="area_exited" from="LevelCheckArea" to="." method="_on_LevelCheckArea_area_exited"]

@@ -501,6 +501,7 @@ anims/TailWag = SubResource( 41 )
 anims/TailWall = SubResource( 43 )
 
 [node name="TailWall" type="Sprite" parent="."]
+visible = false
 position = Vector2( 73, -91 )
 texture = ExtResource( 9 )
 
@@ -560,7 +561,7 @@ anims/Wallslide = SubResource( 22 )
 
 [node name="AttackHitboxArea" type="Area2D" parent="."]
 collision_layer = 16
-collision_mask = 4
+collision_mask = 109
 
 [node name="AttackHitbox" type="CollisionShape2D" parent="AttackHitboxArea"]
 position = Vector2( -40.75, -48 )

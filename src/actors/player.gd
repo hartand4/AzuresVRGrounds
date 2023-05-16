@@ -47,6 +47,8 @@ var last_state := 0
 var shot_damage := 5
 var shot_velocity := Vector2.ZERO
 var max_slope := PI/3
+export var camera_limit_min = Vector2(0,0)
+export var camera_limit_max = Vector2(10000000, 10000)
 
 var animation_dict := {ST_IDLE: 'Idle', ST_WALK: 'Run', ST_WALLJUMP: 'Walljump',
 					   ST_DASH: "Dash"}
@@ -61,6 +63,12 @@ func _ready():
 	normal_exit_reached = false
 	secret_exit_reached = false
 	state = 0
+	
+	# Set camera limits
+	$Camera2D.limit_left = camera_limit_min.x
+	$Camera2D.limit_top = camera_limit_min.y
+	$Camera2D.limit_right = camera_limit_max.x
+	$Camera2D.limit_bottom = camera_limit_max.y
 
 # warning-ignore:unused_argument
 func _physics_process(delta: float) -> void:

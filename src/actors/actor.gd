@@ -43,9 +43,12 @@ const EN_DEAD := 5
 func _physics_process(delta: float) -> void:
 	if _player and (Globals.get("game_paused") or Globals.pause_menu_on):
 		return
-
+	
+	# Perform gravity updates (different for upward gravity)
 	if _velocity.y > 0: _velocity.y += gravity*delta
 	else: _velocity.y += up_gravity*delta
+	
+	# Cap speed at a certain point
 	_velocity.y = min(_velocity.y, speed.y)
 	
 

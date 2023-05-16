@@ -15,8 +15,8 @@
 [ext_resource path="res://src/MapObjects/Transition.tscn" type="PackedScene" id=13]
 [ext_resource path="res://assets/BG/TechnoBG3.png" type="Texture" id=14]
 [ext_resource path="res://assets/Font/avrf38pt.fnt" type="BitmapFont" id=15]
-[ext_resource path="res://src/objects/BreakingPlatform.tscn" type="PackedScene" id=16]
-[ext_resource path="res://src/objects/BreakableWall.tscn" type="PackedScene" id=17]
+[ext_resource path="res://src/objects/BreakableWall.tscn" type="PackedScene" id=16]
+[ext_resource path="res://src/objects/BreakingPlatform.tscn" type="PackedScene" id=17]
 
 [sub_resource type="ConvexPolygonShape2D" id=1]
 points = PoolVector2Array( 48, 48, 0, 48, 0, 0, 48, 0 )
@@ -1157,6 +1157,9 @@ one_way_collision = true
 position = Vector2( 72, 816 )
 collision_mask = 64
 
+[node name="BreakingPlatform" parent="." instance=ExtResource( 17 )]
+position = Vector2( 2568, 1320 )
+
 [node name="MovingPlatform" parent="." instance=ExtResource( 5 )]
 position = Vector2( 72, 360 )
 track_length = 5
@@ -1238,8 +1241,5 @@ custom_colors/font_color = Color( 1, 1, 1, 1 )
 custom_fonts/font = ExtResource( 15 )
 text = "This is Azure lmao UwU~"
 
-[node name="BreakingPlatform" parent="." instance=ExtResource( 16 )]
-position = Vector2( 2520, 1368 )
-
-[node name="BreakableWall" parent="." instance=ExtResource( 17 )]
+[node name="BreakableWall" parent="." instance=ExtResource( 16 )]
 position = Vector2( 1032, 648 )

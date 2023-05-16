@@ -31,3 +31,25 @@ func level_number_to_obj(n):
 	if n in boss_level_numbers:
 		return
 	return get_parent() # TODO
+
+# Generates random integer between start and end
+func call_rng(start, end):
+	var rng = RandomNumberGenerator.new()
+	rng.randomize()
+	return rng.randi_range(start, end)
+
+# Generates a debris object with specified texture at a given position
+func spawn_debris(texture, pos):
+	var root_node = get_parent()
+	# warning-ignore:shadowed_variable
+	var current_level = null
+	for i in root_node.get_children():
+		if 'Level' in i.name:
+			current_level = i
+	
+	var debris_scene = load("res://src/effects/Debris.tscn")
+	var spawn := debris_scene.instance() as Node2D
+	current_level.add_child(spawn)
+	spawn.set_as_toplevel(true)
+	spawn.global_position = pos
+	spawn.tex = texture

@@ -2,7 +2,9 @@ extends Area2D
 
 
 export var level_number := 0
+export var warp_number := 0
 export var level_name := ""
+export var is_warp := false
 export var is_boss := false
 export var is_unlocked := false
 export var is_complete := false
@@ -24,6 +26,10 @@ export var got_secret_exit := false
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	path_list = [has_up_path, has_down_path, has_left_path, has_right_path]
+	if is_warp:
+		anim_str = "WarpTile"
+		$AnimationPlayer.play("WarpTile")
+		return
 	anim_str = "Yellow" if is_complete else "Red" if is_unlocked else "Grey"
 	anim_str += "Boss" if is_boss else "Level"
 	$AnimationPlayer.play(anim_str)

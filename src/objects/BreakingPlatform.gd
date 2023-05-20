@@ -3,11 +3,14 @@ extends StaticBody2D
 
 var animation_timer = 0
 var breaking = false
+var broken = false
 
 
 # warning-ignore:unused_argument
 func _process(delta: float) -> void:
 	if Globals.game_paused: return
+	elif broken:
+		respawn()
 	elif not breaking: return
 	animation_timer -= 1
 	if animation_timer == 28:
@@ -24,10 +27,16 @@ func _process(delta: float) -> void:
 		Globals.spawn_debris(load("res://assets/Sprites/Debris/BreakingPlatform/Debris2.png"),
 		position + Vector2(36, 0))
 	elif animation_timer == 0:
-		call_deferred("disable_all")
+		broken = true
+		breaking = false
 
-func disable_all():
-	get_parent().remove_child(self)
+func respawn():
+	var camera_pos = Globals.find_player().find_node('Camera2D').get_camera_screen_center()
+	if camera_pos.x - 420 - 120 < position.x and camera_pos.x +420 + 120 > position.x and (
+		camera_pos.y - 300 - 120 < position.y and camera_pos.y + 300 + 120 > position.y): return
+	$Collision.disabled = false
+	$Sprite.visible = true
+	$PlayerCheckArea/PlayerCheckCollision.disabled = false
 
 func _on_PlayerCheckArea_area_entered(area: Area2D) -> void:
 	if area.get_collision_layer_bit(1):

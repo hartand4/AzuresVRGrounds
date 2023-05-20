@@ -9,7 +9,7 @@ onready var border_right := $TransitionRight
 
 var fade_position := Vector2(0,0)
 var is_transitioning = false
-var is_transitioning_backward = false
+var transition_type = 0
 
 export var start_black = false
 
@@ -37,36 +37,59 @@ func _ready() -> void:
 	border_right.set_scale(Vector2(1,1))
 	transition_layer.set_pivot_offset(transition_layer.get_size()/2)
 	is_transitioning = false
-	is_transitioning_backward = false
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 # warning-ignore:unused_argument
 func _process(delta: float) -> void:
-	if not (is_transitioning or is_transitioning_backward): return
-	elif transition_layer.get_scale().x < 0.01 and is_transitioning:
+	if not is_transitioning: return
+	elif transition_layer.get_scale().x < 0.01 and transition_type == 1:
 		is_transitioning = false
+		transition_layer.visible = false
 		return
-	elif transition_layer.get_scale().x > 3.99 and is_transitioning_backward:
-		is_transitioning_backward = false
+	elif transition_layer.get_scale().x > 3.99 and transition_type == 2:
+		is_transitioning = false
+		transition_layer.visible = false
 		return
 	transition_layer.set_position(fade_position - Vector2(500, 500))
-	transition_layer.visible = true
 	border_bottom.visible = true
 	border_top.visible = true
 	border_left.visible = true
 	border_right.visible = true
 	
-	if is_transitioning:
-		transition_layer.set_scale(transition_layer.get_scale() + Vector2(-0.07,-0.07))
-	elif is_transitioning_backward:
-		transition_layer.set_scale(transition_layer.get_scale() + Vector2(0.07,0.07))
-	transition_layer.set_scale(Vector2(max(0, transition_layer.get_scale().x),
-		max(0, transition_layer.get_scale().y)))
-	transition_layer.set_scale(Vector2(min(4, transition_layer.get_scale().x),
-		min(4, transition_layer.get_scale().y)))
+	# Iris transition types
+	if transition_type in [1,2]:
+		transition_layer.visible = true
+		if transition_type == 1:
+			transition_layer.set_scale(transition_layer.get_scale() + Vector2(-0.07,-0.07))
+		elif transition_type == 2:
+			transition_layer.set_scale(transition_layer.get_scale() + Vector2(0.07,0.07))
+		transition_layer.set_scale(Vector2(max(0, transition_layer.get_scale().x),
+			max(0, transition_layer.get_scale().y)))
+		transition_layer.set_scale(Vector2(min(4, transition_layer.get_scale().x),
+			min(4, transition_layer.get_scale().y)))
 	
-	rotate_about_mid(transition_layer, PI/30)
-	set_transition_position()
+		rotate_about_mid(transition_layer, PI/30)
+		set_transition_position()
+	
+	elif transition_type in [3,4]:
+		var speed = 10
+		if transition_type == 4:
+			speed *= -1
+		border_top.set_position(border_top.get_position() + Vector2(0,speed))
+		border_bottom.set_position(border_bottom.get_position() + Vector2(0,-speed))
+		
+		if transition_type == 3 and border_top.get_position().y >= 300:
+			is_transitioning = false
+		elif transition_type == 4 and border_bottom.get_position().y >= 600:
+			is_transitioning = false
+	
+	elif transition_type in [5,6]:
+		var speed = 0.02
+		if transition_type == 6: speed *= -1
+		border_top.modulate.a += speed
+		
+		if transition_type == 5 and border_top.modulate.a >= 1: is_transitioning = false
+		elif transition_type == 6 and border_top.modulate.a <= 0: is_transitioning = false
 
 func rotate_about_mid(obj, angle):
 	var midpoint = obj.get_size()*obj.get_scale()/2
@@ -86,12 +109,20 @@ func set_transition_position():
 	border_right.set_position(Vector2(transition_layer.get_position().x + 500 +
 		(transition_layer.get_size()*transition_layer.get_scale()/2).x - 170*transition_layer.get_scale().x, 0))
 
-func start_transition(pos, forward):
+func start_transition(pos, transition_num):
 	fade_position = pos
-	if forward:
-		is_transitioning = true
-		is_transitioning_backward = false
-		return
-	is_transitioning_backward = true
-	is_transitioning = false
-	transition_layer.set_scale(Vector2(0,0))
+	is_transitioning = true
+	transition_type = transition_num
+	border_top.modulate.a = 1
+	# Start small
+	if transition_type in [2]:
+		transition_layer.set_scale(Vector2(0,0))
+	elif transition_type in [3]:
+		border_top.set_position(Vector2(0,-600))
+		border_bottom.set_position(Vector2(0,600))
+	elif transition_type in [4]:
+		border_top.set_position(Vector2(0,-300))
+		border_bottom.set_position(Vector2(0,300))
+	elif transition_type in [5,6]:
+		border_top.set_position(Vector2.ZERO)
+		if transition_type == 5: border_top.modulate.a = 0

@@ -4,7 +4,7 @@ extends KinematicBody2D
 export onready var on_level
 var direction := Vector2.ZERO
 var anim_dict := {Vector2.UP: "Backward", Vector2.DOWN: "Forward",
-				  Vector2.LEFT: "Left", Vector2.RIGHT: "Left"}
+				  Vector2.LEFT: "Left", Vector2.RIGHT: "Right"}
 
 var is_moving := false
 var turning_ccw := false
@@ -15,6 +15,7 @@ const TURNING_TIMER_SET := 15
 # Mini state things
 var animation_timer := 0
 var entering_level = false
+var is_warping = false
 
 var orig_dir = Vector2.ZERO
 var on_ladder = false
@@ -26,11 +27,14 @@ func _ready() -> void:
 	entering_level = false
 	animation_timer = 40
 	call_deferred("_do_transition")
+	$MapSprite.flip_h = false
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
-	#set_transition_position()
+	# Check for camera limit areas
+	camera_limit_checks()
+		
 	
 	if is_moving:
 		
@@ -70,6 +74,7 @@ func _process(delta: float) -> void:
 		if on_level and get_global_position().distance_to(on_level.get_global_position()) < 4:
 			is_moving = false
 			global_position = on_level.get_global_position()
+			#direction = Vector2.ZERO
 			
 		animate_direction()
 		return
@@ -95,8 +100,24 @@ func _process(delta: float) -> void:
 	if entering_level:
 		$AnimationPlayer.play("Start")
 		if animation_timer == 0:
+			var scene_name = get_parent().level_index_to_scene_name[on_level.level_number]
 			# warning-ignore:return_value_discarded
-			get_tree().change_scene("res://src/levels/TestLevel.tscn")
+			get_tree().change_scene("res://src/levels/" + scene_name + ".tscn")
+		return
+	
+	elif is_warping:
+		if animation_timer == 1:
+			var warp_info = get_parent().warp_info_list[on_level.warp_number]
+			if warp_info[0]:
+				position = get_parent().find_node("Warps").find_node("Warp" + str(warp_info[1])).get_position()
+			else:
+				position = get_parent().find_node("Levels").find_node("Level" + str(warp_info[1])).get_position()
+			$Camera2D.smoothing_enabled = false
+		elif animation_timer == 0:
+			$Camera2D.smoothing_enabled = true
+			is_warping = false
+			animation_timer = 40
+			Globals.start_transition(Vector2(0,0), 4)
 		return
 	
 	if Globals.lock_input: return
@@ -127,9 +148,15 @@ func _process(delta: float) -> void:
 			Globals.game_paused = true
 	
 	if (Input.is_action_just_pressed("jump") or Input.is_action_just_pressed("attack")) and not animation_timer:
-		transition_layer.start_transition(get_position() - $Camera2D.get_camera_screen_center() + Vector2(420,300), true)
-		animation_timer = 120
-		entering_level = true
+		if not on_level.is_warp:
+			transition_layer.start_transition(get_position() - $Camera2D.get_camera_screen_center() + Vector2(420,300), 1)
+			animation_timer = 120
+			entering_level = true
+			return
+		else:
+			transition_layer.start_transition(Vector2(420,300), 3)
+			animation_timer = 40
+			is_warping = true
 
 func get_direction_movement():
 	if Globals.lock_input: return Vector2.ZERO
@@ -145,7 +172,6 @@ func get_direction_movement():
 
 func animate_direction():
 	var dir = closest_right_angle(direction)
-	$MapSprite.flip_h = dir == Vector2.RIGHT
 	if dir == Vector2.ZERO:
 		$AnimationPlayer.play("Forward")
 	elif on_ladder:
@@ -157,6 +183,7 @@ func animate_direction():
 func _on_LevelCheckArea_area_entered(area: Area2D) -> void:
 	if not area.get('level_number') == null:
 		on_level = area
+		Globals.current_level = area.level_number
 		print(on_level)
 		return
 	if turning_ccw or turning_cw:
@@ -201,8 +228,20 @@ func do_pause_menu(): #TODO
 	pass
 
 func _do_transition():
-	Globals.start_transition(get_position() - $Camera2D.get_camera_screen_center() + Vector2(420,280), false)
+	Globals.start_transition(get_position() - $Camera2D.get_camera_screen_center() + Vector2(420,280), 2)
 
+func camera_limit_checks():
+	# Warp Isle
+	if position.x >= 5952 and position.x <= 6792 and position.y <= 240 and position.y >= 0:
+		$Camera2D.limit_left = 5962
+		$Camera2D.limit_right = 6792
+		$Camera2D.limit_top = -100
+		$Camera2D.limit_bottom = 500
+	else:
+		$Camera2D.limit_left = 0
+		$Camera2D.limit_right = 10000000
+		$Camera2D.limit_top = 0
+		$Camera2D.limit_bottom = 10000000
 
 func _on_LevelCheckArea_area_exited(area: Area2D) -> void:
 	if area.get_collision_layer_bit(2): on_ladder = false

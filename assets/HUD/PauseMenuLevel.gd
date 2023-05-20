@@ -40,7 +40,7 @@ func _process(delta: float) -> void:
 			get_tree().change_scene("res://src/levels/LevelMap.tscn")
 		elif menu_type == 3:
 			# warning-ignore:return_value_discarded
-			get_tree().change_scene("res://src/levels/TitleScreen.tscn")
+			get_tree().change_scene("res://src/EXTRA/TitleScreen.tscn")
 		return
 	
 	for i in [0,1,2,3]:
@@ -83,7 +83,7 @@ func _process(delta: float) -> void:
 			elif selection_cursor == 0 and menu_input == 2:
 				is_transitioning = true
 				input_delay = 120
-				Globals.start_transition(Vector2(420, 300), true)
+				Globals.start_transition(Vector2(420, 300), 1)
 				$Cursor1.modulate = Color(0,1,0)
 		2:
 			if selection_cursor == 8:
@@ -125,7 +125,7 @@ func _process(delta: float) -> void:
 			elif selection_cursor == 0 and menu_input == 2:
 				is_transitioning = true
 				input_delay = 120
-				Globals.start_transition(Vector2(420, 300), true)
+				Globals.start_transition(Vector2(420, 300), 1)
 				$Cursor1.modulate = Color(0,1,0)
 
 func get_menu_direction():

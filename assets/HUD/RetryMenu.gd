@@ -39,7 +39,7 @@ func _process(delta: float) -> void:
 	if Input.is_action_just_pressed("jump"):
 		is_transitioning = true
 		input_delay = 120
-		Globals.start_transition(Vector2(420, 300), true)
+		Globals.start_transition(Vector2(420, 300), 1)
 		$RetryCursor.modulate = Color(0,1,0)
 	elif Input.is_action_just_pressed("move_down") or Input.is_action_just_pressed("move_up"):
 		selection_cursor = not selection_cursor

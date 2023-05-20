@@ -54,18 +54,17 @@ func _physics_process(delta: float) -> void:
 
 # warning-ignore:unused_argument
 func _process(delta):
-	if _player and not Globals.get("game_paused") and not Globals.pause_menu_on:
-		animation_handler()
-		animation_timer += 1
-	else:
-		_animation.stop(false)
-		
-	
 	var last_state := state
 	state = update_state()
 	if state != last_state:
 		animation_timer = 0
-		
+	
+	if not Globals.get("game_paused") and not Globals.pause_menu_on:
+		animation_handler()
+		animation_timer += 1
+	else:
+		_animation.stop(false)
+
 func animation_handler():
 	return
 

@@ -202,6 +202,9 @@ func _process(delta):
 		if animation_timer < 40: return
 		Globals.retry_menu_on = true
 		Globals.lock_input = false
+	elif position.y > $Camera2D.get_camera_screen_center().y + 600:
+		animation_timer = 0
+		do_hurt_animation(32)
 	
 	if (state == ST_ATTACK or state == ST_AIR_ATTACK) and attack_timer < 24:
 		$AttackHitboxArea/SlashPlayer.play('Slash')
@@ -591,17 +594,18 @@ func check_for_collisions():
 			damage_doing = 32
 
 func _do_transition():
-	get_parent().find_node('Transition').start_transition(Vector2(420, 300), false)
+	Globals.start_transition(Vector2(420, 300), 2)
 
 func _on_PlayerHitboxArea_area_entered(area: Area2D) -> void:
 	# Check if the player is colliding with other areas (enemies or damage tiles)
-	if (area.get_collision_layer_bit(2) or area.get_collision_layer_bit(7)) and not colliding_with_enemy:
+	if (area.get_collision_layer_bit(2) or area.get_collision_layer_bit(7) or 
+		area.get_collision_layer_bit(5)) and not colliding_with_enemy:
 		colliding_with_enemy = true
 		# If an enemy...
 		if area.get_collision_layer_bit(2):
-			damage_doing = area.get_parent().damage
+			damage_doing = area.get_parent().get_damage()
 		# Otherwise must be a stage hazard
-		elif area.get_collision_layer_bit(7):
+		else:
 			damage_doing = area.damage
 	elif area.get_collision_layer_bit(8):
 		colliding_with_ladder = true
@@ -610,12 +614,13 @@ func _on_PlayerHitboxArea_area_exited(area: Area2D) -> void:
 	colliding_with_enemy = false
 	colliding_with_ladder = false
 	for box in hitbox.get_overlapping_areas():
-		if (box.get_collision_layer_bit(2) or box.get_collision_layer_bit(7)) and not colliding_with_enemy:
+		if (box.get_collision_layer_bit(2) or box.get_collision_layer_bit(7) or 
+		box.get_collision_layer_bit(5)) and not colliding_with_enemy:
 			colliding_with_enemy = true
 			# If an enemy...
 			if box.get_collision_layer_bit(2):
 				damage_doing = box.get_parent().damage
-			# Otherwise must be a stage hazard
+			# Otherwise must be a stage hazard or enemy attack
 			else:
 				damage_doing = box.damage
 		elif box.get_collision_layer_bit(8):

@@ -277,6 +277,7 @@ margin_bottom = 166.0
 texture = ExtResource( 9 )
 
 [node name="ControlsMenu" type="Node2D" parent="."]
+visible = false
 position = Vector2( 840, 0 )
 
 [node name="ControlsBG" type="TextureRect" parent="ControlsMenu"]

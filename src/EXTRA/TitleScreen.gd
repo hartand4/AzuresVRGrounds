@@ -4,18 +4,25 @@ extends Node2D
 var animation_timer := 0
 var title_screen_menu := 0
 
-var title_gravity := 120
-var title_velocity := 0
+var title_velocity = 0
+var azzy_velocity = 0
 var bounce_nums = 4
 var title_screen_variant = 0
 var selection_cursor := 0
 var is_editing_controls = false
 var is_transitioning = true
 
+# Big one: loading the save data!
+var save_data = {}
+
 
 func _ready() -> void:
+	save_data = Globals.load_save_data()
+	if save_data and 'controls' in save_data:
+		load_controls(Globals.load_save_data()['controls'])
 	reset_title_screen()
 
+# warning-ignore:unused_argument
 func _process(delta: float) -> void:
 	
 	var menu_dir = get_menu_direction()
@@ -57,7 +64,7 @@ func _process(delta: float) -> void:
 			$PressStart.visible = false
 			if animation_timer:
 				if title_screen_variant == 0:
-					title_bounce(delta)
+					title_bounce()
 				elif title_screen_variant == 1:
 					title_stretch_in()
 				elif title_screen_variant == 2:
@@ -75,12 +82,12 @@ func _process(delta: float) -> void:
 				
 				if menu_input == 2 or menu_input == 3:
 					animation_timer = 120
-					title_velocity = -25
+					azzy_velocity = -25
 			elif animation_timer > 60:
 				$TitleObject/TitleVisibility/Title/Azzy/TailAnimation.play("TailWag")
 				$PressStart.visible = Globals.timer % 15 < 8
-				$TitleObject/TitleVisibility/Title/Azzy/AzzyAnimation.play("Jump" if animation_timer > 120 else "Fall")
-				azzy_jump(delta)
+				$TitleObject/TitleVisibility/Title/Azzy/AzzyAnimation.play("Jump" if azzy_velocity < 0 else "Fall")
+				azzy_jump()
 			elif animation_timer > 1:
 				$PressStart.visible = false
 				$Camera2D.position = Vector2(1260,300)
@@ -96,7 +103,7 @@ func _process(delta: float) -> void:
 					animation_timer = 75
 					is_transitioning = true
 				elif selection_cursor == 1:
-					pass
+					Globals.save_current_game_to_file(1)
 				elif selection_cursor == 2:
 					selection_cursor = 8
 					title_screen_menu = 4
@@ -104,6 +111,7 @@ func _process(delta: float) -> void:
 					Globals.start_transition(Vector2.ZERO, 5)
 					animation_timer = 75
 					is_transitioning = true
+					Globals.load_save_game(save_data, 1)
 				elif selection_cursor == 4:
 					$FirstMenu/Cursor.modulate = Color(0,1,0)
 					get_tree().quit()
@@ -126,6 +134,7 @@ func _process(delta: float) -> void:
 				selection_cursor = 2
 				title_screen_menu = 2
 				$ControlsMenu/Cursor.visible = false
+				Globals.save_controls_data()
 				return
 			if selection_cursor == 8: $ControlsMenu/Cursor.set_position(Vector2(382, 453))
 			else:
@@ -144,7 +153,7 @@ func _process(delta: float) -> void:
 	if animation_timer:
 		animation_timer -= 1
 
-func title_bounce(delta):
+func title_bounce():
 	if not bounce_nums:
 		$TitleObject.set_position(Vector2(0,0))
 		return
@@ -152,7 +161,7 @@ func title_bounce(delta):
 		title_velocity = -9*bounce_nums
 		bounce_nums -= 1
 	if bounce_nums:
-		title_velocity += title_gravity*delta
+		title_velocity += 2
 		$TitleObject.set_position(Vector2($TitleObject.get_position() + Vector2(0,title_velocity)))
 
 func title_stretch_in():
@@ -197,6 +206,7 @@ func reset_title_screen():
 	selection_cursor = 0
 	title_screen_menu = 0
 	title_velocity = 0
+	azzy_velocity = 0
 	is_transitioning = false
 	is_editing_controls = false
 	$PressStart.visible = false
@@ -219,10 +229,10 @@ func reset_title_screen():
 		$TitleObject/TitleVisibility/Title.set_position(Vector2(-600,0))
 		return
 
-func azzy_jump(delta):
-	title_velocity += 60*delta
+func azzy_jump():
+	azzy_velocity += 1.5
 	var current_pos = $TitleObject/TitleVisibility/Title/Azzy.get_position()
-	$TitleObject/TitleVisibility/Title/Azzy.set_position(current_pos+Vector2(-4,title_velocity))
+	$TitleObject/TitleVisibility/Title/Azzy.set_position(current_pos+Vector2(-4,azzy_velocity))
 
 func mod_wrap(input_num, mod_amt):
 	if input_num > 0: return input_num % mod_amt
@@ -340,3 +350,42 @@ func input_index_to_str(n):
 		return ['move_up', 'move_down', 'move_left', 'move_right', 
 		'jump', 'attack', 'dash', 'pause'][n]
 	return ''
+
+func load_controls(ctr_data):
+	# Perform security checks first...
+	if not ('move_up' in ctr_data and 'move_down' in ctr_data and 'move_left' in ctr_data and 'move_right' in ctr_data and
+	'attack' in ctr_data and 'jump' in ctr_data and 'dash' in ctr_data and 'pause' in ctr_data):
+		print('error!')
+		return
+	
+	for i in ctr_data:
+		if ctr_data[i].size() > 2 or ctr_data[i].size() < 1:
+			print('control data incomplete, ignoring')
+			return
+		if not (typeof(ctr_data[i][0]) == TYPE_INT or typeof(ctr_data[i][0]) == TYPE_REAL):
+			return
+		if ctr_data[i].size() == 2:
+			if ctr_data[i][1].size() != 2: return
+			if not (typeof(ctr_data[i][1][0]) in [TYPE_INT, TYPE_REAL] and
+			typeof(ctr_data[i][1][1]) in [TYPE_INT, TYPE_REAL] and ctr_data[i][1][1] in [0,1]): return
+	
+	# In the clear as far as I know, now to just load the controls!
+	for i in range(8):
+		var new_event = InputEventKey.new()
+		new_event.set_scancode(int(ctr_data[input_index_to_str(i)][0]))
+		new_event.pressed = true
+		is_editing_controls = true
+		selection_cursor = i
+		_unhandled_input(new_event)
+		
+		if ctr_data[input_index_to_str(i)].size() == 2:
+			if ctr_data[input_index_to_str(i)][1][1]:
+				new_event = InputEventJoypadMotion.new()
+				new_event.set_axis(int(ctr_data[input_index_to_str(i)][1][0]))
+			else:
+				new_event = InputEventJoypadButton.new()
+				new_event.set_button_index(int(ctr_data[input_index_to_str(i)][1][0]))
+				new_event.pressed = true
+			is_editing_controls = true
+			selection_cursor = i
+			_unhandled_input(new_event)

@@ -5,7 +5,6 @@ extends Actor
 var jump_timer := 0
 var stop_wallslide_timer := 0
 var walljump_momentum_timer := 0
-var i_frames := 0
 var dash_timer := 0
 var attack_timer := 0
 var dash_dust_timer := 0
@@ -13,6 +12,9 @@ var dash_dust_timer := 0
 # Booleans
 export var dashing := false
 export var air_dash_enabled := true
+export var armour_enabled := false
+export var ultimate_enabled := false
+
 var started_dash_on_floor := false
 export var colliding_with_enemy := false
 var colliding_with_wall_l := false
@@ -39,8 +41,9 @@ onready var normal_hitbox_transform = [hitbox_collider.get_position(), $PlayerHi
 onready var normal_wallcheck_shape = $WalljumpAreaL/WalljumpBoxL.shape.extents
 onready var normal_wallcheck_transform = [$WalljumpAreaL/WalljumpBoxL.get_position(), $WalljumpAreaR/WalljumpBoxR.get_position()]
 
+var ultimate_move_timer = [0,0,-1]
+
 #var double_jumped := false
-export var health := 32
 #export var game_paused := false
 var floor_angle := PI/2
 var last_state := 0
@@ -51,18 +54,24 @@ export var camera_limit_min = Vector2(0,0)
 export var camera_limit_max = Vector2(10000000, 10000)
 
 var animation_dict := {ST_IDLE: 'Idle', ST_WALK: 'Run', ST_WALLJUMP: 'Walljump',
-					   ST_DASH: "Dash"}
+					   ST_DASH: "Dash", ST_ULTIMATE: "Ultimate"}
 
 # From enemy
 var damage_doing := 0
 
 func _ready():
+	health = 32
 	recurring_x_dir = 1
 	call_deferred("_do_transition")
 	change_dash_hitbox(false)
 	normal_exit_reached = false
 	secret_exit_reached = false
 	state = 0
+	
+	# Unlocked abilities
+	air_dash_enabled = Globals.air_dash_unlocked and Globals.air_dash_selected
+	armour_enabled = Globals.armour_unlocked and Globals.armour_selected
+	ultimate_enabled = Globals.ultimate_unlocked and Globals.ultimate_selected
 	
 	# Set camera limits
 	$Camera2D.limit_left = camera_limit_min.x
@@ -154,6 +163,8 @@ func _physics_process(delta: float) -> void:
 		if not is_on_floor() and air_dash_enabled:
 			_velocity.y = 0
 	elif state == ST_LADDER_ATTACK: return
+	elif state == ST_ULTIMATE:
+		_velocity = Vector2(recurring_x_dir*500, 0)
 	
 	if dashing and state != ST_HURT: _velocity.x *= 1.8
 		
@@ -212,13 +223,20 @@ func _process(delta):
 	if state in [ST_WALL_ATTACK, ST_LADDER_ATTACK] and attack_timer < 18:
 		$AttackHitboxArea/SlashPlayer.play('Wall Slash')
 	
-	if i_frames: i_frames -= 1
 	if health < 0: health = 0
 	if stop_wallslide_timer: stop_wallslide_timer -= 1
 	if walljump_momentum_timer: walljump_momentum_timer -= 1
 	if dash_timer: dash_timer -= 1
 	elif is_on_floor(): dashing = false
 	if attack_timer: attack_timer -= 1
+	
+	# Ultimate_move_check
+	if not ultimate_enabled or state > 5 or health < 32: ultimate_move_timer = [0,0,-1]
+	elif ultimate_enabled:
+		do_ultimate_check()
+	$UltimateHitboxArea/CollisionShape2D.disabled = state != ST_ULTIMATE
+	if state == ST_ULTIMATE:
+		check_ultimate_hitbox_enemies()
 	
 	if state == ST_VICTORY and is_on_floor():
 		victory_handler()
@@ -229,8 +247,7 @@ func _process(delta):
 	if last_state != state:
 		print(state)
 		last_state = state
-	
-	
+
 func animation_handler():
 	$Sprite.visible = true
 	$Sprite.flip_h = recurring_x_dir + 1
@@ -239,6 +256,13 @@ func animation_handler():
 	$TailWall.visible = false
 	$Tail/AnimationPlayer.play("TailWag")
 	$Tail.z_as_relative = true
+	
+	$UltimateHitboxArea/UltimateFire.visible = state == ST_ULTIMATE and animation_timer > 4 and animation_timer < 42
+	if state == ST_ULTIMATE:
+		$UltimateHitboxArea/UltimateFire.flip_h = recurring_x_dir == 1
+		$UltimateHitboxArea/UltimateFire/UltimateFireAnimation.play("Flame")
+	else:
+		$UltimateHitboxArea/UltimateFire/UltimateFireAnimation.stop(true)
 	
 	
 	if i_frames and Globals.timer % 8 <= 1:
@@ -250,7 +274,7 @@ func animation_handler():
 	if state in [ST_CLIMB, ST_LADDER_ATTACK]:
 		$Tail.z_index = 1
 		$Tail.set_position(Vector2(recurring_x_dir*-32,-35))
-	elif state == ST_DASH:
+	elif state in [ST_DASH, ST_ULTIMATE]:
 		$Tail.z_index = 0
 		$Tail/AnimationPlayer.play("TailStraight")
 		if animation_timer > 4:
@@ -270,7 +294,7 @@ func animation_handler():
 	
 	
 	
-	if health > 0: change_dash_hitbox(state == ST_DASH)
+	if health > 0: change_dash_hitbox(state in [ST_DASH, ST_ULTIMATE])
 	
 	if state in animation_dict:
 		_animation.play(animation_dict[state])
@@ -335,11 +359,16 @@ func update_state():
 		state = 0
 		return update_state()
 	# Consider other states, like wallslide taking damage
-	if not (state in [ST_HURT, ST_INTERACT]) and colliding_with_enemy and i_frames == 0:
+	if not (state in [ST_HURT, ST_INTERACT, ST_ULTIMATE]) and colliding_with_enemy and i_frames == 0:
 		i_frames = 60
 		do_hurt_animation(damage_doing)
 		return ST_HURT
-		
+	
+	if state == ST_ULTIMATE:
+		if animation_timer >= 45:
+			state = ST_IDLE
+			return update_state()
+	
 	# DOING AN AIR ATTACK
 	if state == ST_AIR and Input.is_action_just_pressed("attack"):
 		attack_timer = 24
@@ -543,6 +572,9 @@ func update_slash_hitbox():
 			attack_collision.find_node('AttackHitbox').shape.extents = Vector2(32,14)
 
 func do_hurt_animation(damage):
+	if armour_enabled:
+		damage = floor(damage/2)
+		print(damage)
 	health -= damage
 	change_dash_hitbox(false)
 	_animation.play("Hurt")
@@ -619,7 +651,7 @@ func _on_PlayerHitboxArea_area_exited(area: Area2D) -> void:
 			colliding_with_enemy = true
 			# If an enemy...
 			if box.get_collision_layer_bit(2):
-				damage_doing = box.get_parent().damage
+				damage_doing = box.get_parent().get_damage()
 			# Otherwise must be a stage hazard or enemy attack
 			else:
 				damage_doing = box.damage
@@ -696,3 +728,55 @@ func victory_handler():
 	elif animation_timer >= 200:
 		# warning-ignore:return_value_discarded
 		get_tree().change_scene("res://src/levels/LevelMap.tscn")
+
+func do_ultimate_check():
+	var ULTIMATE_TIMER := 45
+	if ultimate_move_timer[0] and not ultimate_move_timer[1]:
+		ultimate_move_timer = [0,0,-1]
+		return
+	match ultimate_move_timer[0]:
+		0:
+			if Input.is_action_just_pressed('move_down'): ultimate_move_timer = [1,ULTIMATE_TIMER,-1]
+		1:
+			if Input.is_action_just_pressed("move_left"):
+				ultimate_move_timer[0] = 2
+				ultimate_move_timer[2] = -1
+			elif Input.is_action_just_pressed("move_right"):
+				ultimate_move_timer[0] = 2
+				ultimate_move_timer[2] = 1
+			elif Input.is_action_just_pressed("move_down"): ultimate_move_timer[1] = ULTIMATE_TIMER
+			else:
+				for action in ['move_up', 'jump', 'attack', 'dash', 'pause']:
+					if Input.is_action_just_pressed(action): ultimate_move_timer = [0,0,-1]
+		2:
+			if Input.is_action_just_pressed('move_left'):
+				if ultimate_move_timer[2] == 1: ultimate_move_timer[0] = 3
+				elif ultimate_move_timer[2] == -1: ultimate_move_timer[0] = 0
+			if Input.is_action_just_pressed('move_right'):
+				if ultimate_move_timer[2] == -1: ultimate_move_timer[0] = 3
+				elif ultimate_move_timer[2] == 1: ultimate_move_timer[0] = 0
+			else:
+				for action in ['jump', 'attack', 'dash', 'pause']:
+					if Input.is_action_just_pressed(action): ultimate_move_timer = [0,0,-1]
+		3:
+			if Input.is_action_just_pressed("attack"):
+				state = ST_ULTIMATE
+				animation_timer = 0
+				dashing = false
+				ultimate_move_timer = [0,0,-1]
+			else:
+				for action in ['move_up', 'move_down', 'move_left', 'move_right', 'jump', 'dash', 'pause']:
+					if Input.is_action_just_pressed(action): ultimate_move_timer = [0,0,-1]
+	if ultimate_move_timer[1]: ultimate_move_timer[1] -= 1
+
+
+func check_ultimate_hitbox_enemies():
+	for area in $UltimateHitboxArea.get_overlapping_areas():
+		if not area.get_parent().get("i_frames") == null:
+			area.get_parent().set_i_frames(0)
+		elif not area.get("i_frames") == null:
+			area.set_i_frames(0)
+		if not area.get_parent().get("health") == null:
+			area.get_parent().health -= 1
+		elif not area.get("health") == null:
+			area.health -= 1

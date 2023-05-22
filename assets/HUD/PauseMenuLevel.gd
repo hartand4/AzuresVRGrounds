@@ -101,6 +101,7 @@ func _process(delta: float) -> void:
 				selection_cursor = 2
 				menu_type = 0
 				$Cursor2.visible = false
+				Globals.save_controls_data()
 				return
 			if selection_cursor == 8: $Cursor2.set_position(Vector2(382, 453))
 			else:

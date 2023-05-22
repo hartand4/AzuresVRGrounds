@@ -1,4 +1,4 @@
-[gd_scene load_steps=43 format=2]
+[gd_scene load_steps=48 format=2]
 
 [ext_resource path="res://assets/Sprites/Azzy/AzzySlashEffect.png" type="Texture" id=1]
 [ext_resource path="res://src/Actors/player.gd" type="Script" id=2]
@@ -9,6 +9,7 @@
 [ext_resource path="res://src/actors/DashDust.gd" type="Script" id=7]
 [ext_resource path="res://assets/Sprites/Azzy/AzzyTail.png" type="Texture" id=8]
 [ext_resource path="res://assets/Sprites/Azzy/AzzyTailWall.png" type="Texture" id=9]
+[ext_resource path="res://assets/Sprites/Azzy/AzzyUltimateFire.png" type="Texture" id=10]
 
 [sub_resource type="Animation" id=40]
 length = 0.001
@@ -301,6 +302,24 @@ tracks/0/keys = {
 "values": [ 9, 5, 6, 5, 9, 7, 8, 7 ]
 }
 
+[sub_resource type="Animation" id=44]
+resource_name = "Ultimate"
+length = 0.75
+loop = true
+step = 0.0166667
+tracks/0/type = "value"
+tracks/0/path = NodePath("Sprite:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.05, 0.7 ),
+"transitions": PoolRealArray( 1, 1, 1 ),
+"update": 1,
+"values": [ 42, 43, 42 ]
+}
+
 [sub_resource type="Animation" id=38]
 resource_name = "Victory"
 length = 0.4
@@ -447,6 +466,42 @@ tracks/0/keys = {
 "values": [ 2, 0, 1 ]
 }
 
+[sub_resource type="RectangleShape2D" id=45]
+extents = Vector2( 52, 30 )
+
+[sub_resource type="Animation" id=46]
+resource_name = "Flame"
+length = 0.133333
+loop = true
+step = 0.0166667
+tracks/0/type = "value"
+tracks/0/path = NodePath(".:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.0666667 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 1,
+"values": [ 0, 1 ]
+}
+
+[sub_resource type="Animation" id=47]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/path = NodePath(".:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ 0 ]
+}
+
 [sub_resource type="RectangleShape2D" id=20]
 extents = Vector2( 13, 36.4063 )
 
@@ -551,6 +606,7 @@ anims/Jump = SubResource( 6 )
 "anims/Ladder Slash" = SubResource( 35 )
 anims/RESET = SubResource( 3 )
 anims/Run = SubResource( 5 )
+anims/Ultimate = SubResource( 44 )
 anims/Victory = SubResource( 38 )
 anims/Victory2 = SubResource( 39 )
 "anims/Wall Slash" = SubResource( 33 )
@@ -583,6 +639,23 @@ root_node = NodePath("../SlashEffect")
 anims/RESET = SubResource( 30 )
 anims/Slash = SubResource( 31 )
 "anims/Wall Slash" = SubResource( 34 )
+
+[node name="UltimateHitboxArea" type="Area2D" parent="."]
+collision_layer = 16
+collision_mask = 109
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="UltimateHitboxArea"]
+position = Vector2( 0, -38 )
+shape = SubResource( 45 )
+
+[node name="UltimateFire" type="Sprite" parent="UltimateHitboxArea"]
+position = Vector2( 2, -40 )
+texture = ExtResource( 10 )
+vframes = 2
+
+[node name="UltimateFireAnimation" type="AnimationPlayer" parent="UltimateHitboxArea/UltimateFire"]
+anims/Flame = SubResource( 46 )
+anims/RESET = SubResource( 47 )
 
 [node name="WalljumpAreaL" type="Area2D" parent="."]
 visible = false

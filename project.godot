@@ -18,10 +18,16 @@ _global_script_classes=[ {
 "class": "Health",
 "language": "GDScript",
 "path": "res://src/objects/Health.gd"
+}, {
+"base": "Node",
+"class": "Projectile",
+"language": "GDScript",
+"path": "res://src/enemyobjects/Projectile.gd"
 } ]
 _global_script_class_icons={
 "Actor": "",
-"Health": ""
+"Health": "",
+"Projectile": ""
 }
 
 [application]

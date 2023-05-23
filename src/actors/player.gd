@@ -724,7 +724,7 @@ func spawn_dust_particle():
 func victory_handler():
 	if animation_timer < 80: return
 	elif animation_timer == 80:
-		Globals.start_transition(get_position() - $Camera2D.get_camera_screen_center() + Vector2(420,260), true)
+		Globals.start_transition(get_position() - $Camera2D.get_camera_screen_center() + Vector2(420,260), 1)
 	elif animation_timer >= 200:
 		# warning-ignore:return_value_discarded
 		get_tree().change_scene("res://src/levels/LevelMap.tscn")

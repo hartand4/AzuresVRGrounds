@@ -85,15 +85,12 @@ func _process(delta: float) -> void:
 		return
 	
 	# Not moving and on a level
-	if Globals.game_paused:
+	if Globals.game_paused or Globals.pause_menu_on:
 		$AnimationPlayer.stop(false)
-		if Input.is_action_just_pressed("pause") and not Globals.lock_input:
-			Globals.game_paused = false
-		do_pause_menu()
 		return
 	elif Input.is_action_just_pressed("pause") and not Globals.lock_input and not entering_level:
 		Globals.game_paused = true
-		do_pause_menu()
+		Globals.pause_menu_on = true
 		return
 	
 	if animation_timer: animation_timer -= 1

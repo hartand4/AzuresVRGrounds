@@ -11,7 +11,7 @@ export var air_dash_unlocked := false
 export var air_dash_selected := true
 export var armour_unlocked := false
 export var armour_selected := true
-export var ultimate_unlocked := false
+export var ultimate_unlocked := true
 export var ultimate_selected := true
 
 export var pause_menu_on := false
@@ -23,12 +23,22 @@ export var coins_collected_in_level := [false, false, false]
 export var goal_reached_in_current_level = [false, false]
 
 export var level_flags = []
+export var val_coin_list = []
+
+func _ready() -> void:
+	# warning-ignore:unused_variable
+	for i in range(LEVEL_COUNT):
+		level_flags += [[false, false]]
+		val_coin_list += [[false, false, false]]
 
 # warning-ignore:unused_argument
 func _process(delta: float) -> void:
 	timer += 1
 	if timer == pow(2, 30):
 		timer = 0
+	
+	coins_collected_in_level = val_coin_list[current_level]
+	goal_reached_in_current_level = level_flags[current_level]
 
 # Returns the player object
 func find_player():
@@ -221,10 +231,23 @@ func save_current_game_to_file(n):
 	current_data['file'+str(n)] = {'current_level': current_level,'air_dash': [air_dash_unlocked, air_dash_selected], 
 	'armour': [armour_unlocked, armour_selected], 'ultimate': [ultimate_unlocked, ultimate_selected],}
 	current_data['file'+str(n)]['exits'] = level_flags
-	current_data['file'+str(n)]['val_coins'] = []
+	current_data['file'+str(n)]['val_coins'] = val_coin_list
 	
 	var file = File.new()
 	file.open(path, File.WRITE)
 	file.store_line(to_json(current_data))
 	file.close()
-	
+
+func total_val_coin_count(coin_list = val_coin_list):
+	var sum := 0
+	for level in coin_list:
+		for truth_value in level:
+			sum += (1 if truth_value else 0)
+	return sum
+
+func total_exit_count(exit_list = level_flags):
+	var sum := 0
+	for level in exit_list:
+		for truth_value in level:
+			sum += (1 if truth_value else 0)
+	return sum

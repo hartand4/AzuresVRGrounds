@@ -1,0 +1,209 @@
+[gd_scene load_steps=13 format=2]
+
+[ext_resource path="res://assets/HUD/PauseMenuMap.png" type="Texture" id=1]
+[ext_resource path="res://assets/HUD/PauseMenuTextLevelTitle.png" type="Texture" id=2]
+[ext_resource path="res://assets/HUD/PauseMenuTextLevelControls.png" type="Texture" id=3]
+[ext_resource path="res://assets/Font/AzureVR.ttf" type="DynamicFontData" id=4]
+[ext_resource path="res://assets/HUD/PauseMenuMapText1.png" type="Texture" id=5]
+[ext_resource path="res://assets/HUD/PauseMenuControlSelect.png" type="Texture" id=6]
+[ext_resource path="res://assets/HUD/PauseMenuSelect.png" type="Texture" id=7]
+[ext_resource path="res://assets/HUD/PauseMenuMap.gd" type="Script" id=8]
+[ext_resource path="res://assets/HUD/SwitchRect.png" type="Texture" id=9]
+[ext_resource path="res://assets/Font/avrf38pt.fnt" type="BitmapFont" id=10]
+[ext_resource path="res://assets/HUD/SwitchCircle.png" type="Texture" id=11]
+
+[sub_resource type="DynamicFont" id=1]
+size = 24
+font_data = ExtResource( 4 )
+
+[node name="MapHUD" type="CanvasLayer"]
+
+[node name="PauseMenu" type="TextureRect" parent="."]
+margin_right = 40.0
+margin_bottom = 40.0
+texture = ExtResource( 1 )
+script = ExtResource( 8 )
+
+[node name="PauseText0" type="TextureRect" parent="PauseMenu"]
+visible = false
+margin_right = 40.0
+margin_bottom = 40.0
+texture = ExtResource( 5 )
+
+[node name="PauseText3" type="Node2D" parent="PauseMenu"]
+visible = false
+
+[node name="AirDashLabel" type="Label" parent="PauseMenu/PauseText3"]
+margin_left = 240.0
+margin_top = 132.0
+margin_right = 375.0
+margin_bottom = 170.0
+custom_fonts/font = ExtResource( 10 )
+text = "AIR DASH"
+align = 2
+
+[node name="ArmourLabel" type="Label" parent="PauseMenu/PauseText3"]
+margin_left = 240.0
+margin_top = 212.0
+margin_right = 375.0
+margin_bottom = 250.0
+custom_fonts/font = ExtResource( 10 )
+text = "ARMOUR"
+align = 2
+
+[node name="UltimateLabel" type="Label" parent="PauseMenu/PauseText3"]
+margin_left = 219.0
+margin_top = 292.0
+margin_right = 375.0
+margin_bottom = 330.0
+custom_fonts/font = ExtResource( 10 )
+text = "ULTIMATE"
+align = 2
+
+[node name="BackLabel" type="Label" parent="PauseMenu/PauseText3"]
+margin_left = 349.0
+margin_top = 368.0
+margin_right = 484.0
+margin_bottom = 406.0
+custom_fonts/font = ExtResource( 10 )
+text = "Back"
+align = 1
+
+[node name="SwitchRect1" type="TextureRect" parent="PauseMenu/PauseText3"]
+margin_left = 447.0
+margin_top = 120.0
+margin_right = 541.0
+margin_bottom = 172.0
+texture = ExtResource( 9 )
+
+[node name="SwitchRect2" type="TextureRect" parent="PauseMenu/PauseText3"]
+margin_left = 447.0
+margin_top = 200.0
+margin_right = 541.0
+margin_bottom = 252.0
+texture = ExtResource( 9 )
+
+[node name="SwitchRect3" type="TextureRect" parent="PauseMenu/PauseText3"]
+margin_left = 447.0
+margin_top = 280.0
+margin_right = 541.0
+margin_bottom = 332.0
+texture = ExtResource( 9 )
+
+[node name="Switch1" type="Sprite" parent="PauseMenu/PauseText3"]
+position = Vector2( 475, 146 )
+texture = ExtResource( 11 )
+
+[node name="Switch2" type="Sprite" parent="PauseMenu/PauseText3"]
+position = Vector2( 475, 226 )
+texture = ExtResource( 11 )
+
+[node name="Switch3" type="Sprite" parent="PauseMenu/PauseText3"]
+position = Vector2( 475, 306 )
+texture = ExtResource( 11 )
+
+[node name="PauseText4" type="TextureRect" parent="PauseMenu"]
+visible = false
+margin_left = 42.0
+margin_top = 30.0
+margin_right = 814.0
+margin_bottom = 566.0
+texture = ExtResource( 3 )
+
+[node name="UpButtonLabel" type="Label" parent="PauseMenu/PauseText4"]
+margin_left = 145.0
+margin_top = 233.0
+margin_right = 301.0
+margin_bottom = 252.0
+rect_scale = Vector2( 1.5, 1.5 )
+custom_fonts/font = SubResource( 1 )
+text = "AZURE azure :3"
+clip_text = true
+
+[node name="DownButtonLabel" type="Label" parent="PauseMenu/PauseText4"]
+margin_left = 145.0
+margin_top = 275.0
+margin_right = 301.0
+margin_bottom = 294.0
+rect_scale = Vector2( 1.5, 1.5 )
+custom_fonts/font = SubResource( 1 )
+text = "Easter egg lol"
+clip_text = true
+
+[node name="LeftButtonLabel" type="Label" parent="PauseMenu/PauseText4"]
+margin_left = 145.0
+margin_top = 317.0
+margin_right = 301.0
+margin_bottom = 336.0
+rect_scale = Vector2( 1.5, 1.5 )
+custom_fonts/font = SubResource( 1 )
+text = "Valerie is very sexy"
+clip_text = true
+
+[node name="RightButtonLabel" type="Label" parent="PauseMenu/PauseText4"]
+margin_left = 145.0
+margin_top = 359.0
+margin_right = 301.0
+margin_bottom = 378.0
+rect_scale = Vector2( 1.5, 1.5 )
+custom_fonts/font = SubResource( 1 )
+text = "and pretty hehe~"
+clip_text = true
+
+[node name="JumpButtonLabel" type="Label" parent="PauseMenu/PauseText4"]
+margin_left = 526.0
+margin_top = 233.0
+margin_right = 682.0
+margin_bottom = 252.0
+rect_scale = Vector2( 1.5, 1.5 )
+custom_fonts/font = SubResource( 1 )
+text = "But seriously...thank"
+clip_text = true
+
+[node name="AttackButtonLabel" type="Label" parent="PauseMenu/PauseText4"]
+margin_left = 526.0
+margin_top = 275.0
+margin_right = 682.0
+margin_bottom = 294.0
+rect_scale = Vector2( 1.5, 1.5 )
+custom_fonts/font = SubResource( 1 )
+text = "you so much for"
+clip_text = true
+
+[node name="DashButtonLabel" type="Label" parent="PauseMenu/PauseText4"]
+margin_left = 526.0
+margin_top = 317.0
+margin_right = 682.0
+margin_bottom = 336.0
+rect_scale = Vector2( 1.5, 1.5 )
+custom_fonts/font = SubResource( 1 )
+text = "playing my game. It"
+clip_text = true
+
+[node name="PauseButtonLabel" type="Label" parent="PauseMenu/PauseText4"]
+margin_left = 526.0
+margin_top = 359.0
+margin_right = 682.0
+margin_bottom = 378.0
+rect_scale = Vector2( 1.5, 1.5 )
+custom_fonts/font = SubResource( 1 )
+text = "means so much to me"
+clip_text = true
+
+[node name="PauseText5" type="TextureRect" parent="PauseMenu"]
+visible = false
+margin_left = 42.0
+margin_top = -54.0
+margin_right = 814.0
+margin_bottom = 482.0
+texture = ExtResource( 2 )
+
+[node name="Cursor1" type="Sprite" parent="PauseMenu"]
+visible = false
+position = Vector2( 250, 274 )
+texture = ExtResource( 7 )
+
+[node name="Cursor2" type="Sprite" parent="PauseMenu"]
+visible = false
+position = Vector2( 231, 272 )
+texture = ExtResource( 6 )

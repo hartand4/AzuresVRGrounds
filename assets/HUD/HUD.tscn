@@ -44,6 +44,7 @@ texture = ExtResource( 2 )
 expand = true
 
 [node name="PauseMenu" type="TextureRect" parent="."]
+visible = false
 margin_left = 34.0
 margin_top = 32.0
 margin_right = 806.0

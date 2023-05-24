@@ -1,7 +1,7 @@
 extends Actor
 
 func _ready() -> void:
-	max_health = 32
+	max_health = 2
 
 # warning-ignore:unused_argument
 func _physics_process(delta: float) -> void:

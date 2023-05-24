@@ -944,6 +944,55 @@ points = PoolVector2Array( 48, 48, 0, 48, 0, 0, 48, 0 )
 14/shape_one_way_margin = 0.0
 14/shapes = [  ]
 14/z_index = 0
+15/name = "Technotree"
+15/texture = ExtResource( 12 )
+15/tex_offset = Vector2( 0, 0 )
+15/modulate = Color( 1, 1, 1, 1 )
+15/region = Rect2( 0, 288, 192, 240 )
+15/tile_mode = 0
+15/occluder_offset = Vector2( 0, 0 )
+15/navigation_offset = Vector2( 0, 0 )
+15/shape_offset = Vector2( 0, 0 )
+15/shape_transform = Transform2D( 1, 0, 0, 1, 0, 0 )
+15/shape_one_way = false
+15/shape_one_way_margin = 0.0
+15/shapes = [  ]
+15/z_index = 0
+16/name = "Components"
+16/texture = ExtResource( 12 )
+16/tex_offset = Vector2( 0, 0 )
+16/modulate = Color( 1, 1, 1, 1 )
+16/region = Rect2( 240, 288, 144, 48 )
+16/tile_mode = 0
+16/occluder_offset = Vector2( 0, 0 )
+16/navigation_offset = Vector2( 0, 0 )
+16/shape_offset = Vector2( 0, 0 )
+16/shape_transform = Transform2D( 1, 0, 0, 1, 0, 0 )
+16/shape_one_way = false
+16/shape_one_way_margin = 0.0
+16/shapes = [  ]
+16/z_index = 0
+17/name = "Flowers"
+17/texture = ExtResource( 12 )
+17/tex_offset = Vector2( 0, 0 )
+17/modulate = Color( 1, 1, 1, 1 )
+17/region = Rect2( 192, 288, 48, 240 )
+17/tile_mode = 2
+17/autotile/icon_coordinate = Vector2( 0, 0 )
+17/autotile/tile_size = Vector2( 48, 48 )
+17/autotile/spacing = 0
+17/autotile/occluder_map = [  ]
+17/autotile/navpoly_map = [  ]
+17/autotile/priority_map = [  ]
+17/autotile/z_index_map = [  ]
+17/occluder_offset = Vector2( 0, 0 )
+17/navigation_offset = Vector2( 0, 0 )
+17/shape_offset = Vector2( 0, 0 )
+17/shape_transform = Transform2D( 1, 0, 0, 1, 0, 0 )
+17/shape_one_way = false
+17/shape_one_way_margin = 0.0
+17/shapes = [  ]
+17/z_index = 0
 
 [sub_resource type="ConvexPolygonShape2D" id=100]
 points = PoolVector2Array( 6, 0, 48, 0, 48, 48, 6, 48 )
@@ -1070,7 +1119,7 @@ margin_bottom = 600.0
 color = Color( 0.0235294, 0.0235294, 0.176471, 1 )
 
 [node name="Islands" type="ParallaxLayer" parent="ParallaxBackground"]
-motion_scale = Vector2( 0.2, 0.05 )
+motion_scale = Vector2( 0.2, 0.04 )
 motion_offset = Vector2( 0, -200 )
 motion_mirroring = Vector2( 1680, 600 )
 
@@ -1107,6 +1156,7 @@ tile_data = PoolIntArray( -1114114, 3, 0, -1114113, 3, 1, -1048578, 3, 65536, -1
 tile_set = SubResource( 99 )
 cell_size = Vector2( 48, 48 )
 format = 1
+tile_data = PoolIntArray( 1376265, 15, 0, 1376300, 15, 0, 1441814, 17, 0, 1638401, 17, 65536, 1638443, 17, 65536, 1638450, 16, 0 )
 
 [node name="Spikes" type="Area2D" parent="."]
 collision_layer = 128

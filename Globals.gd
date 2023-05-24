@@ -11,7 +11,7 @@ export var air_dash_unlocked := false
 export var air_dash_selected := true
 export var armour_unlocked := false
 export var armour_selected := true
-export var ultimate_unlocked := true
+export var ultimate_unlocked := false
 export var ultimate_selected := true
 
 export var pause_menu_on := false

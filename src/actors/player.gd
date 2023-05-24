@@ -207,6 +207,7 @@ func _process(delta):
 	if Globals.get("game_paused"):
 		$AttackHitboxArea/SlashPlayer.stop(false)
 		$Tail/AnimationPlayer.stop(false)
+		$UltimateHitboxArea/UltimateFire/UltimateFireAnimation.stop(false)
 		return
 	
 	if health == 0:

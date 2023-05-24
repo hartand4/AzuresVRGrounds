@@ -323,3 +323,13 @@ func options_menu_visuals():
 		$PauseText3/Switch3.set_position($PauseText3/Switch3.get_position() + Vector2(4.75,0))
 	elif not Globals.ultimate_selected and $PauseText3/Switch3.get_position().x > 475:
 		$PauseText3/Switch3.set_position($PauseText3/Switch3.get_position() + Vector2(-4.75,0))
+	
+	$PauseText3/Switch1.modulate = Color(($PauseText3/Switch1.get_position().x-475)*(-7)/380 + 1,
+		($PauseText3/Switch1.get_position().x-475)*(2)/380 + 1,
+		($PauseText3/Switch1.get_position().x-475)*(-2)/380 + 1)
+	$PauseText3/Switch2.modulate = Color(($PauseText3/Switch2.get_position().x-475)*(-7)/380 + 1,
+		($PauseText3/Switch2.get_position().x-475)*(2)/380 + 1,
+		($PauseText3/Switch2.get_position().x-475)*(-2)/380 + 1)
+	$PauseText3/Switch3.modulate = Color(($PauseText3/Switch3.get_position().x-475)*(-7)/380 + 1,
+		($PauseText3/Switch3.get_position().x-475)*(2)/380 + 1,
+		($PauseText3/Switch3.get_position().x-475)*(-2)/380 + 1)

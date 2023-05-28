@@ -7,6 +7,13 @@ export var game_paused := false
 export var lock_input := false
 export var timer := 0
 
+export var vswitch_timer := 0
+
+# Earthquake variables
+var eq_timer := 0
+var eq_intensity := 3
+var earthquake_camera = null
+
 export var air_dash_unlocked := false
 export var air_dash_selected := true
 export var armour_unlocked := false
@@ -38,7 +45,13 @@ func _process(delta: float) -> void:
 		timer = 0
 	
 	coins_collected_in_level = val_coin_list[current_level]
-	goal_reached_in_current_level = level_flags[current_level]
+	#goal_reached_in_current_level = level_flags[current_level]
+	
+	if eq_timer:
+		do_earthquake()
+		eq_timer -= 1
+		if not eq_timer:
+			recenter_camera()
 
 # Returns the player object
 func find_player():
@@ -198,6 +211,7 @@ func load_save_game(save_data, n):
 	ultimate_selected = file_data['ultimate'][1]
 	
 	level_flags = file_data['exits']
+	val_coin_list = file_data['val_coins']
 
 func save_game_checks(file_data):
 	for flag in ['air_dash', 'armour', 'ultimate']:
@@ -251,3 +265,36 @@ func total_exit_count(exit_list = level_flags):
 		for truth_value in level:
 			sum += (1 if truth_value else 0)
 	return sum
+
+func start_earthquake(length, intensity=3):
+	eq_timer = length
+	eq_intensity = intensity
+	var camera = find_player().find_node('Camera2D')
+	var current_scene = get_current_scene()
+	camera.current = false
+	var new_camera = Camera2D.new()
+	new_camera.current = true
+	earthquake_camera = new_camera
+	
+	current_scene.add_child(earthquake_camera)
+	earthquake_camera.global_position = camera.global_position
+
+func do_earthquake():
+	var camera = find_player().find_node('Camera2D')
+	var variance = eq_intensity if timer % 6 < 2 else 0 if timer % 6 < 4 else -eq_intensity
+	
+	earthquake_camera.limit_top = camera.limit_top - eq_intensity
+	earthquake_camera.limit_bottom = camera.limit_bottom + eq_intensity
+	earthquake_camera.limit_left = camera.limit_left
+	earthquake_camera.limit_right = camera.limit_right
+	camera.current = true
+	earthquake_camera.current = false
+	earthquake_camera.global_position = camera.get_camera_screen_center() + Vector2(0,variance)
+	camera.current = false
+	earthquake_camera.current = true
+
+func recenter_camera():
+	find_player().find_node('Camera2D').current = true
+	var temp_eq_cam = earthquake_camera
+	earthquake_camera = null
+	get_current_scene().remove_child(temp_eq_cam)

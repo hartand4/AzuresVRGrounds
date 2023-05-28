@@ -1157,6 +1157,12 @@ one_way_collision = true
 position = Vector2( 72, 816 )
 collision_mask = 64
 
+[node name="MovingPlatform3" parent="." instance=ExtResource( 5 )]
+position = Vector2( 2282, 1464 )
+starting_dir = Vector2( 0, 1 )
+track_length = 2
+period = 120
+
 [node name="MovingPlatform" parent="." instance=ExtResource( 5 )]
 position = Vector2( 72, 360 )
 track_length = 5
@@ -1176,12 +1182,6 @@ on_walk = true
 position = Vector2( 2040, 1512 )
 points = [ Vector2( 0, -7 ) ]
 max_time = 120
-
-[node name="MovingPlatform3" parent="." instance=ExtResource( 5 )]
-position = Vector2( 2282, 1464 )
-starting_dir = Vector2( 0, 1 )
-track_length = 2
-period = 120
 
 [node name="ValCoin" parent="." instance=ExtResource( 8 )]
 position = Vector2( 1160, 240 )

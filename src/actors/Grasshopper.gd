@@ -11,6 +11,8 @@ func _physics_process(delta: float) -> void:
 		1:
 			if anim_timer == 1:
 				_velocity = Vector2(250*recurring_x_dir, -800)
+			if not is_on_floor():
+				_velocity.x = 250*recurring_x_dir
 		4: return
 	
 	_velocity = move_and_slide(_velocity, FLOOR_NORMAL, true)
@@ -62,6 +64,7 @@ func update_state():
 	return state
 
 func get_damage():
+	print('lll')
 	return 4
 
 func animation_handler():

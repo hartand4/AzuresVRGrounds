@@ -1,0 +1,24 @@
+TODO:
+
+Bee bomba, moth following enemy, big stationary thing that
+shoots missiles
+
+finish tutorial level1
+
+add more tilesets (factory, bricks, underground, mountains, etc...)
+
+finish save files loading, displaying, etc
+
+extras menu on main menu (concept art?)
+
+give characters clothes? Azzy boxers
+
+opening cutscene, general cutscene textbox logic, skip too
+
+val coin list on map screen
+
+map tile events, conveyor belts
+
+Maybe grapple state for some enemies/bosses
+
+anthro shield enemies, shoot bomba and bullets

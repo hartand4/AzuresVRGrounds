@@ -117,6 +117,7 @@ func _process(delta: float) -> void:
 			Globals.start_transition(Vector2(0,0), 4)
 		return
 	
+	animate_direction()
 	if Globals.lock_input: return
 	
 	direction = get_direction_movement()

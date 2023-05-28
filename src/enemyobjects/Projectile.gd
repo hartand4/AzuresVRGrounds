@@ -20,6 +20,9 @@ func _process(delta: float) -> void:
 		camera_pos.y - 300 - 120 < self.position.y and camera_pos.y + 300 + 120 > self.position.y)):
 			call_deferred('disable_all')
 
+func get_damage():
+	return damage
+
 func disable_all():
 	get_parent().remove_child(self)
 

@@ -36,8 +36,17 @@ func _ready() -> void:
 
 # warning-ignore:unused_argument
 func _process(delta: float) -> void:
+	path_list = [has_up_path, has_down_path, has_left_path, has_right_path]
 	if Globals.game_paused:
 		$AnimationPlayer.stop(false)
 		return
 	$AnimationPlayer.play(anim_str)
 	
+func mark_completed():
+	is_complete = true
+	anim_str = "Yellow" + ("Boss" if is_boss else "Level")
+
+func mark_unlocked():
+	is_unlocked = true
+	anim_str = "Yellow" if is_complete else "Red"
+	anim_str += "Boss" if is_boss else "Level"

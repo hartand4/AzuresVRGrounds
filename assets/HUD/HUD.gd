@@ -12,6 +12,14 @@ func _process(delta):
 	health_meter.set_position(Vector2(22,14 + 4*(32-_health)))
 	health_bar.set_position(Vector2(health_bar.get_position().x, -4*(32-_health)))
 	
+	$VSwitchTimer.visible = (Globals.vswitch_timer > 0)
+	# warning-ignore:integer_division
+	$VSwitchTimer/TimerH.frame = ((Globals.vswitch_timer+30)/3000) % 10
+	# warning-ignore:integer_division
+	$VSwitchTimer/TimerT.frame = ((Globals.vswitch_timer+30)/300) % 10
+	# warning-ignore:integer_division
+	$VSwitchTimer/TimerU.frame = ((Globals.vswitch_timer+30)/30) % 10
+	
 	if Globals.pause_menu_on:
 		$PauseMenu.visible = true
 		$PauseMenu/ValcoinRed.visible = Globals.coins_collected_in_level[0] or Globals.find_player().collected_coins[0]

@@ -523,12 +523,10 @@ position = Vector2( 336, 156 )
 level_number = 1
 is_unlocked = true
 has_up_path = true
-has_left_path = true
 
 [node name="Level2" parent="Levels" instance=ExtResource( 4 )]
 position = Vector2( 208, 156 )
 has_down_path = true
-has_right_path = true
 
 [node name="Level3" parent="Levels" instance=ExtResource( 4 )]
 position = Vector2( 208, 220 )

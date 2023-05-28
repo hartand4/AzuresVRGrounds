@@ -1,4 +1,4 @@
-[gd_scene load_steps=18 format=2]
+[gd_scene load_steps=19 format=2]
 
 [ext_resource path="res://assets/HUD/Meters HUD.png" type="Texture" id=1]
 [ext_resource path="res://assets/HUD/Health.png" type="Texture" id=2]
@@ -16,6 +16,7 @@
 [ext_resource path="res://assets/HUD/RetryMenu.png" type="Texture" id=14]
 [ext_resource path="res://assets/HUD/RetrySelect.png" type="Texture" id=15]
 [ext_resource path="res://assets/HUD/RetryMenu.gd" type="Script" id=16]
+[ext_resource path="res://assets/HUD/Digits.png" type="Texture" id=17]
 
 [sub_resource type="DynamicFont" id=1]
 size = 24
@@ -204,3 +205,25 @@ script = ExtResource( 16 )
 [node name="RetryCursor" type="Sprite" parent="RetryMenu"]
 position = Vector2( 163, 82 )
 texture = ExtResource( 15 )
+
+[node name="VSwitchTimer" type="ColorRect" parent="."]
+margin_left = 2.0
+margin_top = 193.0
+margin_right = 62.0
+margin_bottom = 225.0
+color = Color( 0.0117647, 0, 0, 1 )
+
+[node name="TimerH" type="Sprite" parent="VSwitchTimer"]
+position = Vector2( 16, 16 )
+texture = ExtResource( 17 )
+hframes = 10
+
+[node name="TimerT" type="Sprite" parent="VSwitchTimer"]
+position = Vector2( 30, 16 )
+texture = ExtResource( 17 )
+hframes = 10
+
+[node name="TimerU" type="Sprite" parent="VSwitchTimer"]
+position = Vector2( 44, 16 )
+texture = ExtResource( 17 )
+hframes = 10

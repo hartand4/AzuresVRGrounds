@@ -15,6 +15,8 @@ export var air_dash_enabled := true
 export var armour_enabled := false
 export var ultimate_enabled := false
 
+var did_ultimate_already := false
+
 var started_dash_on_floor := false
 export var colliding_with_enemy := false
 var colliding_with_wall_l := false
@@ -100,8 +102,10 @@ func _physics_process(delta: float) -> void:
 		elif is_on_floor():
 			jump_timer = 0
 			if Input.is_action_just_pressed("jump"):
-				jump_timer = 15
+				jump_timer = 30
 		is_jumping = Input.is_action_pressed("jump") and jump_timer > 0 and _velocity.y < 0
+		if not Input.is_action_pressed("jump"):
+			jump_timer = 0
 		
 		if walljump_momentum_timer == 0:
 			# Get direction of input
@@ -129,7 +133,7 @@ func _physics_process(delta: float) -> void:
 		if jump_timer > 0:
 			jump_timer -= 1
 		elif Input.is_action_just_pressed("jump"):
-			jump_timer = 15
+			jump_timer = 30
 		is_jumping = Input.is_action_pressed("jump") and jump_timer > 0 and _velocity.y < 0
 		direction = get_direction_normal()
 		direction.x = recurring_x_dir
@@ -173,8 +177,11 @@ func _physics_process(delta: float) -> void:
 		var factor = abs(sin(floor_angle))
 		if cos(floor_angle)*recurring_x_dir > 0 and factor != 0: factor=1/factor
 		_velocity.x *= factor
-		
-	_velocity = move_and_slide_with_snap(_velocity, snap, FLOOR_NORMAL, true)
+	
+	if not is_jumping:
+		_velocity = move_and_slide_with_snap(_velocity, snap, FLOOR_NORMAL, true)
+	else:
+		_velocity = move_and_slide(_velocity, FLOOR_NORMAL, true)
 
 func get_direction_normal() -> Vector2:
 	if Globals.lock_input: return Vector2.DOWN
@@ -188,7 +195,7 @@ func calculate_move_direction(linear_velocity: Vector2, speed: Vector2, directio
 	out_vel.x = speed.x * direction.x
 	out_vel.y += gravity * get_physics_process_delta_time()
 	if direction.y == -1.0:
-		out_vel.y = 700.0 * direction.y - linear_velocity.y
+		out_vel.y = 500.0 * direction.y - linear_velocity.y
 		
 		# Account for slope jump boost
 		if out_vel.x != 0:
@@ -196,7 +203,7 @@ func calculate_move_direction(linear_velocity: Vector2, speed: Vector2, directio
 			if cos(floor_angle)*recurring_x_dir > 0 and factor != 0: factor=1/factor
 			out_vel.y *= (factor+2)/3
 	if is_jumping:
-		out_vel.y -= 0.6 * pow(jump_timer,2) #First few frames matter more
+		out_vel.y -= 1*pow(jump_timer,4)/4600 #First few frames matter more
 	return out_vel
 
 # warning-ignore:unused_argument
@@ -418,8 +425,8 @@ func update_state():
 	# WALLJUMP LAG
 	if state == ST_WALLJUMP and stop_wallslide_timer == 0:
 		walljump_momentum_timer = 4
-		_velocity.y = -700
-		jump_timer = 15
+		_velocity.y = -500
+		jump_timer = 29
 		return ST_AIR
 	
 	# WALL ATTACK
@@ -511,7 +518,7 @@ func update_state():
 	# IF JUMPED OR FELL OR AIR ATTACK ENDED
 	if state in [0,1,2,4] and Input.is_action_just_pressed("jump"): 
 		if is_on_floor() or state < 2:
-			dashing = Input.is_action_pressed("dash")
+			dashing = state == 2#Input.is_action_pressed("dash")
 			return ST_AIR
 	elif state in [0,1,4] and not is_on_floor(): return ST_AIR
 	
@@ -635,11 +642,15 @@ func _on_PlayerHitboxArea_area_entered(area: Area2D) -> void:
 		area.get_collision_layer_bit(5)) and not colliding_with_enemy:
 		colliding_with_enemy = true
 		# If an enemy...
-		if area.get_collision_layer_bit(2):
+		if area.has_method("get_damage"):
+			# warning-ignore:narrowing_conversion
+			damage_doing = area.get_damage()
+		elif area.get_parent().has_method("get_damage"):
+			# warning-ignore:narrowing_conversion
 			damage_doing = area.get_parent().get_damage()
-		# Otherwise must be a stage hazard
 		else:
-			damage_doing = area.damage
+			print('no get_damage() function')
+			damage_doing = 0
 	elif area.get_collision_layer_bit(8):
 		colliding_with_ladder = true
 # warning-ignore:unused_argument
@@ -651,11 +662,15 @@ func _on_PlayerHitboxArea_area_exited(area: Area2D) -> void:
 		box.get_collision_layer_bit(5)) and not colliding_with_enemy:
 			colliding_with_enemy = true
 			# If an enemy...
-			if box.get_collision_layer_bit(2):
+			if box.has_method("get_damage"):
+				# warning-ignore:narrowing_conversion
+				damage_doing = box.get_damage()
+			elif box.get_parent().has_method("get_damage"):
+				# warning-ignore:narrowing_conversion
 				damage_doing = box.get_parent().get_damage()
-			# Otherwise must be a stage hazard or enemy attack
 			else:
-				damage_doing = box.damage
+				print('no get_damage() function')
+				damage_doing = 0
 		elif box.get_collision_layer_bit(8):
 			colliding_with_ladder = true
 
@@ -726,12 +741,16 @@ func victory_handler():
 	if animation_timer < 80: return
 	elif animation_timer == 80:
 		Globals.start_transition(get_position() - $Camera2D.get_camera_screen_center() + Vector2(420,260), 1)
+		Globals.goal_reached_in_current_level[0] = normal_exit_reached
+		Globals.goal_reached_in_current_level[1] = secret_exit_reached
 	elif animation_timer >= 200:
 		# warning-ignore:return_value_discarded
 		get_tree().change_scene("res://src/levels/LevelMap.tscn")
 
 func do_ultimate_check():
 	var ULTIMATE_TIMER := 45
+	if is_on_floor():
+		did_ultimate_already = false
 	if ultimate_move_timer[0] and not ultimate_move_timer[1]:
 		ultimate_move_timer = [0,0,-1]
 		return
@@ -760,11 +779,13 @@ func do_ultimate_check():
 				for action in ['jump', 'attack', 'dash', 'pause']:
 					if Input.is_action_just_pressed(action): ultimate_move_timer = [0,0,-1]
 		3:
-			if Input.is_action_just_pressed("attack"):
+			if Input.is_action_just_pressed("attack") and not did_ultimate_already:
 				state = ST_ULTIMATE
 				animation_timer = 0
 				dashing = false
 				ultimate_move_timer = [0,0,-1]
+				# Comment out this line for some real fun
+				did_ultimate_already = true
 			else:
 				for action in ['move_up', 'move_down', 'move_left', 'move_right', 'jump', 'dash', 'pause']:
 					if Input.is_action_just_pressed(action): ultimate_move_timer = [0,0,-1]

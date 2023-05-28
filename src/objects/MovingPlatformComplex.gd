@@ -17,6 +17,8 @@ var _current_point := 0
 var _activated = false
 var _blinking_phase = false
 
+var original_pos := Vector2.ZERO
+
 func _ready() -> void:
 	if vertical:
 		$Sprite.rotation = PI/2
@@ -26,6 +28,8 @@ func _ready() -> void:
 	for i in points:
 		_total_dist += i.length()
 	_speed = _total_dist / max_time
+	
+	original_pos = self.position
 
 # warning-ignore:unused_argument
 func _process(delta: float) -> void:
@@ -40,7 +44,7 @@ func _process(delta: float) -> void:
 		$Arrow.visible = false
 		_activated = check_activity()
 		return
-		
+	
 	$Sprite.visible = true
 	$SpriteInactive.visible = false
 	$Arrow.visible = true
@@ -62,8 +66,11 @@ func _process(delta: float) -> void:
 		$Arrow.visible = false
 		$CollisionShape2D.disabled = true
 		$ActivationArea/ActivationCollision.disabled = true
-		self.position += -vector_arr_sum(points)*48
+		#self.set_sync_to_physics(false)
+		self.position = original_pos
+		#self.set_sync_to_physics(true)
 		_activated = false
+		
 		
 	if needs_player: _activated = check_activity()
 	
@@ -72,10 +79,10 @@ func _process(delta: float) -> void:
 	self.position += _pos*48
 	if _total_dist_moved >= points[_current_point].length():
 		_current_point = (_current_point + 1) % points.size()
-		_total_dist_moved = 0
+		_total_dist_moved = 0.0
 		if _current_point == 0:
 			if not on_walk:
-				self.position += -vector_arr_sum(points)*48
+				self.position = original_pos
 				$CollisionShape2D.disabled = true
 			elif not smooth_return:
 				_blinking_phase = true

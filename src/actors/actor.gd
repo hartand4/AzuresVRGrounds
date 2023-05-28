@@ -9,8 +9,8 @@ export var gravity := 1200.0
 export var up_gravity := 3000.0
 var _velocity := Vector2.ZERO
 export var recurring_x_dir = -1
-export var state := 0
-export var animation_timer := 0
+var state := 0
+var animation_timer := 0
 # Second animation timer that counts down
 var anim_timer := 0
 export var health := 1
@@ -83,11 +83,6 @@ func _process(delta):
 func animation_handler():
 	return
 
-func get_velocity():
-	return _velocity
-func set_velocity(vel):
-	_velocity = vel
-	
 func update_state():
 	return state
 	
@@ -123,8 +118,19 @@ func despawn():
 	reset_values()
 	if not in_camera_range(original_pos): self.position = original_pos
 
+
+# Getters and setters
 func get_i_frames():
 	return i_frames
-
 func set_i_frames(n):
 	i_frames = n
+func get_state():
+	return state
+func set_state(n):
+	state = n
+func get_velocity():
+	return _velocity
+func set_velocity(vel):
+	_velocity = vel
+
+

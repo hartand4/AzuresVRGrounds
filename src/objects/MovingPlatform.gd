@@ -28,7 +28,7 @@ func _process(delta: float) -> void:
 	if _timer >= period:
 		_timer = 0
 	_pos = track_length*24*(-cos(_timer*2*PI/period) + cos((_timer-1)*2*PI/period))
-	self.position += Vector2(starting_dir)*_pos
+	self.position += Vector2(starting_dir)*_pos*2
 
 
 func closest_right_angle(dir):

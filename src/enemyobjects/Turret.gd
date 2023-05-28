@@ -78,3 +78,6 @@ func spawn_bullets():
 	spawn2.set_as_toplevel(true)
 	spawn2.global_position = position + Vector2(24,-32).rotated(rotation)
 	spawn2.velocity = Vector2(300,-300).rotated(rotation)
+
+func get_damage():
+	return damage

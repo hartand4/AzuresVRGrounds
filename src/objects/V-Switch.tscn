@@ -1,0 +1,40 @@
+[gd_scene load_steps=5 format=2]
+
+[ext_resource path="res://assets/Sprites/Objects/V-switch.png" type="Texture" id=1]
+[ext_resource path="res://src/objects/V-Switch.gd" type="Script" id=2]
+
+[sub_resource type="RectangleShape2D" id=1]
+extents = Vector2( 24, 24 )
+
+[sub_resource type="RectangleShape2D" id=2]
+extents = Vector2( 24, 0.5 )
+
+[node name="V-Switch" type="StaticBody2D"]
+collision_mask = 23
+script = ExtResource( 2 )
+
+[node name="Sprite" type="Sprite" parent="."]
+texture = ExtResource( 1 )
+hframes = 2
+
+[node name="Collision" type="CollisionShape2D" parent="."]
+shape = SubResource( 1 )
+
+[node name="PlayerAttackCheck" type="Area2D" parent="."]
+collision_layer = 8
+collision_mask = 16
+
+[node name="Collision" type="CollisionShape2D" parent="PlayerAttackCheck"]
+visible = false
+shape = SubResource( 1 )
+
+[node name="PlayerJumpCheck" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 2
+
+[node name="Collision" type="CollisionShape2D" parent="PlayerJumpCheck"]
+position = Vector2( 0, 24.5 )
+shape = SubResource( 2 )
+
+[connection signal="area_entered" from="PlayerAttackCheck" to="." method="_on_PlayerAttackCheck_area_entered"]
+[connection signal="area_entered" from="PlayerJumpCheck" to="." method="_on_PlayerJumpCheck_area_entered"]

@@ -19,6 +19,7 @@ font_data = ExtResource( 4 )
 [node name="MapHUD" type="CanvasLayer"]
 
 [node name="PauseMenu" type="TextureRect" parent="."]
+visible = false
 margin_right = 40.0
 margin_bottom = 40.0
 texture = ExtResource( 1 )

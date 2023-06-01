@@ -1,7 +1,8 @@
 TODO:
 
-Bee bomba, moth following enemy, big stationary thing that
-shoots missiles
+Bee bomba, big stationary thing that shoots missiles
+
+robo-moth to fit factory scenes (or maybe moth area variants??)
 
 finish tutorial level1
 
@@ -17,8 +18,21 @@ opening cutscene, general cutscene textbox logic, skip too
 
 val coin list on map screen
 
-map tile events, conveyor belts
+map tile events, conveyor belts, springs
 
 Maybe grapple state for some enemies/bosses
 
 anthro shield enemies, shoot bomba and bullets
+
+cosmetic changes in store? sushi as e-tank?
+
+MANTA RAY ENEMIES/PLATFORMS
+
+boss doors -> for all objects (except the boss), if collision layer is enemy or enemy attack, remove from current scene
+
+bouncy slime blocks, hold jump = higher jump, top and bottom collision
+
+checkpoints that save current coins so far (retry now starts there)
+
+This way, it's fair to have bosses in the same levels as
+the rest of the stuff, and surprise mid-world Faie fights

@@ -64,7 +64,6 @@ func update_state():
 	return state
 
 func get_damage():
-	print('lll')
 	return 4
 
 func animation_handler():
@@ -86,7 +85,13 @@ func animation_handler():
 func despawn():
 	if in_camera_range(position): return
 	.despawn()
-	anim_timer = 20
+	if not in_camera_range(original_pos):
+		anim_timer = 20
+	else:
+		state = 4
+		anim_timer = 0
+		call_deferred("disable_all")
+		position = original_pos
 
 func disable_all():
 	$Collision.disabled = true

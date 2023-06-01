@@ -224,6 +224,7 @@ func _process(delta):
 	elif position.y > $Camera2D.get_camera_screen_center().y + 600:
 		animation_timer = 0
 		do_hurt_animation(32)
+		$Camera2D.current = false
 	
 	if (state == ST_ATTACK or state == ST_AIR_ATTACK) and attack_timer < 24:
 		$AttackHitboxArea/SlashPlayer.play('Slash')
@@ -368,7 +369,6 @@ func update_state():
 		return update_state()
 	# Consider other states, like wallslide taking damage
 	if not (state in [ST_HURT, ST_INTERACT, ST_ULTIMATE]) and colliding_with_enemy and i_frames == 0:
-		i_frames = 60
 		do_hurt_animation(damage_doing)
 		return ST_HURT
 	
@@ -581,10 +581,15 @@ func update_slash_hitbox():
 
 func do_hurt_animation(damage):
 	if armour_enabled:
-		damage = floor(damage/2)
-		print(damage)
+		damage = ceil(damage/2)
 	health -= damage
+	if damage > 0:
+		i_frames = 60
 	change_dash_hitbox(false)
+	
+	state = ST_HURT
+	animation_timer = 0
+	
 	_animation.play("Hurt")
 	_velocity = Vector2(recurring_x_dir * -500.0,-500)
 	_velocity = move_and_slide(_velocity, FLOOR_NORMAL)
@@ -596,6 +601,9 @@ func do_hurt_animation(damage):
 		colliding_with_enemy = false
 		Globals.lock_input = true
 		animation_timer = 0
+		
+		# Just for bookkeeping
+		Globals.set_current_camera_pos($Camera2D.get_camera_screen_center())
 	return
 	
 func change_dash_hitbox(dash_state):

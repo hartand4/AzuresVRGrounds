@@ -32,11 +32,14 @@ export var goal_reached_in_current_level = [false, false]
 export var level_flags = []
 export var val_coin_list = []
 
+export var current_camera_pos = Vector2.ZERO
+
 func _ready() -> void:
 	# warning-ignore:unused_variable
 	for i in range(LEVEL_COUNT):
 		level_flags += [[false, false]]
 		val_coin_list += [[false, false, false]]
+	current_camera_pos = get_current_camera_pos()
 
 # warning-ignore:unused_argument
 func _process(delta: float) -> void:
@@ -83,7 +86,18 @@ func get_current_scene():
 		if 'Level' in i.name:
 			return i
 		elif i.name == 'TitleScreen': return i
-	
+
+# Returns the current camera (usually the player)
+func get_current_camera_pos():
+	var player = Globals.find_player()
+	if player and player.find_node("Camera2D").current:
+		return player.find_node("Camera2D").get_camera_screen_center()
+	return current_camera_pos
+
+# Sets the current camera
+func set_current_camera_pos(vector):
+	current_camera_pos = vector
+
 # Generates a debris object with specified texture at a given position
 func spawn_debris(texture, pos):
 	var current_scene = get_current_scene()
@@ -278,6 +292,7 @@ func start_earthquake(length, intensity=3):
 	
 	current_scene.add_child(earthquake_camera)
 	earthquake_camera.global_position = camera.global_position
+	do_earthquake()
 
 func do_earthquake():
 	var camera = find_player().find_node('Camera2D')

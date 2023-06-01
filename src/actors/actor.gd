@@ -97,7 +97,7 @@ func unit_direction_vector(dir1, dir2):
 	return (dir2 - dir1)/abs(dir2 - dir1)
 
 func in_camera_range(pos):
-	var camera_pos = Globals.find_player().find_node('Camera2D').get_camera_screen_center()
+	var camera_pos = Globals.get_current_camera_pos()
 	return camera_pos.x - 420 - 120 < pos.x and camera_pos.x + 420 + 120 > pos.x and (
 		camera_pos.y - 300 - 120 < pos.y and camera_pos.y + 300 + 120 > pos.y)
 
@@ -109,14 +109,19 @@ func reset_values():
 	anim_timer = 0
 	health = max_health
 
+# If an actor is destroyed, they should note it, set their position to their initial spawn, then attempt to respawn
+# every frame before returning. As an example, see Anamoth.gd
 func respawn():
 	if in_camera_range(original_pos): return
 	reset_values()
 
+# Some actors should generally attempt to despawn every frame. Then if so, simply return.
+# If original position not in camera range, consider actor broken and disable it. Check Grasshopper.gd for debugging
 func despawn():
-	if in_camera_range(position): return
+	if in_camera_range(position): return false
 	reset_values()
-	if not in_camera_range(original_pos): self.position = original_pos
+	self.position = original_pos
+	return true
 
 
 # Getters and setters

@@ -1,7 +1,6 @@
-extends Node
+extends GravityObject
 class_name Projectile
 
-export var velocity = Vector2.ZERO
 export var damage = 0
 var animation_timer = 0
 

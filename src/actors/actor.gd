@@ -17,6 +17,8 @@ export var health := 1
 var max_health := 1
 var i_frames := 0
 
+var is_in_water := false
+
 var original_pos := Vector2.ZERO
 
 onready var _animation := $AnimationPlayer
@@ -55,9 +57,14 @@ func _physics_process(delta: float) -> void:
 	if _player and (Globals.get("game_paused") or Globals.pause_menu_on):
 		return
 	
+	
+	#Differences in water physics
+	speed.y = 1200.0 * (0.6 if is_in_water else 1.0)
+	speed.x = 300.0 * (0.9 if is_in_water else 1.0)
+	
 	# Perform gravity updates (different for upward gravity)
-	if _velocity.y > 0: _velocity.y += gravity*delta
-	else: _velocity.y += up_gravity*delta
+	if _velocity.y > 0: _velocity.y += gravity*delta*(0.4 if is_in_water else 1.0)
+	else: _velocity.y += up_gravity*delta*(0.4 if is_in_water else 1.0)
 	
 	# Cap speed at a certain point
 	_velocity.y = min(_velocity.y, speed.y)

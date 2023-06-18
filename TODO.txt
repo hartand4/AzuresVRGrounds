@@ -1,8 +1,8 @@
 TODO:
 
-Bee bomba, big stationary thing that shoots missiles
+Bee/bird bomba
 
-robo-moth to fit factory scenes (or maybe moth area variants??)
+robo-anamoth to fit factory scenes (or maybe moth area variants??)
 
 finish tutorial level1
 
@@ -15,24 +15,36 @@ extras menu on main menu (concept art?)
 give characters clothes? Azzy boxers
 
 opening cutscene, general cutscene textbox logic, skip too
+portraits in the textboxes that flap lips like mmx
 
 val coin list on map screen
 
-map tile events, conveyor belts, springs
+map hud when on level (display name, coins, and exits reached)
+
+map tile events
 
 Maybe grapple state for some enemies/bosses
 
-anthro shield enemies, shoot bomba and bullets
+anthro shield enemies, shoot bullets and lob bomba
 
 cosmetic changes in store? sushi as e-tank?
+keep new counter for val coins spent
+MAID OUTFIT for one (high) prize
 
-MANTA RAY ENEMIES/PLATFORMS
+MANTA RAY ENEMIES/PLATFORMS, maybe as a shmup??
+
+kangaroo as shield enemies?
+
+big enemy that throws bouncing projectiles that bounce back when hitting a wall, and only bounce up 5 times (after 4 -> flash)
+
+make (COOL) water levels!
+
+flying owl that stays near the (inputted) corner of the screen, spreads wings and shoots 4 homing electric attacks like Wily MM&B
+
+flying...thing that flies straight, and when it sees the player under and a little ahead of it, drops wing 1, wing 2, then divebombs when it has no wings left
+
+Sword is called the flare edge, flare temper, or flarix (ex-calibur)
+
+maybe make a day/night theme as the levels go on?
 
 boss doors -> for all objects (except the boss), if collision layer is enemy or enemy attack, remove from current scene
-
-bouncy slime blocks, hold jump = higher jump, top and bottom collision
-
-checkpoints that save current coins so far (retry now starts there)
-
-This way, it's fair to have bosses in the same levels as
-the rest of the stuff, and surprise mid-world Faie fights

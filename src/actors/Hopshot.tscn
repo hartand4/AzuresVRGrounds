@@ -107,7 +107,7 @@ shape = SubResource( 1 )
 
 [node name="AttackCheck" type="Area2D" parent="."]
 collision_layer = 4
-collision_mask = 16
+collision_mask = 17
 
 [node name="AttackCheckColl" type="CollisionShape2D" parent="AttackCheck"]
 position = Vector2( 0, -18 )
@@ -121,3 +121,4 @@ anims/RESET = SubResource( 6 )
 anims/Shoot = SubResource( 7 )
 
 [connection signal="area_entered" from="AttackCheck" to="." method="_on_AttackCheck_area_entered"]
+[connection signal="area_exited" from="AttackCheck" to="." method="_on_AttackCheck_area_exited"]

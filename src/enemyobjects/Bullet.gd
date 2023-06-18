@@ -2,6 +2,7 @@ extends Projectile
 
 func _ready() -> void:
 	damage = 2
+	is_obeying_gravity = false
 
 
 func _process(delta: float) -> void:

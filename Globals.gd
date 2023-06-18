@@ -25,6 +25,7 @@ export var pause_menu_on := false
 export var retry_menu_on := false
 export var current_level := 0
 export var coins_collected_in_level := [false, false, false]
+export var checkpoint_data := [0, false, false, false, Vector2.ZERO]
 
 # [normal exit reached?, secret exit reached?]
 export var goal_reached_in_current_level = [false, false]
@@ -126,9 +127,12 @@ func spawn_health(pos, drop_rate=1):
 	
 	var health_scene = load("res://src/objects/Health.tscn" if drop_var >= (21-2*drop_rate) else "res://src/objects/SmallHealth.tscn")
 	var spawn := health_scene.instance() as Node2D
-	current_scene.add_child(spawn)
+	call_deferred("add_spawn", current_scene, spawn)
 	spawn.global_position = pos
 	spawn.set_velocity(Vector2(0,-200))
+
+func add_spawn(current_scene, spawn):
+	current_scene.add_child(spawn)
 
 # Creates a GravityBullet object at a certain position, with a given velocity and optional gravity
 func spawn_gravity_bullet(pos, vel, grav=1200):
@@ -161,6 +165,15 @@ func spawn_bomba(pos, vel, grav=1200):
 	spawn.global_position = pos
 	spawn.velocity = vel
 	spawn.gravity = grav
+
+func spawn_mini_missile(pos, dir):
+	var current_scene = get_current_scene()
+	var bullet_scene = load("res://src/enemyobjects/MiniMissile.tscn")
+	var spawn := bullet_scene.instance() as Node2D
+	current_scene.add_child(spawn)
+	spawn.set_as_toplevel(true)
+	spawn.global_position = pos
+	spawn.direction = dir
 
 # Returns the constant LEVEL_COUNT
 func get_level_count():

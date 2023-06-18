@@ -83,3 +83,4 @@ shape = SubResource( 3 )
 anims/RESET = SubResource( 2 )
 
 [connection signal="area_entered" from="OrbArea" to="." method="_on_OrbArea_area_entered"]
+[connection signal="area_exited" from="OrbArea" to="." method="_on_OrbArea_area_exited"]

@@ -1,4 +1,4 @@
-[gd_scene load_steps=105 format=2]
+[gd_scene load_steps=106 format=2]
 
 [ext_resource path="res://src/enemyobjects/Turret.tscn" type="PackedScene" id=1]
 [ext_resource path="res://src/actors/Hopshot.tscn" type="PackedScene" id=2]
@@ -7,6 +7,7 @@
 [ext_resource path="res://src/objects/GoalOrb.tscn" type="PackedScene" id=5]
 [ext_resource path="res://src/actors/Anamoth.tscn" type="PackedScene" id=6]
 [ext_resource path="res://src/actors/player.tscn" type="PackedScene" id=7]
+[ext_resource path="res://src/objects/Health.tscn" type="PackedScene" id=9]
 [ext_resource path="res://src/levels/Spikes.gd" type="Script" id=11]
 [ext_resource path="res://assets/BG/Technotileset.png" type="Texture" id=12]
 [ext_resource path="res://assets/BG/TechnoBG3.png" type="Texture" id=13]
@@ -1321,7 +1322,7 @@ collision_layer = 257
 collision_mask = 2
 
 [node name="SemiSolid1" type="CollisionShape2D" parent="SemiSolids"]
-position = Vector2( -198, -42 )
+position = Vector2( -156, 594 )
 shape = SubResource( 109 )
 one_way_collision = true
 
@@ -1331,14 +1332,14 @@ collision_mask = 64
 camera_limit_max = Vector2( 1e+07, 1440 )
 
 [node name="ValCoin" parent="." instance=ExtResource( 3 )]
-position = Vector2( -432, 258 )
+position = Vector2( -264, 576 )
 
 [node name="ValCoin2" parent="." instance=ExtResource( 3 )]
-position = Vector2( -564, 492 )
+position = Vector2( -264, 696 )
 coin_number = 2
 
 [node name="ValCoin3" parent="." instance=ExtResource( 3 )]
-position = Vector2( -390, 720 )
+position = Vector2( -258, 822 )
 coin_number = 3
 
 [node name="TileMapHideSecrets" type="TileMap" parent="."]
@@ -1363,4 +1364,7 @@ position = Vector2( 2034, 1248 )
 position = Vector2( -138, 906 )
 
 [node name="Anamoth" parent="." instance=ExtResource( 6 )]
-position = Vector2( 990, 984 )
+position = Vector2( 1092, 984 )
+
+[node name="BigHealth" parent="." instance=ExtResource( 9 )]
+position = Vector2( 558, -822 )

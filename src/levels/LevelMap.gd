@@ -173,6 +173,7 @@ export var level_index_to_scene_name = [
 	]
 
 func _ready() -> void:
+	Globals.checkpoint_data[0] = 0
 	anim_frame = 0
 	anim_timer = 45
 	if Globals.goal_reached_in_current_level[0] and not Globals.level_flags[Globals.current_level][0]:

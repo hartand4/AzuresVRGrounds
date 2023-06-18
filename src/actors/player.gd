@@ -14,6 +14,7 @@ export var dashing := false
 export var air_dash_enabled := true
 export var armour_enabled := false
 export var ultimate_enabled := false
+var in_water := false
 
 var did_ultimate_already := false
 
@@ -80,6 +81,11 @@ func _ready():
 	$Camera2D.limit_top = camera_limit_min.y
 	$Camera2D.limit_right = camera_limit_max.x
 	$Camera2D.limit_bottom = camera_limit_max.y
+	
+	if Globals.checkpoint_data[0]:
+		position = Globals.checkpoint_data[4]
+		for i in range(3):
+			collected_coins[i] = Globals.checkpoint_data[i+1]
 
 # warning-ignore:unused_argument
 func _physics_process(delta: float) -> void:
@@ -483,6 +489,7 @@ func update_state():
 	if state < 3 and colliding_with_ladder_top and dir.y > 0:
 		self.position = Vector2(nearest_block(self.position.x), self.position.y+48)
 		_animation.play('Climb')
+		$Sprite.frame = 21
 		return ST_CLIMB
 		
 	if state == ST_CLIMB:
@@ -661,8 +668,14 @@ func _on_PlayerHitboxArea_area_entered(area: Area2D) -> void:
 			damage_doing = 0
 	elif area.get_collision_layer_bit(8):
 		colliding_with_ladder = true
+	
+	elif area.get_collision_layer_bit(9):
+		is_in_water = true
 # warning-ignore:unused_argument
 func _on_PlayerHitboxArea_area_exited(area: Area2D) -> void:
+	if area.get_collision_layer_bit(9):
+		is_in_water = false
+		return
 	colliding_with_enemy = false
 	colliding_with_ladder = false
 	for box in hitbox.get_overlapping_areas():
@@ -728,8 +741,6 @@ func _on_LadderTopArea_body_exited(body: Node) -> void:
 			colliding_with_ladder_top = true
 
 func reload_level():
-	for i in range(3):
-		collected_coins[i] = false
 	# warning-ignore:return_value_discarded
 	get_tree().change_scene(get_tree().current_scene.filename)
 
@@ -810,3 +821,14 @@ func check_ultimate_hitbox_enemies():
 			area.get_parent().health -= 1
 		elif not area.get("health") == null:
 			area.health -= 1
+
+func set_jump_timer(n):
+	jump_timer = n
+
+func set_checkpoint(num, pos):
+	Globals.checkpoint_data[0] = num
+	Globals.checkpoint_data[1] = collected_coins[0]
+	Globals.checkpoint_data[2] = collected_coins[1]
+	Globals.checkpoint_data[3] = collected_coins[2]
+	Globals.checkpoint_data[4] = pos
+	print(Globals.checkpoint_data)

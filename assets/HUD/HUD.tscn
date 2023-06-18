@@ -207,6 +207,7 @@ position = Vector2( 163, 82 )
 texture = ExtResource( 15 )
 
 [node name="VSwitchTimer" type="ColorRect" parent="."]
+visible = false
 margin_left = 2.0
 margin_top = 193.0
 margin_right = 62.0

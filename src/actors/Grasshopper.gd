@@ -109,3 +109,10 @@ func reset_values():
 func _on_AttackCheck_area_entered(area: Area2D) -> void:
 	if area.get_collision_layer_bit(4):
 		health -= 2
+	elif area.get_collision_layer_bit(9):
+		is_in_water = true
+
+
+func _on_AttackCheck_area_exited(area: Area2D) -> void:
+	if area.get_collision_layer_bit(9):
+		is_in_water = false

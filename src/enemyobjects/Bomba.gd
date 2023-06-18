@@ -23,7 +23,7 @@ func enable_explosion():
 
 func _on_Bomba_area_entered(area: Area2D) -> void:
 	if area.get_collision_layer_bit(1) or area.get_collision_layer_bit(0):
-		animation_timer = 10
+		animation_timer = 18
 		$Sprite.visible = false
 		call_deferred("disable_collision")
 		call_deferred("enable_explosion")
@@ -32,7 +32,7 @@ func _on_Bomba_area_entered(area: Area2D) -> void:
 
 func _on_Bomba_body_entered(body: Node) -> void:
 	if body.get_collision_layer_bit(0):
-		animation_timer = 10
+		animation_timer = 18
 		$Sprite.visible = false
 		call_deferred("disable_collision")
 		call_deferred("enable_explosion")

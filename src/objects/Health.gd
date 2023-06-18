@@ -9,6 +9,9 @@ onready var _player = Globals.find_player()
 export var persistent := false
 var persist_timer := 420
 
+var is_in_water := false
+var _gravity := 2000.0
+
 
 func _process(delta: float) -> void:
 	if (Globals.get("game_paused") and not _giving_health) or _health_to_give == 0:
@@ -26,8 +29,8 @@ func _process(delta: float) -> void:
 				call_deferred('disable_all')
 		return
 	$AnimationPlayer.play(_animation)
-	_velocity.y += 1200.0*delta
-	_velocity.y = min(_velocity.y, 1200.0)
+	_velocity.y += _gravity*delta*(0.4 if is_in_water else 1.0)
+	_velocity.y = min(_velocity.y, 1200.0*(0.6 if is_in_water else 1.0))
 	_velocity = move_and_slide(_velocity, Vector2.UP, true)
 	
 	# Failsafe for despawning

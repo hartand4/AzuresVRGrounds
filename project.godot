@@ -14,18 +14,24 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://src/actors/actor.gd"
 }, {
+"base": "Node",
+"class": "GravityObject",
+"language": "GDScript",
+"path": "res://src/actors/GravityObject.gd"
+}, {
 "base": "KinematicBody2D",
 "class": "Health",
 "language": "GDScript",
 "path": "res://src/objects/Health.gd"
 }, {
-"base": "Node",
+"base": "GravityObject",
 "class": "Projectile",
 "language": "GDScript",
 "path": "res://src/enemyobjects/Projectile.gd"
 } ]
 _global_script_class_icons={
 "Actor": "",
+"GravityObject": "",
 "Health": "",
 "Projectile": ""
 }
@@ -112,6 +118,7 @@ pause={
 2d_physics/layer_7="tiles_nojump"
 2d_physics/layer_8="damage_tiles"
 2d_physics/layer_9="ladder_tiles"
+2d_physics/layer_10="water"
 
 [physics]
 

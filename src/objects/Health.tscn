@@ -64,3 +64,4 @@ anims/Idle = SubResource( 111 )
 anims/RESET = SubResource( 113 )
 
 [connection signal="area_entered" from="HealthArea" to="." method="_on_HealthArea_area_entered"]
+[connection signal="area_exited" from="HealthArea" to="." method="_on_HealthArea_area_exited"]

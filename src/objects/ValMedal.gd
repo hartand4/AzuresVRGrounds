@@ -7,7 +7,8 @@ var _anim_index := 0
 
 
 func _ready() -> void:
-	if Globals.coins_collected_in_level[coin_number - 1]:
+	if Globals.coins_collected_in_level[coin_number - 1] or (
+		Globals.checkpoint_data[0] and Globals.checkpoint_data[coin_number]):
 		_anim_index = 4
 	else:
 		_anim_index = coin_number

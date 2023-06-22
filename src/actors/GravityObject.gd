@@ -12,6 +12,5 @@ func _physics_process(delta: float) -> void:
 	if Globals.game_paused: return
 	if not is_obeying_gravity: return
 	
-	# warning-ignore:incompatible_ternary
-	gravity = 1200*(0.4 if is_in_water else 1)
+	gravity = 1200*(0.4 if is_in_water else 1.0)
 	velocity.y += gravity*delta

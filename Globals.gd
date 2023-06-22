@@ -110,13 +110,15 @@ func spawn_debris(texture, pos):
 	spawn.tex = texture
 
 # Creates an explosion particle at a specified position
-func spawn_explosion(pos):
+func spawn_explosion(pos, has_collision=false, damage=3):
 	var current_scene = get_current_scene()
 	var explosion_scene = load("res://src/effects/Explosion.tscn")
 	var spawn := explosion_scene.instance() as Node2D
-	current_scene.add_child(spawn)
+	current_scene.call_deferred("add_child", spawn)
 	spawn.set_as_toplevel(true)
 	spawn.global_position = pos
+	spawn.has_collision = has_collision
+	spawn.damage = damage
 
 # Creates a health object at a certain position, with probability depending on drop_rate
 func spawn_health(pos, drop_rate=1):

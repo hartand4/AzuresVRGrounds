@@ -31,6 +31,9 @@ func _process(delta: float) -> void:
 		Globals.spawn_health(position, 2.4)
 		return
 	elif despawn():
+		position = original_position
+		health = 1
+		fly_direction = starting_fly_direction
 		return
 	
 	$Sprite.visible = true

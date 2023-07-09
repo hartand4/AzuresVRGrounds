@@ -41,10 +41,6 @@ make (COOL) water levels!
 
 water surface splash effect -> if object position within vertical threshold of surface, spawn splash at object's x-pos and surface's y-pos
 
-flying owl that stays near the (inputted) corner of the screen, spreads wings and shoots 4 homing electric attacks like Wily MM&B
-
-flying...thing that flies straight, and when it sees the player under and a little ahead of it, drops wing 1, wing 2, then divebombs when it has no wings left
-
 Sword is called the flare edge, flare temper, or flarix (ex-calibur)
 
 maybe make a day/night theme as the levels go on?

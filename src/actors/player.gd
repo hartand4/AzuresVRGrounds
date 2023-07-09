@@ -623,6 +623,9 @@ func change_dash_hitbox(dash_state):
 		$WalljumpAreaL/WalljumpBoxL.shape.extents = Vector2(13.0,30.0)
 		$WalljumpAreaL/WalljumpBoxL.set_position(Vector2(normal_wallcheck_transform[0][0], -40))
 		$WalljumpAreaR/WalljumpBoxR.set_position(Vector2(normal_wallcheck_transform[1][0], -40))
+		
+		$CrushCheckArea/Collision.disabled = true
+		$CrushCheckArea/DashCollision.disabled = false
 		return
 	
 	hitbox_collider.shape.extents = normal_hitbox_shape
@@ -634,6 +637,9 @@ func change_dash_hitbox(dash_state):
 	$WalljumpAreaL/WalljumpBoxL.set_position(normal_wallcheck_transform[0])
 	$WalljumpAreaR/WalljumpBoxR.set_position(normal_wallcheck_transform[1])
 	
+	$CrushCheckArea/Collision.disabled = false
+	$CrushCheckArea/DashCollision.disabled = true
+	
 func check_for_collisions():
 	# Record floor normal angle if on floor
 	if is_on_floor() and get_slide_count() > 0:
@@ -642,7 +648,7 @@ func check_for_collisions():
 			floor_angle = PI/2
 	
 	# Check for crush death
-	for box in hitbox.get_overlapping_bodies():
+	for box in $CrushCheckArea.get_overlapping_bodies():
 		if (box.get_collision_layer_bit(0) or box.get_collision_layer_bit(6)) and near_wall[0] and (
 			near_wall[1] and not box.get_collision_layer_bit(8)):
 			colliding_with_enemy = true

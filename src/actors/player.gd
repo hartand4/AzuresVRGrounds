@@ -99,6 +99,7 @@ func _physics_process(delta: float) -> void:
 		not Globals.retry_menu_on) and not state in [ST_VICTORY]:
 		Globals.set("game_paused", true)
 		Globals.pause_menu_on = true
+		_velocity = move_and_slide(_velocity, FLOOR_NORMAL, true)
 		return
 		
 	# Jump logic

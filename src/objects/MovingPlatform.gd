@@ -17,7 +17,7 @@ func _ready() -> void:
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 # warning-ignore:unused_argument
-func _process(delta: float) -> void:
+func _physics_process(delta: float) -> void:
 	if Globals.game_paused: return
 	if flip:
 # warning-ignore:integer_division

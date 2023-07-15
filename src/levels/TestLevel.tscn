@@ -1164,6 +1164,7 @@ track_length = 5
 
 [node name="MovingPlatform3" parent="." instance=ExtResource( 5 )]
 position = Vector2( 2282, 1464 )
+motion/sync_to_physics = true
 starting_dir = Vector2( 0, 1 )
 track_length = 2
 period = 120

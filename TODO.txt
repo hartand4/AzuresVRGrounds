@@ -41,8 +41,23 @@ make (COOL) water levels!
 
 water surface splash effect -> if object position within vertical threshold of surface, spawn splash at object's x-pos and surface's y-pos
 
+Air bubbles with Azzy under water, and wavy background
+
 Sword is called the flare edge, flare temper, or flarix (ex-calibur)
 
 maybe make a day/night theme as the levels go on?
 
+edit save file for list of bought costumes, current costume, current level position
+[type(level, warp, other...), number]
+
+CharNull, segmentation fault
+
+optional challenge setting: 1/2 health mode (on map pause screen?)
+
 boss doors -> for all objects (except the boss), if collision layer is enemy or enemy attack, remove from current scene
+
+Maybe encode in parabolic cipher
+
+Slots?
+
+Put outfit on azzy on title screen

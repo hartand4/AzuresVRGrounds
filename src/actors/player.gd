@@ -86,6 +86,9 @@ func _ready():
 		position = Globals.checkpoint_data[4]
 		for i in range(3):
 			collected_coins[i] = Globals.checkpoint_data[i+1]
+	
+	var outfit_list = ['Shorts', 'Casual', 'Ace', 'Maid']
+	$Sprite/Outfit.texture = load("res://assets/Sprites/Azzy/Outfits/" + outfit_list[Globals.current_costume] + ".png")
 
 # warning-ignore:unused_argument
 func _physics_process(delta: float) -> void:
@@ -217,7 +220,10 @@ func calculate_move_direction(linear_velocity: Vector2, speed: Vector2, directio
 func _process(delta):
 	if not (state in [ST_ATTACK, ST_AIR_ATTACK, ST_WALL_ATTACK, ST_LADDER_ATTACK]):
 		do_slash_effect(0)
-		
+	
+	
+	outfit_animation()
+	
 	if Globals.get("game_paused"):
 		$AttackHitboxArea/SlashPlayer.stop(false)
 		$Tail/AnimationPlayer.stop(false)
@@ -308,12 +314,14 @@ func animation_handler():
 		$Tail.z_index = 0
 		$Tail.set_position(Vector2(recurring_x_dir*-28,-35))
 	
-	
+	#Outfit flip
+	$Sprite/Outfit.flip_h = $Sprite.flip_h
 	
 	if health > 0: change_dash_hitbox(state in [ST_DASH, ST_ULTIMATE])
 	
 	if state in animation_dict:
 		_animation.play(animation_dict[state])
+		$Sprite/Outfit.frame = $Sprite.frame
 		return
 	match state:
 		ST_AIR:
@@ -817,6 +825,8 @@ func do_ultimate_check():
 					if Input.is_action_just_pressed(action): ultimate_move_timer = [0,0,-1]
 	if ultimate_move_timer[1]: ultimate_move_timer[1] -= 1
 
+func outfit_animation():
+	$Sprite/Outfit.frame = $Sprite.frame
 
 func check_ultimate_hitbox_enemies():
 	for area in $UltimateHitboxArea.get_overlapping_areas():

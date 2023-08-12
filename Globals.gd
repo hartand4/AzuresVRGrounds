@@ -32,6 +32,8 @@ export var goal_reached_in_current_level = [false, false]
 
 export var level_flags = []
 export var val_coin_list = []
+export var current_costume := 0
+export var unlocked_in_store = []
 
 export var current_camera_pos = Vector2.ZERO
 
@@ -241,6 +243,7 @@ func load_save_game(save_data, n):
 	
 	level_flags = file_data['exits']
 	val_coin_list = file_data['val_coins']
+	current_costume = file_data['current_costume']
 
 func save_game_checks(file_data):
 	for flag in ['air_dash', 'armour', 'ultimate']:
@@ -263,6 +266,8 @@ func save_game_checks(file_data):
 		for j in range(2):
 			if not (typeof(file_data['exits'][i][j]) == TYPE_BOOL): return false
 	
+	if not ("current_costume" in file_data and typeof(file_data['current_costume']) == TYPE_REAL): return false
+	
 	return true
 
 func save_current_game_to_file(n):
@@ -272,7 +277,9 @@ func save_current_game_to_file(n):
 		current_data = {}
 	
 	current_data['file'+str(n)] = {'current_level': current_level,'air_dash': [air_dash_unlocked, air_dash_selected], 
-	'armour': [armour_unlocked, armour_selected], 'ultimate': [ultimate_unlocked, ultimate_selected],}
+	'armour': [armour_unlocked, armour_selected], 'ultimate': [ultimate_unlocked, ultimate_selected],
+	'current_costume': current_costume,}
+	
 	current_data['file'+str(n)]['exits'] = level_flags
 	current_data['file'+str(n)]['val_coins'] = val_coin_list
 	

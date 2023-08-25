@@ -1,11 +1,9 @@
-[gd_scene load_steps=111 format=2]
+[gd_scene load_steps=108 format=2]
 
 [ext_resource path="res://src/enemyobjects/Turret.tscn" type="PackedScene" id=1]
 [ext_resource path="res://src/actors/Hopshot.tscn" type="PackedScene" id=2]
 [ext_resource path="res://src/objects/ValCoin.tscn" type="PackedScene" id=3]
 [ext_resource path="res://src/MapObjects/Transition.tscn" type="PackedScene" id=4]
-[ext_resource path="res://src/objects/V-Switch.tscn" type="PackedScene" id=5]
-[ext_resource path="res://src/objects/V-Switch Block.tscn" type="PackedScene" id=6]
 [ext_resource path="res://src/actors/player.tscn" type="PackedScene" id=7]
 [ext_resource path="res://src/actors/BuzzClinger.tscn" type="PackedScene" id=9]
 [ext_resource path="res://src/actors/Lagomo.tscn" type="PackedScene" id=10]
@@ -13,7 +11,6 @@
 [ext_resource path="res://assets/BG/Technotileset.png" type="Texture" id=12]
 [ext_resource path="res://assets/BG/TechnoBG3.png" type="Texture" id=13]
 [ext_resource path="res://assets/BG/TechnoBG2.png" type="Texture" id=14]
-[ext_resource path="res://src/actors/Plume.tscn" type="PackedScene" id=15]
 [ext_resource path="res://src/actors/Anamoth.tscn" type="PackedScene" id=16]
 [ext_resource path="res://src/objects/GoalOrb.tscn" type="PackedScene" id=17]
 [ext_resource path="res://src/actors/Rodopack.tscn" type="PackedScene" id=18]
@@ -1371,9 +1368,6 @@ position = Vector2( -136, 1113 )
 [node name="Anamoth" parent="." instance=ExtResource( 16 )]
 position = Vector2( 1092, 984 )
 
-[node name="Plume" parent="." instance=ExtResource( 15 )]
-position = Vector2( 422, 995 )
-
 [node name="Rodopack" parent="." instance=ExtResource( 18 )]
 position = Vector2( 3692, 897 )
 
@@ -1383,15 +1377,3 @@ position = Vector2( 2734, 1249 )
 [node name="BuzzClinger" parent="." instance=ExtResource( 9 )]
 position = Vector2( 2910, 938 )
 speed = 4
-
-[node name="V-Switch Block" parent="." instance=ExtResource( 6 )]
-position = Vector2( 924, 697 )
-
-[node name="V-Switch Block3" parent="." instance=ExtResource( 6 )]
-position = Vector2( 640, 825 )
-
-[node name="V-Switch Block2" parent="." instance=ExtResource( 6 )]
-position = Vector2( 841, 984 )
-
-[node name="V-Switch" parent="." instance=ExtResource( 5 )]
-position = Vector2( 336, 1116 )

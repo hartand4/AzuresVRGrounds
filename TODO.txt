@@ -61,3 +61,5 @@ Maybe encode in parabolic cipher
 Slots?
 
 Put outfit on azzy on title screen
+
+consider a 1/2 health setting on map screen - With shortened bar?

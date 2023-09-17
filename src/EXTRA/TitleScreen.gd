@@ -19,7 +19,7 @@ var save_data = {}
 func _ready() -> void:
 	save_data = Globals.load_save_data()
 	if save_data and 'controls' in save_data:
-		load_controls(Globals.load_save_data()['controls'])
+		load_controls(save_data['controls'])
 	reset_title_screen()
 
 # warning-ignore:unused_argument
@@ -87,6 +87,7 @@ func _process(delta: float) -> void:
 				$TitleObject/TitleVisibility/Title/Azzy/TailAnimation.play("TailWag")
 				$PressStart.visible = Globals.timer % 15 < 8
 				$TitleObject/TitleVisibility/Title/Azzy/AzzyAnimation.play("Jump" if azzy_velocity < 0 else "Fall")
+				$TitleObject/TitleVisibility/Title/Azzy/Clothes.frame = $TitleObject/TitleVisibility/Title/Azzy.frame
 				azzy_jump()
 			elif animation_timer > 1:
 				$PressStart.visible = false
@@ -252,7 +253,7 @@ func display_controls():
 			elif InputMap.get_action_list(input_label_dict[label])[1] is InputEventJoypadMotion:
 				$ControlsMenu/PauseText2.find_node(label).text += ', Joypad: ' + str(InputMap.get_action_list(input_label_dict[label])[1].axis)
 
-func _unhandled_input(event):
+func _unhandled_input(event, setup=false):
 	if not is_editing_controls: return
 	if (event is InputEventKey or event is InputEventJoypadButton) and not event.pressed: return
 	
@@ -263,7 +264,8 @@ func _unhandled_input(event):
 		var assigned_action = get_key_action(event)
 		var assigned_action_name = input_index_to_str(assigned_action)
 		
-		if assigned_action == -1:
+		
+		if assigned_action == -1 or setup:
 			# This means the key is not assigned to an action
 			var joypad_input
 			if InputMap.get_action_list(action_name).size() > 1:
@@ -376,7 +378,8 @@ func load_controls(ctr_data):
 		new_event.pressed = true
 		is_editing_controls = true
 		selection_cursor = i
-		_unhandled_input(new_event)
+		_unhandled_input(new_event, true)
+		print(OS.get_scancode_string(new_event.scancode))
 		
 		if ctr_data[input_index_to_str(i)].size() == 2:
 			if ctr_data[input_index_to_str(i)][1][1]:

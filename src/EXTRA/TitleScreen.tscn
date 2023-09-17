@@ -1,4 +1,4 @@
-[gd_scene load_steps=23 format=2]
+[gd_scene load_steps=24 format=2]
 
 [ext_resource path="res://assets/Title Screen/TechnoBG4.png" type="Texture" id=1]
 [ext_resource path="res://src/EXTRA/TitleScreen.gd" type="Script" id=2]
@@ -13,6 +13,7 @@
 [ext_resource path="res://assets/HUD/PauseMenuTextLevelControls.png" type="Texture" id=11]
 [ext_resource path="res://assets/Title Screen/ControlsBG.png" type="Texture" id=12]
 [ext_resource path="res://assets/Font/AzureVR.ttf" type="DynamicFontData" id=13]
+[ext_resource path="res://assets/Sprites/Azzy/Outfits/Shorts.png" type="Texture" id=14]
 
 [sub_resource type="Animation" id=1]
 resource_name = "IdleBlink"
@@ -211,6 +212,11 @@ expand = true
 [node name="Azzy" type="Sprite" parent="TitleObject/TitleVisibility/Title"]
 position = Vector2( 725, 172 )
 texture = ExtResource( 5 )
+hframes = 5
+vframes = 10
+
+[node name="Clothes" type="Sprite" parent="TitleObject/TitleVisibility/Title/Azzy"]
+texture = ExtResource( 14 )
 hframes = 5
 vframes = 10
 

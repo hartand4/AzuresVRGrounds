@@ -1334,10 +1334,10 @@ collision_mask = 64
 camera_limit_max = Vector2( 1e+07, 1440 )
 
 [node name="ValCoin" parent="." instance=ExtResource( 3 )]
-position = Vector2( -333, 733 )
+position = Vector2( -313, 794 )
 
 [node name="ValCoin2" parent="." instance=ExtResource( 3 )]
-position = Vector2( -186, 755 )
+position = Vector2( 472, 1154 )
 coin_number = 2
 
 [node name="ValCoin3" parent="." instance=ExtResource( 3 )]
@@ -1363,7 +1363,7 @@ rotation = 4.71239
 position = Vector2( 2034, 1248 )
 
 [node name="GoalOrb" parent="." instance=ExtResource( 17 )]
-position = Vector2( -136, 1113 )
+position = Vector2( 734, 1103 )
 
 [node name="Anamoth" parent="." instance=ExtResource( 16 )]
 position = Vector2( 1092, 984 )

@@ -1,5 +1,7 @@
 extends Actor
 
+# Note: in case of ultimate kill, use a separate no_health() function like this.
+
 var broken := false
 
 func _ready() -> void:
@@ -24,6 +26,8 @@ func _process(delta: float) -> void:
 		return
 	
 	respawn()
+	if health <= 0: no_health()
+	
 	if not anim_timer:
 		state = 1-state
 		anim_timer = 119 if state else 80
@@ -69,8 +73,11 @@ func _on_AttackCheckArea_area_entered(area: Area2D) -> void:
 	health -= 2
 	i_frames = 6
 	if health <= 0:
-		broken = true
-		$Visibility.process_parent = false
-		anim_timer = 2
-		Globals.spawn_explosion(position + Vector2(0,-48))
-		Globals.spawn_health(position+Vector2(0,-40))
+		no_health()
+
+func no_health():
+	broken = true
+	$Visibility.process_parent = false
+	anim_timer = 2
+	Globals.spawn_explosion(position + Vector2(0,-48))
+	Globals.spawn_health(position+Vector2(0,-40))

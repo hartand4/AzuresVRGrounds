@@ -221,7 +221,6 @@ func _process(delta):
 	if not (state in [ST_ATTACK, ST_AIR_ATTACK, ST_WALL_ATTACK, ST_LADDER_ATTACK]):
 		do_slash_effect(0)
 	
-	
 	outfit_animation()
 	
 	if Globals.get("game_paused"):
@@ -394,10 +393,10 @@ func update_state():
 	
 	# DOING AN AIR ATTACK
 	if state == ST_AIR and Input.is_action_just_pressed("attack"):
-		attack_timer = 24
+		attack_timer = 18
 		return ST_AIR_ATTACK
 	elif state == ST_DASH and Input.is_action_just_pressed("attack") and not is_on_floor():
-		attack_timer = 24
+		attack_timer = 18
 		return ST_AIR_ATTACK
 	if state == ST_AIR_ATTACK and attack_timer <= 0: return ST_AIR
 	
@@ -478,7 +477,7 @@ func update_state():
 	# ATTACKING
 	if state < 3 and Input.is_action_just_pressed("attack"):
 		dashing = false
-		attack_timer = 24
+		attack_timer = 18
 		return ST_ATTACK
 	
 	#STOP ATTACK
@@ -584,10 +583,10 @@ func do_slash_effect(start):
 	
 func update_slash_hitbox():
 	if state in [ST_ATTACK, ST_AIR_ATTACK]:
-		if attack_timer > 6 and attack_timer <= 10:
+		if attack_timer > 3 and attack_timer <= 8:
 			attack_collision.find_node('AttackHitbox').set_position(Vector2(recurring_x_dir * -36.0,-40))
 			attack_collision.find_node('AttackHitbox').shape.extents = Vector2(62, 18)
-		elif attack_timer <= 5:
+		elif attack_timer <= 4:
 			attack_collision.find_node('AttackHitbox').set_position(Vector2(recurring_x_dir * -102.0,-38))
 			attack_collision.find_node('AttackHitbox').shape.extents = Vector2(26, 12)
 	elif state in [ST_WALL_ATTACK, ST_LADDER_ATTACK]:
@@ -777,6 +776,9 @@ func victory_handler():
 		Globals.start_transition(get_position() - $Camera2D.get_camera_screen_center() + Vector2(420,260), 1)
 		Globals.goal_reached_in_current_level[0] = normal_exit_reached
 		Globals.goal_reached_in_current_level[1] = secret_exit_reached
+		for i in range(3):
+			Globals.coins_collected_in_level[i] = collected_coins[i]
+	
 	elif animation_timer >= 200:
 		# warning-ignore:return_value_discarded
 		get_tree().change_scene("res://src/levels/LevelMap.tscn")
@@ -829,7 +831,10 @@ func outfit_animation():
 	$Sprite/Outfit.frame = $Sprite.frame
 
 func check_ultimate_hitbox_enemies():
-	for area in $UltimateHitboxArea.get_overlapping_areas():
+	var check_list = []
+	for a in $UltimateHitboxArea.get_overlapping_areas():
+		if a.get_parent() != self: check_list += [a]
+	for area in check_list:
 		if not area.get_parent().get("i_frames") == null:
 			area.get_parent().set_i_frames(0)
 		elif not area.get("i_frames") == null:

@@ -176,18 +176,29 @@ func _ready() -> void:
 	Globals.checkpoint_data[0] = 0
 	anim_frame = 0
 	anim_timer = 45
+	
 	if Globals.goal_reached_in_current_level[0] and not Globals.level_flags[Globals.current_level][0]:
 		doing_map_events = true
 		current_event_trigger = Globals.current_level*2
+		add_val_coins()
 		print('normal exit just obtained!')
+	
 	elif Globals.goal_reached_in_current_level[1] and not Globals.level_flags[Globals.current_level][1]:
 		doing_map_events = true
 		current_event_trigger = Globals.current_level*2 + 1
+		add_val_coins()
+		print('secret exit just obtained!')
 
+func add_val_coins():
+	for i in range(3):
+		Globals.val_coin_list[Globals.current_level][i] = (
+			Globals.val_coin_list[Globals.current_level][i] or Globals.coins_collected_in_level[i])
 
 # warning-ignore:unused_argument
 func _process(delta: float) -> void:
-	if done_initial_setup and not doing_map_events: return
+	if done_initial_setup and not doing_map_events:
+		print('okay')
+		return
 	Globals.lock_input = true
 	
 	if not done_initial_setup:

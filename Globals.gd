@@ -34,6 +34,7 @@ export var level_flags = []
 export var val_coin_list = []
 export var current_costume := 0
 export var unlocked_in_store = []
+export var spent_coins = 0
 
 export var current_camera_pos = Vector2.ZERO
 
@@ -208,7 +209,7 @@ func save_controls_data():
 	
 	current_data["controls"] = {}
 	for action in ['move_up', 'move_down', 'move_left', 'move_right', 'jump', 'attack', 'dash', 'pause']:
-		current_data['controls'][action] = [InputMap.get_action_list("move_up")[0].scancode]
+		current_data['controls'][action] = [InputMap.get_action_list(action)[0].scancode]
 		var joypad_button = save_controls_format(action)
 		if joypad_button != []:
 			current_data['controls'][action] += [joypad_button]
@@ -228,7 +229,7 @@ func save_controls_format(action):
 		return [button_event.axis, 1]
 	return []
 
-
+# Loads flags in file n to global data
 func load_save_game(save_data, n):
 	if not ('file'+str(n) in save_data): return -1
 	var file_data = save_data['file' + str(n)]
@@ -241,35 +242,55 @@ func load_save_game(save_data, n):
 	ultimate_unlocked = file_data['ultimate'][0]
 	ultimate_selected = file_data['ultimate'][1]
 	
-	level_flags = file_data['exits']
-	val_coin_list = file_data['val_coins']
+	level_flags = str_to_level_flags(file_data['exits'])
+	val_coin_list = str_to_val_coins(file_data['val_coins'])
 	current_costume = file_data['current_costume']
+	
+	unlocked_in_store = file_data['costumes']
+	spent_coins = file_data['spent_coins']
 
+# Converts string to list of val coin flags
+func str_to_val_coins(coin_string):
+	var coin_list = []
+	for i in range(coin_string.length()):
+		coin_list[0] = true if coin_string[i] % 2 else false
+		coin_list[1] = true if coin_string[i] % 4 > 2  else false
+		coin_list[2] = true if coin_string[i] > 4 else false
+	return coin_list
+
+# Converts string to list of exit flags
+func str_to_level_flags(level_string):
+	var level_list = []
+	for i in range(level_string.length()):
+		level_list[0] = true if level_string[i] % 2 else false
+		level_list[1] = true if level_string[i] > 2  else false
+	return level_list
+
+# Validates some save data to avoid crashes
 func save_game_checks(file_data):
 	for flag in ['air_dash', 'armour', 'ultimate']:
 		if not (flag in file_data and file_data[flag] is Array and file_data[flag].size() == 2): return false
 		if not (typeof(file_data[flag][0]) == TYPE_BOOL and typeof(file_data[flag][1]) == TYPE_BOOL): return false
-		
+	if not "costumes" in file_data or not(file_data['costumes'] is Array): return false
+	for costume in file_data['costumes']:
+		if typeof(costume) != TYPE_REAL: return false
+	
 	print('flags for unlockables done')
 	
 	if not ("current_level" in file_data and typeof(file_data['current_level']) == TYPE_REAL): return false
 	if not "val_coins" in file_data: return false
-	elif not (file_data['val_coins'] is Array and file_data['val_coins'].size() == LEVEL_COUNT): return false
+	elif not (file_data['val_coins'] is String and file_data['val_coins'].is_valid_integer() and
+		file_data['val_coins'].length() == LEVEL_COUNT): return false
 	if not "exits" in file_data: return false
-	elif not (file_data['exits'] is Array and file_data['exits'].size() == LEVEL_COUNT): return false
-	
-	for i in range(LEVEL_COUNT):
-		if not (file_data['val_coins'][i] is Array and file_data['val_coins'][i].size() == 3): return false
-		for j in range(3):
-			if not (typeof(file_data['val_coins'][i][j]) == TYPE_BOOL): return false
-		if not (file_data['exits'][i] is Array and file_data['exits'][i].size() == 2): return false
-		for j in range(2):
-			if not (typeof(file_data['exits'][i][j]) == TYPE_BOOL): return false
+	elif not (file_data['exits'] is String and file_data['exits'].is_valid_integer() and
+		file_data['exits'].length() == LEVEL_COUNT): return false
 	
 	if not ("current_costume" in file_data and typeof(file_data['current_costume']) == TYPE_REAL): return false
+	if not ("spent_coins" in file_data and typeof(file_data['spent_coins']) == TYPE_REAL): return false
 	
 	return true
 
+# Overrides file n data in save data format
 func save_current_game_to_file(n):
 	var path = './saves/data.json'
 	var current_data = load_save_data()
@@ -278,16 +299,32 @@ func save_current_game_to_file(n):
 	
 	current_data['file'+str(n)] = {'current_level': current_level,'air_dash': [air_dash_unlocked, air_dash_selected], 
 	'armour': [armour_unlocked, armour_selected], 'ultimate': [ultimate_unlocked, ultimate_selected],
-	'current_costume': current_costume,}
+	'current_costume': current_costume, 'costumes': unlocked_in_store, 'spent_coins': spent_coins}
 	
-	current_data['file'+str(n)]['exits'] = level_flags
-	current_data['file'+str(n)]['val_coins'] = val_coin_list
+	var exit_numbers = ''
+	var val_coin_numbers = ''
+	for i in val_coin_list.size():
+		var coin_value = 0
+		var exit_value = 0
+		
+		if val_coin_list[i][0]: coin_value += 1
+		if val_coin_list[i][1]: coin_value += 2
+		if val_coin_list[i][2]: coin_value += 4
+		val_coin_numbers += str(coin_value)
+		
+		if level_flags[i][0]: exit_value += 1
+		if level_flags[i][1]: exit_value += 2
+		exit_numbers += str(exit_value)
+		
+	current_data['file'+str(n)]['val_coins'] = val_coin_numbers
+	current_data['file'+str(n)]['exits'] = exit_numbers
 	
 	var file = File.new()
 	file.open(path, File.WRITE)
 	file.store_line(to_json(current_data))
 	file.close()
 
+# Counts total amount of collected val coins
 func total_val_coin_count(coin_list = val_coin_list):
 	var sum := 0
 	for level in coin_list:
@@ -295,6 +332,7 @@ func total_val_coin_count(coin_list = val_coin_list):
 			sum += (1 if truth_value else 0)
 	return sum
 
+# Counts total amount of level exits
 func total_exit_count(exit_list = level_flags):
 	var sum := 0
 	for level in exit_list:
@@ -302,6 +340,7 @@ func total_exit_count(exit_list = level_flags):
 			sum += (1 if truth_value else 0)
 	return sum
 
+# Starts earthquake effect for 'length' frames, and with 'intensity' variance
 func start_earthquake(length, intensity=3):
 	eq_timer = length
 	eq_intensity = intensity
@@ -316,6 +355,7 @@ func start_earthquake(length, intensity=3):
 	earthquake_camera.global_position = camera.global_position
 	do_earthquake()
 
+# Continue earthquake effect until eq_timer ends
 func do_earthquake():
 	var camera = find_player().find_node('Camera2D')
 	var variance = eq_intensity if timer % 6 < 2 else 0 if timer % 6 < 4 else -eq_intensity
@@ -330,6 +370,7 @@ func do_earthquake():
 	camera.current = false
 	earthquake_camera.current = true
 
+# Removes the temporary eq camera from the scene
 func recenter_camera():
 	find_player().find_node('Camera2D').current = true
 	var temp_eq_cam = earthquake_camera

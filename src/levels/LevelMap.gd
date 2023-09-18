@@ -180,14 +180,15 @@ func _ready() -> void:
 	if Globals.goal_reached_in_current_level[0] and not Globals.level_flags[Globals.current_level][0]:
 		doing_map_events = true
 		current_event_trigger = Globals.current_level*2
-		add_val_coins()
 		print('normal exit just obtained!')
 	
 	elif Globals.goal_reached_in_current_level[1] and not Globals.level_flags[Globals.current_level][1]:
 		doing_map_events = true
 		current_event_trigger = Globals.current_level*2 + 1
-		add_val_coins()
 		print('secret exit just obtained!')
+	
+	if Globals.goal_reached_in_current_level[0] or Globals.goal_reached_in_current_level[1]:
+		add_val_coins()
 
 func add_val_coins():
 	for i in range(3):
@@ -196,9 +197,18 @@ func add_val_coins():
 
 # warning-ignore:unused_argument
 func _process(delta: float) -> void:
+	
+	if Input.is_action_just_pressed('dash') and Globals.current_level < 300:
+		print(Globals.val_coin_list[Globals.current_level])
+	
 	if done_initial_setup and not doing_map_events:
-		print('okay')
+		if Globals.current_level < 200:
+			for i in range(3):
+				Globals.coins_collected_in_level[i] = Globals.val_coin_list[Globals.current_level][i]
+		else:
+			Globals.coins_collected_in_level = [false, false, false]
 		return
+	
 	Globals.lock_input = true
 	
 	if not done_initial_setup:

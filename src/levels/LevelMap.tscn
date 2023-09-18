@@ -1,4 +1,4 @@
-[gd_scene load_steps=18 format=2]
+[gd_scene load_steps=22 format=2]
 
 [ext_resource path="res://assets/Map/MapTiles.png" type="Texture" id=1]
 [ext_resource path="res://assets/Map/MapBG.png" type="Texture" id=2]
@@ -6,6 +6,10 @@
 [ext_resource path="res://src/MapObjects/LevelIcon.tscn" type="PackedScene" id=4]
 [ext_resource path="res://src/levels/LevelMap.gd" type="Script" id=5]
 [ext_resource path="res://src/MapObjects/Transition.tscn" type="PackedScene" id=6]
+[ext_resource path="res://assets/HUD/MapLevelInfo.png" type="Texture" id=7]
+[ext_resource path="res://src/MapObjects/InfoCard.gd" type="Script" id=8]
+[ext_resource path="res://assets/HUD/MapLevelOrbs.png" type="Texture" id=9]
+[ext_resource path="res://assets/HUD/MapLevelCoins.png" type="Texture" id=10]
 
 [sub_resource type="TileSet" id=1]
 1/name = "MapAutotile"
@@ -526,6 +530,7 @@ has_up_path = true
 
 [node name="Level2" parent="Levels" instance=ExtResource( 4 )]
 position = Vector2( 208, 156 )
+level_number = 2
 has_down_path = true
 
 [node name="Level3" parent="Levels" instance=ExtResource( 4 )]
@@ -568,5 +573,43 @@ is_warp = true
 
 [node name="MapPlayer" parent="." instance=ExtResource( 3 )]
 position = Vector2( 336, 156 )
+
+[node name="InfoCard" type="CanvasLayer" parent="."]
+script = ExtResource( 8 )
+
+[node name="Card" type="TextureRect" parent="InfoCard"]
+margin_left = 578.0
+margin_top = 6.0
+margin_right = 834.0
+margin_bottom = 116.0
+texture = ExtResource( 7 )
+
+[node name="Coin1" type="Sprite" parent="InfoCard/Card"]
+position = Vector2( 26, 86 )
+texture = ExtResource( 10 )
+hframes = 4
+
+[node name="Coin2" type="Sprite" parent="InfoCard/Card"]
+position = Vector2( 70, 86 )
+texture = ExtResource( 10 )
+hframes = 4
+frame = 1
+
+[node name="Coin3" type="Sprite" parent="InfoCard/Card"]
+position = Vector2( 114, 86 )
+texture = ExtResource( 10 )
+hframes = 4
+frame = 2
+
+[node name="Goal1" type="Sprite" parent="InfoCard/Card"]
+position = Vector2( 151, 81 )
+texture = ExtResource( 9 )
+hframes = 2
+
+[node name="Goal2" type="Sprite" parent="InfoCard/Card"]
+position = Vector2( 177, 93 )
+texture = ExtResource( 9 )
+hframes = 2
+frame = 1
 
 [node name="Transition" parent="." instance=ExtResource( 6 )]

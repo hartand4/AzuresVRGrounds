@@ -28,6 +28,13 @@ func _ready() -> void:
 	animation_timer = 40
 	call_deferred("_do_transition")
 	$MapSprite.flip_h = false
+	
+	if Globals.current_level < 300:
+		on_level = self.get_parent().find_node('Levels').find_node('Level'+str(Globals.current_level))
+	else:
+		on_level = get_parent().find_node('Warps').find_node('Warp'+str(Globals.current_level - 300))
+	self.position = on_level.position
+	print('cuurent level is ' + str(Globals.current_level))
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -181,7 +188,10 @@ func animate_direction():
 func _on_LevelCheckArea_area_entered(area: Area2D) -> void:
 	if not area.get('level_number') == null:
 		on_level = area
-		Globals.current_level = area.level_number
+		if area.level_number:
+			Globals.current_level = area.level_number
+		elif area.warp_number:
+			Globals.current_level = area.warp_number + 300
 		print(on_level)
 		return
 	if turning_ccw or turning_cw:

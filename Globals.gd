@@ -23,7 +23,7 @@ export var ultimate_selected := true
 
 export var pause_menu_on := false
 export var retry_menu_on := false
-export var current_level := 0
+export var current_level := 1
 export var coins_collected_in_level := [false, false, false]
 export var checkpoint_data := [0, false, false, false, Vector2.ZERO]
 
@@ -50,9 +50,6 @@ func _process(delta: float) -> void:
 	timer += 1
 	if timer == pow(2, 30):
 		timer = 0
-	
-	coins_collected_in_level = val_coin_list[current_level]
-	#goal_reached_in_current_level = level_flags[current_level]
 	
 	if eq_timer:
 		do_earthquake()

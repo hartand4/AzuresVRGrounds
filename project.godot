@@ -12,12 +12,12 @@ _global_script_classes=[ {
 "base": "KinematicBody2D",
 "class": "Actor",
 "language": "GDScript",
-"path": "res://src/actors/actor.gd"
+"path": "res://src/Actors/actor.gd"
 }, {
 "base": "Node",
 "class": "GravityObject",
 "language": "GDScript",
-"path": "res://src/actors/GravityObject.gd"
+"path": "res://src/Actors/GravityObject.gd"
 }, {
 "base": "KinematicBody2D",
 "class": "Health",

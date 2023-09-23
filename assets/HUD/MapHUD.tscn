@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=2]
+[gd_scene load_steps=21 format=2]
 
 [ext_resource path="res://assets/HUD/PauseMenuMap.png" type="Texture" id=1]
 [ext_resource path="res://assets/HUD/PauseMenuTextLevelTitle.png" type="Texture" id=2]
@@ -11,6 +11,14 @@
 [ext_resource path="res://assets/HUD/SwitchRect.png" type="Texture" id=9]
 [ext_resource path="res://assets/Font/avrf38pt.fnt" type="BitmapFont" id=10]
 [ext_resource path="res://assets/HUD/SwitchCircle.png" type="Texture" id=11]
+[ext_resource path="res://assets/HUD/SaveFileIcon.png" type="Texture" id=12]
+[ext_resource path="res://assets/HUD/SaveFileIconEmpty.png" type="Texture" id=13]
+[ext_resource path="res://assets/HUD/CollectedFileIcons.png" type="Texture" id=14]
+[ext_resource path="res://assets/Font/avrf19pt.fnt" type="BitmapFont" id=15]
+[ext_resource path="res://assets/HUD/OverrideSaveText.png" type="Texture" id=16]
+[ext_resource path="res://assets/HUD/SaveCompleteText.png" type="Texture" id=17]
+[ext_resource path="res://assets/HUD/SaveFileIconCursor.png" type="Texture" id=18]
+[ext_resource path="res://assets/HUD/OverrideSaveCursor.png" type="Texture" id=19]
 
 [sub_resource type="DynamicFont" id=1]
 size = 24
@@ -31,10 +39,400 @@ margin_right = 40.0
 margin_bottom = 40.0
 texture = ExtResource( 5 )
 
+[node name="PauseText1" type="Node2D" parent="PauseMenu"]
+visible = false
+
+[node name="File1" type="Sprite" parent="PauseMenu/PauseText1"]
+position = Vector2( 234, 166 )
+texture = ExtResource( 13 )
+
+[node name="MainIcons" type="Sprite" parent="PauseMenu/PauseText1/File1"]
+texture = ExtResource( 12 )
+
+[node name="Sprite" type="Sprite" parent="PauseMenu/PauseText1/File1"]
+position = Vector2( -31, 14 )
+texture = ExtResource( 14 )
+offset = Vector2( -7, 10 )
+hframes = 3
+
+[node name="Sprite2" type="Sprite" parent="PauseMenu/PauseText1/File1"]
+position = Vector2( 13, 14 )
+texture = ExtResource( 14 )
+offset = Vector2( -7, 10 )
+hframes = 3
+frame = 1
+
+[node name="Sprite3" type="Sprite" parent="PauseMenu/PauseText1/File1"]
+position = Vector2( 57, 14 )
+texture = ExtResource( 14 )
+offset = Vector2( -7, 10 )
+hframes = 3
+frame = 2
+
+[node name="CoinAmount" type="Label" parent="PauseMenu/PauseText1/File1"]
+margin_left = -127.0
+margin_top = 11.0
+margin_right = -70.0
+margin_bottom = 49.0
+custom_fonts/font = ExtResource( 10 )
+text = "000"
+
+[node name="ExitAmount" type="Label" parent="PauseMenu/PauseText1/File1"]
+margin_left = -128.0
+margin_top = -34.0
+margin_right = -71.0
+margin_bottom = 4.0
+custom_fonts/font = ExtResource( 10 )
+text = "00"
+
+[node name="FileNumber" type="Label" parent="PauseMenu/PauseText1/File1"]
+margin_left = -25.0
+margin_top = -44.0
+margin_right = 70.0
+margin_bottom = -6.0
+custom_fonts/font = ExtResource( 15 )
+text = "FILE 1"
+
+[node name="EmptyText" type="Label" parent="PauseMenu/PauseText1/File1"]
+visible = false
+margin_left = -112.0
+margin_top = -4.0
+margin_right = 115.0
+margin_bottom = 34.0
+custom_fonts/font = ExtResource( 10 )
+text = "- EMPTY FILE -"
+
+[node name="File2" type="Sprite" parent="PauseMenu/PauseText1"]
+position = Vector2( 234, 280 )
+texture = ExtResource( 13 )
+
+[node name="MainIcons" type="Sprite" parent="PauseMenu/PauseText1/File2"]
+texture = ExtResource( 12 )
+
+[node name="Sprite" type="Sprite" parent="PauseMenu/PauseText1/File2"]
+position = Vector2( -31, 14 )
+texture = ExtResource( 14 )
+offset = Vector2( -7, 10 )
+hframes = 3
+
+[node name="Sprite2" type="Sprite" parent="PauseMenu/PauseText1/File2"]
+position = Vector2( 13, 14 )
+texture = ExtResource( 14 )
+offset = Vector2( -7, 10 )
+hframes = 3
+frame = 1
+
+[node name="Sprite3" type="Sprite" parent="PauseMenu/PauseText1/File2"]
+position = Vector2( 57, 14 )
+texture = ExtResource( 14 )
+offset = Vector2( -7, 10 )
+hframes = 3
+frame = 2
+
+[node name="CoinAmount" type="Label" parent="PauseMenu/PauseText1/File2"]
+margin_left = -127.0
+margin_top = 11.0
+margin_right = -70.0
+margin_bottom = 49.0
+custom_fonts/font = ExtResource( 10 )
+text = "000"
+
+[node name="ExitAmount" type="Label" parent="PauseMenu/PauseText1/File2"]
+margin_left = -128.0
+margin_top = -34.0
+margin_right = -71.0
+margin_bottom = 4.0
+custom_fonts/font = ExtResource( 10 )
+text = "00"
+
+[node name="FileNumber" type="Label" parent="PauseMenu/PauseText1/File2"]
+margin_left = -25.0
+margin_top = -44.0
+margin_right = 70.0
+margin_bottom = -6.0
+custom_fonts/font = ExtResource( 15 )
+text = "FILE 2"
+
+[node name="EmptyText" type="Label" parent="PauseMenu/PauseText1/File2"]
+visible = false
+margin_left = -112.0
+margin_top = -4.0
+margin_right = 115.0
+margin_bottom = 34.0
+custom_fonts/font = ExtResource( 10 )
+text = "- EMPTY FILE -"
+
+[node name="File3" type="Sprite" parent="PauseMenu/PauseText1"]
+position = Vector2( 234, 394 )
+texture = ExtResource( 13 )
+
+[node name="MainIcons" type="Sprite" parent="PauseMenu/PauseText1/File3"]
+texture = ExtResource( 12 )
+
+[node name="Sprite" type="Sprite" parent="PauseMenu/PauseText1/File3"]
+position = Vector2( -31, 14 )
+texture = ExtResource( 14 )
+offset = Vector2( -7, 10 )
+hframes = 3
+
+[node name="Sprite2" type="Sprite" parent="PauseMenu/PauseText1/File3"]
+position = Vector2( 13, 14 )
+texture = ExtResource( 14 )
+offset = Vector2( -7, 10 )
+hframes = 3
+frame = 1
+
+[node name="Sprite3" type="Sprite" parent="PauseMenu/PauseText1/File3"]
+position = Vector2( 57, 14 )
+texture = ExtResource( 14 )
+offset = Vector2( -7, 10 )
+hframes = 3
+frame = 2
+
+[node name="CoinAmount" type="Label" parent="PauseMenu/PauseText1/File3"]
+margin_left = -127.0
+margin_top = 11.0
+margin_right = -70.0
+margin_bottom = 49.0
+custom_fonts/font = ExtResource( 10 )
+text = "000"
+
+[node name="ExitAmount" type="Label" parent="PauseMenu/PauseText1/File3"]
+margin_left = -128.0
+margin_top = -34.0
+margin_right = -71.0
+margin_bottom = 4.0
+custom_fonts/font = ExtResource( 10 )
+text = "00"
+
+[node name="FileNumber" type="Label" parent="PauseMenu/PauseText1/File3"]
+margin_left = -25.0
+margin_top = -44.0
+margin_right = 70.0
+margin_bottom = -6.0
+custom_fonts/font = ExtResource( 15 )
+text = "FILE 3"
+
+[node name="EmptyText" type="Label" parent="PauseMenu/PauseText1/File3"]
+visible = false
+margin_left = -112.0
+margin_top = -4.0
+margin_right = 115.0
+margin_bottom = 34.0
+custom_fonts/font = ExtResource( 10 )
+text = "- EMPTY FILE -"
+
+[node name="File4" type="Sprite" parent="PauseMenu/PauseText1"]
+position = Vector2( 610, 166 )
+texture = ExtResource( 13 )
+
+[node name="MainIcons" type="Sprite" parent="PauseMenu/PauseText1/File4"]
+texture = ExtResource( 12 )
+
+[node name="Sprite" type="Sprite" parent="PauseMenu/PauseText1/File4"]
+position = Vector2( -31, 14 )
+texture = ExtResource( 14 )
+offset = Vector2( -7, 10 )
+hframes = 3
+
+[node name="Sprite2" type="Sprite" parent="PauseMenu/PauseText1/File4"]
+position = Vector2( 13, 14 )
+texture = ExtResource( 14 )
+offset = Vector2( -7, 10 )
+hframes = 3
+frame = 1
+
+[node name="Sprite3" type="Sprite" parent="PauseMenu/PauseText1/File4"]
+position = Vector2( 57, 14 )
+texture = ExtResource( 14 )
+offset = Vector2( -7, 10 )
+hframes = 3
+frame = 2
+
+[node name="CoinAmount" type="Label" parent="PauseMenu/PauseText1/File4"]
+margin_left = -127.0
+margin_top = 11.0
+margin_right = -70.0
+margin_bottom = 49.0
+custom_fonts/font = ExtResource( 10 )
+text = "000"
+
+[node name="ExitAmount" type="Label" parent="PauseMenu/PauseText1/File4"]
+margin_left = -128.0
+margin_top = -34.0
+margin_right = -71.0
+margin_bottom = 4.0
+custom_fonts/font = ExtResource( 10 )
+text = "00"
+
+[node name="FileNumber" type="Label" parent="PauseMenu/PauseText1/File4"]
+margin_left = -25.0
+margin_top = -44.0
+margin_right = 70.0
+margin_bottom = -6.0
+custom_fonts/font = ExtResource( 15 )
+text = "FILE 4"
+
+[node name="EmptyText" type="Label" parent="PauseMenu/PauseText1/File4"]
+visible = false
+margin_left = -112.0
+margin_top = -4.0
+margin_right = 115.0
+margin_bottom = 34.0
+custom_fonts/font = ExtResource( 10 )
+text = "- EMPTY FILE -"
+
+[node name="File5" type="Sprite" parent="PauseMenu/PauseText1"]
+position = Vector2( 610, 280 )
+texture = ExtResource( 13 )
+
+[node name="MainIcons" type="Sprite" parent="PauseMenu/PauseText1/File5"]
+texture = ExtResource( 12 )
+
+[node name="Sprite" type="Sprite" parent="PauseMenu/PauseText1/File5"]
+position = Vector2( -31, 14 )
+texture = ExtResource( 14 )
+offset = Vector2( -7, 10 )
+hframes = 3
+
+[node name="Sprite2" type="Sprite" parent="PauseMenu/PauseText1/File5"]
+position = Vector2( 13, 14 )
+texture = ExtResource( 14 )
+offset = Vector2( -7, 10 )
+hframes = 3
+frame = 1
+
+[node name="Sprite3" type="Sprite" parent="PauseMenu/PauseText1/File5"]
+position = Vector2( 57, 14 )
+texture = ExtResource( 14 )
+offset = Vector2( -7, 10 )
+hframes = 3
+frame = 2
+
+[node name="CoinAmount" type="Label" parent="PauseMenu/PauseText1/File5"]
+margin_left = -127.0
+margin_top = 11.0
+margin_right = -70.0
+margin_bottom = 49.0
+custom_fonts/font = ExtResource( 10 )
+text = "000"
+
+[node name="ExitAmount" type="Label" parent="PauseMenu/PauseText1/File5"]
+margin_left = -128.0
+margin_top = -34.0
+margin_right = -71.0
+margin_bottom = 4.0
+custom_fonts/font = ExtResource( 10 )
+text = "00"
+
+[node name="FileNumber" type="Label" parent="PauseMenu/PauseText1/File5"]
+margin_left = -25.0
+margin_top = -44.0
+margin_right = 70.0
+margin_bottom = -6.0
+custom_fonts/font = ExtResource( 15 )
+text = "FILE 5"
+
+[node name="EmptyText" type="Label" parent="PauseMenu/PauseText1/File5"]
+visible = false
+margin_left = -112.0
+margin_top = -4.0
+margin_right = 115.0
+margin_bottom = 34.0
+custom_fonts/font = ExtResource( 10 )
+text = "- EMPTY FILE -"
+
+[node name="File6" type="Sprite" parent="PauseMenu/PauseText1"]
+position = Vector2( 610, 394 )
+texture = ExtResource( 13 )
+
+[node name="MainIcons" type="Sprite" parent="PauseMenu/PauseText1/File6"]
+texture = ExtResource( 12 )
+
+[node name="Sprite" type="Sprite" parent="PauseMenu/PauseText1/File6"]
+position = Vector2( -31, 14 )
+texture = ExtResource( 14 )
+offset = Vector2( -7, 10 )
+hframes = 3
+
+[node name="Sprite2" type="Sprite" parent="PauseMenu/PauseText1/File6"]
+position = Vector2( 13, 14 )
+texture = ExtResource( 14 )
+offset = Vector2( -7, 10 )
+hframes = 3
+frame = 1
+
+[node name="Sprite3" type="Sprite" parent="PauseMenu/PauseText1/File6"]
+position = Vector2( 57, 14 )
+texture = ExtResource( 14 )
+offset = Vector2( -7, 10 )
+hframes = 3
+frame = 2
+
+[node name="CoinAmount" type="Label" parent="PauseMenu/PauseText1/File6"]
+margin_left = -127.0
+margin_top = 11.0
+margin_right = -70.0
+margin_bottom = 49.0
+custom_fonts/font = ExtResource( 10 )
+text = "000"
+
+[node name="ExitAmount" type="Label" parent="PauseMenu/PauseText1/File6"]
+margin_left = -128.0
+margin_top = -34.0
+margin_right = -71.0
+margin_bottom = 4.0
+custom_fonts/font = ExtResource( 10 )
+text = "00"
+
+[node name="FileNumber" type="Label" parent="PauseMenu/PauseText1/File6"]
+margin_left = -25.0
+margin_top = -44.0
+margin_right = 70.0
+margin_bottom = -6.0
+custom_fonts/font = ExtResource( 15 )
+text = "FILE 6"
+
+[node name="EmptyText" type="Label" parent="PauseMenu/PauseText1/File6"]
+visible = false
+margin_left = -112.0
+margin_top = -4.0
+margin_right = 115.0
+margin_bottom = 34.0
+custom_fonts/font = ExtResource( 10 )
+text = "- EMPTY FILE -"
+
+[node name="OverrideText" type="TextureRect" parent="PauseMenu/PauseText1"]
+margin_left = 94.0
+margin_top = 466.0
+margin_right = 752.0
+margin_bottom = 536.0
+texture = ExtResource( 16 )
+
+[node name="SaveComplete" type="TextureRect" parent="PauseMenu/PauseText1"]
+visible = false
+margin_left = 305.0
+margin_top = 482.0
+margin_right = 547.0
+margin_bottom = 552.0
+texture = ExtResource( 17 )
+
+[node name="FileCursor" type="Sprite" parent="PauseMenu/PauseText1"]
+position = Vector2( 234, 280 )
+texture = ExtResource( 18 )
+
+[node name="YNCursor" type="Sprite" parent="PauseMenu/PauseText1"]
+position = Vector2( 540, 502 )
+texture = ExtResource( 19 )
+
+[node name="PauseText2" type="Node2D" parent="PauseMenu"]
+visible = false
+
 [node name="PauseText3" type="Node2D" parent="PauseMenu"]
 visible = false
 
 [node name="AirDashLabel" type="Label" parent="PauseMenu/PauseText3"]
+visible = false
 margin_left = 240.0
 margin_top = 132.0
 margin_right = 375.0

@@ -212,6 +212,13 @@ func save_controls_data():
 			current_data['controls'][action] += [joypad_button]
 	
 	var file = File.new()
+	var dir = Directory.new()
+	if not dir.file_exists('./saves'):
+		dir.open('./')
+		dir.make_dir('saves')
+		dir.close()
+	
+	
 	file.open(path, File.WRITE)
 	file.store_line(to_json(current_data))
 	file.close()
@@ -246,21 +253,33 @@ func load_save_game(save_data, n):
 	unlocked_in_store = file_data['costumes']
 	spent_coins = file_data['spent_coins']
 
+# Returns a dictionary of the nth save file, -1 if non-existent, -2 if corrupted
+func view_save_game(save_data, n):
+	if not save_data: return -1
+	if not ('file'+str(n) in save_data): return -1
+	var file_data = save_data['file' + str(n)]
+	if not save_game_checks(file_data): return -2
+	return file_data
+
 # Converts string to list of val coin flags
 func str_to_val_coins(coin_string):
 	var coin_list = []
 	for i in range(coin_string.length()):
-		coin_list[0] = true if coin_string[i] % 2 else false
-		coin_list[1] = true if coin_string[i] % 4 > 2  else false
-		coin_list[2] = true if coin_string[i] > 4 else false
+		var new_entry = []
+		new_entry += [true] if int(coin_string[i]) % 2 else [false]
+		new_entry += [true] if int(coin_string[i]) % 4 >= 2  else [false]
+		new_entry += [true] if int(coin_string[i]) >= 4 else [false]
+		coin_list += [new_entry]
 	return coin_list
 
 # Converts string to list of exit flags
 func str_to_level_flags(level_string):
 	var level_list = []
 	for i in range(level_string.length()):
-		level_list[0] = true if level_string[i] % 2 else false
-		level_list[1] = true if level_string[i] > 2  else false
+		var new_entry = []
+		new_entry += [true] if int(level_string[i]) % 2 else [false]
+		new_entry += [true] if int(level_string[i]) >= 2  else [false]
+		level_list += [new_entry]
 	return level_list
 
 # Validates some save data to avoid crashes
@@ -317,6 +336,11 @@ func save_current_game_to_file(n):
 	current_data['file'+str(n)]['exits'] = exit_numbers
 	
 	var file = File.new()
+	var dir = Directory.new()
+	if not dir.file_exists('./saves'):
+		dir.open('./')
+		dir.make_dir('saves')
+	
 	file.open(path, File.WRITE)
 	file.store_line(to_json(current_data))
 	file.close()

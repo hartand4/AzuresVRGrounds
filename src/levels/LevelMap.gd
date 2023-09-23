@@ -198,9 +198,6 @@ func add_val_coins():
 # warning-ignore:unused_argument
 func _process(delta: float) -> void:
 	
-	if Input.is_action_just_pressed('dash') and Globals.current_level < 300:
-		print(Globals.val_coin_list[Globals.current_level])
-	
 	if done_initial_setup and not doing_map_events:
 		if Globals.current_level < 200:
 			for i in range(3):

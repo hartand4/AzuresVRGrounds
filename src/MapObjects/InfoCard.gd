@@ -13,7 +13,7 @@ func _ready():
 func _process(delta):
 	if Input.is_action_just_pressed('dash'):
 		player_hide = not player_hide
-	if player_hide:
+	if player_hide or Globals.game_paused:
 		$Card.visible = false
 		return
 	

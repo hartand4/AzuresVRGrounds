@@ -34,7 +34,7 @@ func _ready() -> void:
 	else:
 		on_level = get_parent().find_node('Warps').find_node('Warp'+str(Globals.current_level - 300))
 	self.position = on_level.position
-	print('cuurent level is ' + str(Globals.current_level))
+	print('current level is ' + str(Globals.current_level))
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.

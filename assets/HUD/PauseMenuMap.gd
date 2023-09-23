@@ -9,6 +9,8 @@ const PAUSE_TITLE := 5
 
 var menu_type := PAUSE_NORMAL
 var selection_cursor := 0
+var dummy_cursor := 0
+var extra_index := 0
 
 var input_delay = 1
 var is_transitioning = false
@@ -43,10 +45,10 @@ func _process(delta: float) -> void:
 			get_tree().change_scene("res://src/EXTRA/TitleScreen.tscn")
 		return
 	
-	for i in [0,  3,4,5]:
+	for i in range(6):
 		find_node("PauseText" + str(i)).visible = false
 	find_node("PauseText" + str(menu_type)).visible = true
-	$Cursor1.visible = menu_type != 4
+	$Cursor1.visible = menu_type in [0,2,3,5]
 	$Cursor2.visible = menu_type == 4
 	
 	# Options menu unlocks
@@ -88,13 +90,68 @@ func _process(delta: float) -> void:
 				elif menu_type == 3: selection_cursor = 3
 				else: selection_cursor = 0
 				$Cursor1.visible = false
+				if menu_type == 1: file_print()
 		
 		PAUSE_SAVES:
-			print('TODO: IMPLEMENT GAME SAVES!')
-			if menu_input == 1 or (selection_cursor == 6 and menu_input == 2):
-				selection_cursor = 1
-				menu_type = 0
-				$Cursor1.visible = false
+			#TODO
+			$Cursor1.visible = false
+			
+			if menu_input == 1:
+				if extra_index != 1:
+					selection_cursor = 1
+					menu_type = 0
+				else:
+					extra_index = 0
+					selection_cursor = dummy_cursor
+				return
+			
+			#file_print() -> Done once transitioning here from PAUSE_NORMAL
+			$PauseText1/FileCursor.modulate = Color(1,1,1) if extra_index == 0 else Color(0,1,0)
+			$PauseText1/YNCursor.visible = extra_index == 1
+			
+			if menu_input == 2:
+				if extra_index == 0:
+					$PauseText1/FileCursor.modulate = Color(0,1,0)
+					extra_index = 1
+					dummy_cursor = selection_cursor
+					selection_cursor = 1
+					
+					# If file already empty, no need to ask to override
+					if $PauseText1.find_node('File'+str(dummy_cursor+1)).find_node('EmptyText').visible:
+						extra_index = 2
+						Globals.save_current_game_to_file(dummy_cursor + 1)
+						file_print()
+						return
+					
+				elif extra_index == 1:
+					if selection_cursor == 1:
+						extra_index = 0
+						selection_cursor = dummy_cursor
+					else:
+						extra_index = 2
+						Globals.save_current_game_to_file(dummy_cursor + 1)
+						file_print()
+				else:
+					extra_index = 0
+					selection_cursor = 1
+					menu_type = PAUSE_NORMAL
+					return
+			$PauseText1/OverrideText.visible = extra_index == 1
+			$PauseText1/SaveComplete.visible = extra_index == 2
+			
+			if extra_index == 0:
+				if direction_input.y < 0:
+					selection_cursor += 2 if selection_cursor % 3 == 0 else -1
+				elif direction_input.y > 0:
+					selection_cursor += -2 if selection_cursor % 3 == 2 else 1
+				elif direction_input.x != 0:
+					selection_cursor = mod_wrap(selection_cursor + 3, 6)
+				$PauseText1/FileCursor.position.x = 234 + (376 if selection_cursor >= 3 else 0)
+				$PauseText1/FileCursor.position.y = 166 + 114*(selection_cursor % 3)
+			elif extra_index == 1:
+				if direction_input.x != 0:
+					selection_cursor = mod_wrap(selection_cursor + 1, 2)
+				$PauseText1/YNCursor.position = Vector2(540 + 150*selection_cursor,502)
 		
 		PAUSE_OPTIONS:
 			$Cursor1.set_position(Vector2(416,380))
@@ -333,3 +390,40 @@ func options_menu_visuals():
 	$PauseText3/Switch3.modulate = Color(($PauseText3/Switch3.get_position().x-475)*(-7)/380 + 1,
 		($PauseText3/Switch3.get_position().x-475)*(2)/380 + 1,
 		($PauseText3/Switch3.get_position().x-475)*(-2)/380 + 1)
+
+func file_print():
+	for i in range(6):
+		var file_display = $PauseText1.find_node('File'+str(i+1))
+		var file_data = Globals.view_save_game(Globals.load_save_data(), i+1)
+		
+		if typeof(file_data) == TYPE_NIL or (typeof(file_data) == TYPE_INT and file_data == -1):
+			for node in ['MainIcons','Sprite','Sprite2','Sprite3','CoinAmount','ExitAmount']:
+				file_display.find_node(node).visible = false
+			file_display.find_node('EmptyText').visible = true
+		
+		elif typeof(file_data) == TYPE_INT and file_data == -2:
+			file_display.find_node('EmptyText').visible = false
+			for node in ['Sprite','Sprite2','Sprite3']:
+				file_display.find_node(node).visible = false
+			
+			file_display.find_node('MainIcons').visible = true
+			file_display.find_node('CoinAmount').visible = true
+			file_display.find_node('ExitAmount').visible = true
+			file_display.find_node('CoinAmount').text = '???'
+			file_display.find_node('ExitAmount').text = '??'
+		
+		else:
+			file_display.find_node('EmptyText').visible = false
+			for node in ['MainIcons','CoinAmount','ExitAmount']:
+				file_display.find_node(node).visible = true
+			file_display.find_node('Sprite').visible = file_data.air_dash[0]
+			file_display.find_node('Sprite2').visible = file_data.armour[0]
+			file_display.find_node('Sprite3').visible = file_data.ultimate[0]
+			
+			var temp_coin_amt = Globals.total_val_coin_count(Globals.str_to_val_coins(file_data['val_coins']))
+			file_display.find_node('CoinAmount').text = (
+				str(temp_coin_amt / 100) + str((temp_coin_amt%100)/10) + str(temp_coin_amt % 10) )
+				
+			var temp_exit_amt = Globals.total_exit_count(Globals.str_to_level_flags(file_data['exits']))
+			file_display.find_node('ExitAmount').text = (
+				str(temp_exit_amt/10) + str(temp_exit_amt % 10) )

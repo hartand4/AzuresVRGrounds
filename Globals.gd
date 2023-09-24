@@ -216,7 +216,6 @@ func save_controls_data():
 	if not dir.file_exists('./saves'):
 		dir.open('./')
 		dir.make_dir('saves')
-		dir.close()
 	
 	
 	file.open(path, File.WRITE)
@@ -252,6 +251,33 @@ func load_save_game(save_data, n):
 	
 	unlocked_in_store = file_data['costumes']
 	spent_coins = file_data['spent_coins']
+	
+	current_level = file_data['current_level']
+	
+	for i in range(3): coins_collected_in_level[i] = false
+
+# Load data for a new file
+func load_new_game():
+	air_dash_unlocked = false
+	air_dash_selected = true
+	armour_unlocked = false
+	armour_selected = true
+	ultimate_unlocked = false
+	ultimate_selected = true
+	
+	var flag_str = ''
+	for i in range(LEVEL_COUNT):
+		flag_str += '0'
+	level_flags = str_to_level_flags(flag_str)
+	val_coin_list = str_to_val_coins(flag_str)
+	current_costume = 0
+	
+	unlocked_in_store = []
+	spent_coins = 0
+	
+	current_level = 1
+	
+	for i in range(3): coins_collected_in_level[i] = false
 
 # Returns a dictionary of the nth save file, -1 if non-existent, -2 if corrupted
 func view_save_game(save_data, n):
@@ -341,6 +367,21 @@ func save_current_game_to_file(n):
 		dir.open('./')
 		dir.make_dir('saves')
 	
+	file.open(path, File.WRITE)
+	file.store_line(to_json(current_data))
+	file.close()
+
+# Deletes file n from the save data
+func delete_game(n):
+	var path = './saves/data.json'
+	var current_data = load_save_data()
+	if not current_data:
+		current_data = {}
+	
+	if ('file'+str(n)) in current_data:
+		current_data.erase('file'+str(n))
+	
+	var file = File.new()
 	file.open(path, File.WRITE)
 	file.store_line(to_json(current_data))
 	file.close()

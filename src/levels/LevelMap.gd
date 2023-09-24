@@ -177,6 +177,8 @@ func _ready() -> void:
 	anim_frame = 0
 	anim_timer = 45
 	
+	if Globals.current_level >= 200: return
+	
 	if Globals.goal_reached_in_current_level[0] and not Globals.level_flags[Globals.current_level][0]:
 		doing_map_events = true
 		current_event_trigger = Globals.current_level*2
@@ -190,6 +192,7 @@ func _ready() -> void:
 	if Globals.goal_reached_in_current_level[0] or Globals.goal_reached_in_current_level[1]:
 		add_val_coins()
 
+# Adds the val coins from the recently completed level to the global list
 func add_val_coins():
 	for i in range(3):
 		Globals.val_coin_list[Globals.current_level][i] = (
@@ -208,6 +211,7 @@ func _process(delta: float) -> void:
 	
 	Globals.lock_input = true
 	
+	# Does map events that should already have been completed already
 	if not done_initial_setup:
 		for i in range(Globals.LEVEL_COUNT):
 			if Globals.level_flags[i][0]:
@@ -231,6 +235,7 @@ func _process(delta: float) -> void:
 		anim_timer -= 1
 		return
 	
+	# Map events are done, stop doing them
 	if event_number >= map_events[current_event_trigger].size():
 		doing_map_events = false
 		Globals.lock_input = false
@@ -238,6 +243,7 @@ func _process(delta: float) -> void:
 		Globals.level_flags[Globals.current_level][1] = Globals.goal_reached_in_current_level[1] or Globals.level_flags[Globals.current_level][1]
 		return
 	
+	# Do map events based on the above list, if the animation frame lines up
 	for event in map_events[current_event_trigger]:
 		if event[0] == anim_frame:
 			do_map_event(event)
@@ -245,21 +251,26 @@ func _process(delta: float) -> void:
 	anim_frame += 1
 	anim_timer = FRAME_DELAY
 
+# Do a map event
 func do_map_event(event):
 	match event[1]:
 		0:
+			# Change a map tile at coordinate [2] on layer [3][0], to the tile [3][1]
 			var coords = event[2]
 			var using_tilemap = tilemaps[event[3][0]]
 			var tile_to_add = event[3][1]
 			#print("Adding tile " + str(tile_to_add) + " from tileset " + str(using_tilemap) + " at coordinates " + str(coords))
 			using_tilemap.set_cellv(coords, tile_to_add)
 		1:
+			# Change a path tile at coordinate [2] on path tilemap [3][0], to the tile [3][1]
 			var coords = event[2]
 			var using_tilemap = path_tilemaps[event[3][0]]
 			var tile_to_add = event[3][1]
 			print("Adding tile " + str(tile_to_add) + " from tileset " + str(using_tilemap) + " at coordinates " + str(coords))
 			using_tilemap.set_cellv(coords, tile_to_add)
 		2:
+			# Change properties of the map object of type [3]["type"], number [3]["warp"/"level"],
+			# using the property types [3]["visible"/"unlocked"/...]
 			var object_type = event[3]["type"]
 			var object
 			if object_type == "level":
@@ -277,6 +288,8 @@ func do_map_event(event):
 					make_level_shine(object.position-Vector2(0,4))
 		
 		3:
+			# Add to the specified level/warp (based on [3][0] == 0 or 1), numbered [3][1],
+			# the direction index [3][2] (0=up, 1=down, 2=left, 3=right)
 			var object
 			if event[3][0] == 0:
 				object = $Levels.find_node(level_index_to_scene_name[event[3][1]])
@@ -292,6 +305,7 @@ func do_map_event(event):
 			elif event[3][2] == 3:
 				object.has_right_path = true
 
+# Make a newly-unlocked level shine
 func make_level_shine(pos):
 	var shine_scene = load("res://src/effects/LevelShine.tscn")
 	var spawn := shine_scene.instance() as Node2D

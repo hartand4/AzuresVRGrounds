@@ -15,6 +15,7 @@ export var air_dash_enabled := true
 export var armour_enabled := false
 export var ultimate_enabled := false
 var in_water := false
+var dying_process := false
 
 var did_ultimate_already := false
 
@@ -229,7 +230,9 @@ func _process(delta):
 		$UltimateHitboxArea/UltimateFire/UltimateFireAnimation.stop(false)
 		return
 	
-	if health == 0:
+	if health <= 0:
+		if not dying_process:
+			do_hurt_animation(0)
 		if animation_timer < 40: return
 		Globals.retry_menu_on = true
 		Globals.lock_input = false
@@ -269,6 +272,7 @@ func _process(delta):
 		print(state)
 		last_state = state
 
+# Handles various animations of player using state. Also calls change_dash_hitbox to match dash sprite
 func animation_handler():
 	$Sprite.visible = true
 	$Sprite.flip_h = recurring_x_dir + 1
@@ -365,7 +369,9 @@ func animation_handler():
 				_animation.play('Victory')
 			else:
 				_animation.play("Victory2")
-	
+
+# Updates the player state if game unpaused. Also updates attack_timer and dashing variables,
+# and calls start_walljump()
 func update_state():
 	if Globals.game_paused or Globals.lock_input:
 		return state
@@ -541,7 +547,8 @@ func update_state():
 	elif state < 2 and dir.x != 0: return ST_WALK
 	elif state < 2 and dir.x == 0: return ST_IDLE
 	return state
-	
+
+# Briefly creates some walljumping frames and checks for dash being held
 func start_walljump():
 	stop_wallslide_timer = 6
 	if not Input.is_action_pressed('dash'):
@@ -550,9 +557,12 @@ func start_walljump():
 	else: dashing = true
 	return ST_WALLJUMP
 
+# Redundant function with PauseMenuLevel
 func do_pause_menu():
 	return
 
+# Animates the slash effect and prepares the initial hitboxes accordingly.
+# start -> 0=end, 1=normal, 2=wall
 func do_slash_effect(start):
 	match start:
 		0:
@@ -580,7 +590,8 @@ func do_slash_effect(start):
 			attack_collision.find_node('AttackHitbox').set_position(Vector2(recurring_x_dir * 10.0,-60))
 			attack_collision.find_node('AttackHitbox').shape.extents = Vector2(40.75, 34)
 			attack_collision.find_node('AttackHitbox').disabled = false
-	
+
+# Updates the slash hitboxes throughout the full slash effect
 func update_slash_hitbox():
 	if state in [ST_ATTACK, ST_AIR_ATTACK]:
 		if attack_timer > 3 and attack_timer <= 8:
@@ -594,6 +605,8 @@ func update_slash_hitbox():
 			attack_collision.find_node('AttackHitbox').set_position(Vector2(recurring_x_dir * 6.0,-34))
 			attack_collision.find_node('AttackHitbox').shape.extents = Vector2(32,14)
 
+# Lowers player health by damage (halved if armour) and handles hurt/death animations.
+# Called in _process function if health <= 0
 func do_hurt_animation(damage):
 	if armour_enabled:
 		damage = ceil(damage/2)
@@ -616,11 +629,13 @@ func do_hurt_animation(damage):
 		colliding_with_enemy = false
 		Globals.lock_input = true
 		animation_timer = 0
+		dying_process = true
 		
 		# Just for bookkeeping
 		Globals.set_current_camera_pos($Camera2D.get_camera_screen_center())
 	return
-	
+
+# Alters dash hitbox and walljump/crush detectors based on the dashing state
 func change_dash_hitbox(dash_state):
 	if dash_state:
 		hitbox_collider.shape.extents = Vector2(11.5, 27.0)
@@ -647,7 +662,8 @@ func change_dash_hitbox(dash_state):
 	
 	$CrushCheckArea/Collision.disabled = false
 	$CrushCheckArea/DashCollision.disabled = true
-	
+
+# Updates the floor angle, and checks for crush death
 func check_for_collisions():
 	# Record floor normal angle if on floor
 	if is_on_floor() and get_slide_count() > 0:
@@ -662,9 +678,11 @@ func check_for_collisions():
 			colliding_with_enemy = true
 			damage_doing = 32
 
+# Does a transition effect in centre of screen
 func _do_transition():
 	Globals.start_transition(Vector2(420, 300), 2)
 
+# Checks the areas (enemy, ladder, water,...) colliding with the player
 func _on_PlayerHitboxArea_area_entered(area: Area2D) -> void:
 	# Check if the player is colliding with other areas (enemies or damage tiles)
 	if (area.get_collision_layer_bit(2) or area.get_collision_layer_bit(7) or 
@@ -754,10 +772,12 @@ func _on_LadderTopArea_body_exited(body: Node) -> void:
 		if box.get_collision_layer_bit(8):
 			colliding_with_ladder_top = true
 
+# Reloads current level
 func reload_level():
 	# warning-ignore:return_value_discarded
 	get_tree().change_scene(get_tree().current_scene.filename)
 
+# Spawns dust when sliding down a wall, with slight variance
 func spawn_dust_particle():
 	var spawn_scene = load("res://src/effects/WallSlideDust.tscn")
 	var spawn := spawn_scene.instance() as Node2D
@@ -770,6 +790,7 @@ func spawn_dust_particle():
 	rng.randomize()
 	spawn.global_position += Vector2(rng.randi_range(0, 6), 0)
 
+# Handles victory protocol when in victory state and on floor initially. Loads map after some time
 func victory_handler():
 	if animation_timer < 80: return
 	elif animation_timer == 80:
@@ -783,6 +804,9 @@ func victory_handler():
 		# warning-ignore:return_value_discarded
 		get_tree().change_scene("res://src/levels/LevelMap.tscn")
 
+# Handles checks to perform ultimate. ultimate_move_timer is in the form [index, time left, direction]
+# where index is how many moves in you are, time left is the time that you still have to complete the next move,
+# and direction is -1 if left was tapped first, or 1 if right was.
 func do_ultimate_check():
 	var ULTIMATE_TIMER := 45
 	if is_on_floor():
@@ -827,9 +851,12 @@ func do_ultimate_check():
 					if Input.is_action_just_pressed(action): ultimate_move_timer = [0,0,-1]
 	if ultimate_move_timer[1]: ultimate_move_timer[1] -= 1
 
+# Matches outfit's frame to the player's current animation frame
 func outfit_animation():
 	$Sprite/Outfit.frame = $Sprite.frame
 
+# Checks all areas with health when doing the ultimate move, lower their health by 1 each frame,
+# and reset their i-frames. Makes sure to not consider self as a target.
 func check_ultimate_hitbox_enemies():
 	var check_list = []
 	for a in $UltimateHitboxArea.get_overlapping_areas():
@@ -844,9 +871,12 @@ func check_ultimate_hitbox_enemies():
 		elif not area.get("health") == null:
 			area.health -= 1
 
+# Sets the variable jump_timer to n. Likely for bouncy objects to use.
 func set_jump_timer(n):
 	jump_timer = n
 
+# Sets checkpoint info to Globals: the checkpoint number num, the position of the place to spawn
+# from the checkpoint, and the collected coins obtained so far. Used by checkpoint objects.
 func set_checkpoint(num, pos):
 	Globals.checkpoint_data[0] = num
 	Globals.checkpoint_data[1] = collected_coins[0]

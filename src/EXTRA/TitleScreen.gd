@@ -12,6 +12,9 @@ var selection_cursor := 0
 var is_editing_controls = false
 var is_transitioning = true
 
+var dummy_cursor := 0
+var extra_index := 0
+
 # Big one: loading the save data!
 var save_data = {}
 
@@ -33,9 +36,16 @@ func _process(delta: float) -> void:
 		menu_input = 0
 	
 	$FirstMenu/Cursor.visible = title_screen_menu == 2
-	$FirstMenu.visible = title_screen_menu in [1,2]
+	$FirstMenu.visible = title_screen_menu in [1,2,3]
 	$ControlsMenu.visible = title_screen_menu == 4
 	$ControlsMenu/Cursor.visible = title_screen_menu == 4
+	
+	$FilesMenu/FileCursor.visible = title_screen_menu == 3
+	$FilesMenu/EraseCursor.visible = false
+	$FilesMenu/YNCursor.visible = extra_index == 2
+	$FilesMenu/EraseText.visible = extra_index < 2
+	$FilesMenu/DeleteText.visible = extra_index == 2
+	$FilesMenu/DeletedText.visible = extra_index == 3
 	
 	if is_transitioning:
 		animation_timer -= 1
@@ -51,14 +61,13 @@ func _process(delta: float) -> void:
 			# warning-ignore:return_value_discarded
 			get_tree().change_scene("res://src/EXTRA/TitleScreen.tscn")
 		elif title_screen_menu == 3:
-			# TODO: Load save file on map screen
-			
 			# warning-ignore:return_value_discarded
 			get_tree().change_scene("res://src/levels/LevelMap.tscn")
 		return
 	
 	match title_screen_menu:
 		0:
+			# TITLE TRANSITIONING PART
 			$TitleObject/TitleVisibility/Title/Azzy/TailAnimation.play("TailWag")
 			$TitleObject/TitleVisibility/Title/Azzy/AzzyAnimation.play("IdleBlink")
 			$PressStart.visible = false
@@ -75,6 +84,7 @@ func _process(delta: float) -> void:
 				$TitleObject/TitleVisibility.set_position(Vector2(0,0))
 				title_screen_menu = 1
 		1:
+			# PRESS START PART
 			if not animation_timer:
 				$TitleObject/TitleVisibility/Title/Azzy/TailAnimation.play("TailWag")
 				$TitleObject/TitleVisibility/Title/Azzy/AzzyAnimation.play("IdleBlink")
@@ -96,6 +106,14 @@ func _process(delta: float) -> void:
 				selection_cursor = 0
 				title_screen_menu = 2
 		2:
+			# MAIN OPTIONS MENU
+			if animation_timer:
+				animation_timer -= 1
+				if animation_timer == 0:
+					selection_cursor = 0
+					title_screen_menu = 3
+				return
+			
 			selection_cursor = mod_wrap(selection_cursor + int(menu_dir.y), 5)
 			$FirstMenu/Cursor.set_position(Vector2(240,108 + 82*selection_cursor))
 			if menu_input == 2:
@@ -103,8 +121,11 @@ func _process(delta: float) -> void:
 					Globals.start_transition(Vector2.ZERO, 5)
 					animation_timer = 75
 					is_transitioning = true
+					Globals.load_new_game()
 				elif selection_cursor == 1:
-					Globals.save_current_game_to_file(1)
+					$Camera2D.position = Vector2(2100,300)
+					animation_timer = 75
+					file_print()
 				elif selection_cursor == 2:
 					selection_cursor = 8
 					title_screen_menu = 4
@@ -112,14 +133,27 @@ func _process(delta: float) -> void:
 					Globals.start_transition(Vector2.ZERO, 5)
 					animation_timer = 75
 					is_transitioning = true
-					Globals.load_save_game(save_data, 1)
 				elif selection_cursor == 4:
 					$FirstMenu/Cursor.modulate = Color(0,1,0)
 					get_tree().quit()
-				
+		
 		3:
-			pass
+			# LOAD FILE MENU
+			if animation_timer:
+				animation_timer -= 1
+				if animation_timer == 0:
+					selection_cursor = 1
+					title_screen_menu = 2
+				return
+			
+			if (menu_input == 1 and extra_index == 0):
+				$Camera2D.position = Vector2(1260,300)
+				animation_timer = 75
+			
+			do_file_menu(menu_input, menu_dir)
+		
 		4:
+			# CONTROLS MENU
 			if selection_cursor == 8:
 				if menu_dir.y < 0: selection_cursor = 3
 				elif menu_dir.y > 0: selection_cursor = 0
@@ -154,6 +188,7 @@ func _process(delta: float) -> void:
 	if animation_timer:
 		animation_timer -= 1
 
+# Helper function to help the title bounce animation
 func title_bounce():
 	if not bounce_nums:
 		$TitleObject.set_position(Vector2(0,0))
@@ -165,6 +200,7 @@ func title_bounce():
 		title_velocity += 2
 		$TitleObject.set_position(Vector2($TitleObject.get_position() + Vector2(0,title_velocity)))
 
+# Helper function to help with a title screen transition variation
 func title_stretch_in():
 	var current_size = $TitleObject/TitleVisibility.get_size()
 	$TitleObject/TitleVisibility.set_size(current_size + Vector2(20,0))
@@ -175,6 +211,7 @@ func title_stretch_in():
 		$TitleObject/TitleVisibility.set_position(Vector2.ZERO)
 		$TitleObject/TitleVisibility/Title.set_position(Vector2(0, 0))
 
+# Another function to help with a different variation
 func title_build_upward():
 	var current_size = $TitleObject/TitleVisibility.get_size()
 	$TitleObject/TitleVisibility.set_size(current_size + Vector2(0,15))
@@ -185,6 +222,7 @@ func title_build_upward():
 		$TitleObject/TitleVisibility.set_position(Vector2.ZERO)
 		$TitleObject/TitleVisibility/Title.set_position(Vector2.ZERO)
 
+# Gets direction input
 func get_menu_direction():
 	var x_dir = 1.0 if Input.is_action_just_pressed("move_right") else (
 		-1.0 if Input.is_action_just_pressed("move_left") else 0.0)
@@ -192,6 +230,7 @@ func get_menu_direction():
 		-1.0 if Input.is_action_just_pressed("move_up") else 0.0)
 	return Vector2(x_dir, y_dir)
 
+# Gets button input
 func get_menu_input():
 	if Input.is_action_just_pressed("jump"):
 		return 2
@@ -201,6 +240,7 @@ func get_menu_input():
 		return 3
 	return 0
 
+# Helper function to reset some title screen values
 func reset_title_screen():
 	title_screen_variant = Globals.call_rng(0,2)
 	animation_timer = 100
@@ -230,15 +270,18 @@ func reset_title_screen():
 		$TitleObject/TitleVisibility/Title.set_position(Vector2(-600,0))
 		return
 
+# Makes Azure jump off title screen
 func azzy_jump():
 	azzy_velocity += 1.5
 	var current_pos = $TitleObject/TitleVisibility/Title/Azzy.get_position()
 	$TitleObject/TitleVisibility/Title/Azzy.set_position(current_pos+Vector2(-4,azzy_velocity))
 
+# Proper % function
 func mod_wrap(input_num, mod_amt):
 	if input_num > 0: return input_num % mod_amt
 	return mod_wrap(input_num + mod_amt, mod_amt)
 
+# Displays controls in controls menu
 func display_controls():
 	var input_label_dict = {
 		'UpButtonLabel':'move_up', 'DownButtonLabel':'move_down', 'LeftButtonLabel':'move_left',
@@ -253,6 +296,7 @@ func display_controls():
 			elif InputMap.get_action_list(input_label_dict[label])[1] is InputEventJoypadMotion:
 				$ControlsMenu/PauseText2.find_node(label).text += ', Joypad: ' + str(InputMap.get_action_list(input_label_dict[label])[1].axis)
 
+# Listens for new input when editing controls
 func _unhandled_input(event, setup=false):
 	if not is_editing_controls: return
 	if (event is InputEventKey or event is InputEventJoypadButton) and not event.pressed: return
@@ -318,6 +362,7 @@ func _unhandled_input(event, setup=false):
 	is_editing_controls = false
 	animation_timer = 1
 
+# Check if that key is already applied to some action
 func get_key_action(event):
 	var event_button_index
 	
@@ -347,12 +392,14 @@ func get_key_action(event):
 		return -1
 	return -1
 
+# Returns the action name from the index number
 func input_index_to_str(n):
 	if n in range(8):
 		return ['move_up', 'move_down', 'move_left', 'move_right', 
 		'jump', 'attack', 'dash', 'pause'][n]
 	return ''
 
+# Runs preliminary checks, then loads controls from save data
 func load_controls(ctr_data):
 	# Perform security checks first...
 	if not ('move_up' in ctr_data and 'move_down' in ctr_data and 'move_left' in ctr_data and 'move_right' in ctr_data and
@@ -392,3 +439,112 @@ func load_controls(ctr_data):
 			is_editing_controls = true
 			selection_cursor = i
 			_unhandled_input(new_event)
+
+# Performs logic for file select and erase menus
+func do_file_menu(menu_input, menu_dir):
+	$FilesMenu/EraseText.text = "ERASE FILE" if extra_index == 0 else "CANCEL"
+	$FilesMenu/FileCursor.modulate = Color(1,1,1) if extra_index < 2 else Color(0,1,0)
+	
+	if extra_index <= 1:
+		if menu_dir.x != 0 and selection_cursor != 6:
+			selection_cursor = mod_wrap(selection_cursor + 3, 6)
+		if menu_dir.y < 0:
+			selection_cursor = selection_cursor-1 if selection_cursor in [1,2,4,5] else (
+				6 if selection_cursor in [0,3] else 2)
+		elif menu_dir.y > 0:
+			selection_cursor = selection_cursor+1 if selection_cursor in [0,1,3,4,5] else (
+				6 if selection_cursor == 2 else 0)
+		
+		if extra_index == 0 and menu_input == 2:
+			if selection_cursor < 6:
+				var file_data = Globals.view_save_game(save_data, selection_cursor+1)
+				if typeof(file_data) != TYPE_INT:
+					Globals.load_save_game(save_data, selection_cursor+1)
+					Globals.start_transition(Vector2.ZERO, 5)
+					animation_timer = 75
+					is_transitioning = true
+				else:
+					print('No (valid) file to load')
+			else:
+				extra_index = 1
+				$FileBG.texture = load("res://assets/Title Screen/FilesBG2.png")
+		
+		elif extra_index == 1:
+			# warning-ignore:integer_division
+			$FilesMenu/FileCursor.position = Vector2(1912 + 376*(selection_cursor/3), 170 + 114*(selection_cursor%3))
+			if menu_input == 1 or (menu_input==2 and selection_cursor == 6):
+				extra_index = 0
+				$FileBG.texture = load("res://assets/Title Screen/FilesBG.png")
+			elif menu_input == 2:
+				var file_data = Globals.view_save_game(save_data, selection_cursor+1)
+				if typeof(file_data) != TYPE_INT or file_data == -2:
+					extra_index = 2
+					dummy_cursor = selection_cursor
+					selection_cursor = 1
+				else:
+					print('No file to delete')
+		
+		$FilesMenu/FileCursor.visible = selection_cursor < 6
+		$FilesMenu/EraseCursor.visible = selection_cursor == 6
+		if extra_index < 2:
+			# warning-ignore:integer_division
+			$FilesMenu/FileCursor.position = Vector2(1912 + 376*(selection_cursor/3), 170 + 114*(selection_cursor%3))
+	
+	elif extra_index == 2:
+		if menu_dir.x != 0:
+			selection_cursor = mod_wrap(selection_cursor+1, 2)
+		
+		if menu_input == 1 or (menu_input == 2 and selection_cursor == 1):
+			extra_index = 1
+			selection_cursor = dummy_cursor
+		
+		elif menu_input == 2:
+			Globals.delete_game(dummy_cursor+1)
+			file_print()
+			extra_index = 3
+		
+		$FilesMenu/YNCursor.position = Vector2(2208 + selection_cursor*146,496)
+	
+	elif extra_index == 3 and menu_input == 2:
+		extra_index = 0
+		$FileBG.texture = load("res://assets/Title Screen/FilesBG.png")
+		save_data = Globals.load_save_data()
+		selection_cursor = dummy_cursor
+
+# Logic that prints info for each save game
+func file_print():
+	for i in range(6):
+		var file_display = $FilesMenu.find_node('File'+str(i+1))
+		var file_data = Globals.view_save_game(Globals.load_save_data(), i+1)
+		
+		if typeof(file_data) == TYPE_NIL or (typeof(file_data) == TYPE_INT and file_data == -1):
+			for node in ['MainIcons','Sprite','Sprite2','Sprite3','CoinAmount','ExitAmount']:
+				file_display.find_node(node).visible = false
+			file_display.find_node('EmptyText').visible = true
+		
+		elif typeof(file_data) == TYPE_INT and file_data == -2:
+			file_display.find_node('EmptyText').visible = false
+			for node in ['Sprite','Sprite2','Sprite3']:
+				file_display.find_node(node).visible = false
+			
+			file_display.find_node('MainIcons').visible = true
+			file_display.find_node('CoinAmount').visible = true
+			file_display.find_node('ExitAmount').visible = true
+			file_display.find_node('CoinAmount').text = '???'
+			file_display.find_node('ExitAmount').text = '??'
+		
+		else:
+			file_display.find_node('EmptyText').visible = false
+			for node in ['MainIcons','CoinAmount','ExitAmount']:
+				file_display.find_node(node).visible = true
+			file_display.find_node('Sprite').visible = file_data.air_dash[0]
+			file_display.find_node('Sprite2').visible = file_data.armour[0]
+			file_display.find_node('Sprite3').visible = file_data.ultimate[0]
+			
+			var temp_coin_amt = Globals.total_val_coin_count(Globals.str_to_val_coins(file_data['val_coins']))
+			file_display.find_node('CoinAmount').text = (
+				str(temp_coin_amt / 100) + str((temp_coin_amt%100)/10) + str(temp_coin_amt % 10) )
+				
+			var temp_exit_amt = Globals.total_exit_count(Globals.str_to_level_flags(file_data['exits']))
+			file_display.find_node('ExitAmount').text = (
+				str(temp_exit_amt/10) + str(temp_exit_amt % 10) )

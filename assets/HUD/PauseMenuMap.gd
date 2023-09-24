@@ -64,6 +64,7 @@ func _process(delta: float) -> void:
 	if menu_input == 3:
 		Globals.pause_menu_on = false
 		Globals.game_paused = false
+		extra_index = 0
 		return
 	
 	match menu_type:
@@ -93,7 +94,6 @@ func _process(delta: float) -> void:
 				if menu_type == 1: file_print()
 		
 		PAUSE_SAVES:
-			#TODO
 			$Cursor1.visible = false
 			
 			if menu_input == 1:
@@ -144,7 +144,7 @@ func _process(delta: float) -> void:
 					selection_cursor += 2 if selection_cursor % 3 == 0 else -1
 				elif direction_input.y > 0:
 					selection_cursor += -2 if selection_cursor % 3 == 2 else 1
-				elif direction_input.x != 0:
+				if direction_input.x != 0:
 					selection_cursor = mod_wrap(selection_cursor + 3, 6)
 				$PauseText1/FileCursor.position.x = 234 + (376 if selection_cursor >= 3 else 0)
 				$PauseText1/FileCursor.position.y = 166 + 114*(selection_cursor % 3)
@@ -225,6 +225,7 @@ func _process(delta: float) -> void:
 				Globals.start_transition(Vector2(420, 300), 1)
 				$Cursor1.modulate = Color(0,1,0)
 
+# Some following functions are clones of ones from TitleScreen.gd
 func get_menu_direction():
 	var x_dir = 1 if Input.is_action_just_pressed("move_right") else (
 		-1 if Input.is_action_just_pressed("move_left") else 0)
@@ -359,6 +360,7 @@ func input_index_to_str(n):
 		'jump', 'attack', 'dash', 'pause'][n]
 	return ''
 
+# Loads the visuals of the switches in the options menu
 func options_menu_visuals():
 	$PauseText3/AirDashLabel.text = "AIR DASH" if Globals.air_dash_unlocked else "?????"
 	$PauseText3/AirDashLabel.modulate = Color(1,1,1) if Globals.air_dash_unlocked else Color(0.5,0.5,0.5)

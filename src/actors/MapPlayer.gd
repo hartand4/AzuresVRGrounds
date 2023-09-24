@@ -95,7 +95,7 @@ func _process(delta: float) -> void:
 	if Globals.game_paused or Globals.pause_menu_on:
 		$AnimationPlayer.stop(false)
 		return
-	elif Input.is_action_just_pressed("pause") and not Globals.lock_input and not entering_level:
+	elif Input.is_action_just_pressed("pause") and not Globals.lock_input and not entering_level and not is_warping:
 		Globals.game_paused = true
 		Globals.pause_menu_on = true
 		return
@@ -163,6 +163,7 @@ func _process(delta: float) -> void:
 			animation_timer = 40
 			is_warping = true
 
+# Get direction of input
 func get_direction_movement():
 	if Globals.lock_input: return Vector2.ZERO
 	if Input.is_action_pressed("move_down"):
@@ -175,6 +176,7 @@ func get_direction_movement():
 		return Vector2.RIGHT
 	return Vector2.ZERO
 
+# Animate based on the movement direction, or if on ladder
 func animate_direction():
 	var dir = closest_right_angle(direction)
 	if dir == Vector2.ZERO:
@@ -183,9 +185,11 @@ func animate_direction():
 		$AnimationPlayer.play("Backward")
 	else:
 		$AnimationPlayer.play(anim_dict[dir])
-		
 
+# Checks when map player overlaps with areas
 func _on_LevelCheckArea_area_entered(area: Area2D) -> void:
+	
+	# This should be a level/warp
 	if not area.get('level_number') == null:
 		on_level = area
 		if area.level_number:
@@ -194,9 +198,13 @@ func _on_LevelCheckArea_area_entered(area: Area2D) -> void:
 			Globals.current_level = area.warp_number + 300
 		print(on_level)
 		return
+	
+	# Ignore non-level areas when turning
 	if turning_ccw or turning_cw:
 		return
 	orig_dir = direction
+	
+	# Area that asks player to turn -1/x style
 	if area.get_collision_layer_bit(0):
 		if direction.y != 0:
 			turning_ccw = true
@@ -206,6 +214,8 @@ func _on_LevelCheckArea_area_entered(area: Area2D) -> void:
 			turning_cw = true
 			set_turning_timer()
 			return
+	
+	# Area that asks player to turn 1/x style
 	elif area.get_collision_layer_bit(1):
 		if direction.x != 0:
 			turning_ccw = true
@@ -215,13 +225,16 @@ func _on_LevelCheckArea_area_entered(area: Area2D) -> void:
 			turning_cw = true
 			set_turning_timer()
 			return
+	
+	#Area is a ladder
 	elif area.get_collision_layer_bit(2):
 		on_ladder = true
 
+# Sets variable turning_timer to TURNING_TIMER_SET
 func set_turning_timer():
 	turning_timer = TURNING_TIMER_SET
-	return
 
+# Returns a vector of the nearest right angle to the given dir vector
 func closest_right_angle(dir):
 	if dir == Vector2.ZERO: return dir
 	if dir.x > -dir.y:
@@ -232,12 +245,15 @@ func closest_right_angle(dir):
 		return Vector2.UP
 	return Vector2.LEFT
 
-func do_pause_menu(): #TODO
+# Redundant function
+func do_pause_menu():
 	pass
 
+# Specifies how to start a transition into a level
 func _do_transition():
 	Globals.start_transition(get_position() - $Camera2D.get_camera_screen_center() + Vector2(420,280), 2)
 
+# May be good to specify some specific camera locations in the overworld (like the warp island)
 func camera_limit_checks():
 	# Warp Isle
 	if position.x >= 5952 and position.x <= 6792 and position.y <= 240 and position.y >= 0:
@@ -251,5 +267,6 @@ func camera_limit_checks():
 		$Camera2D.limit_top = 0
 		$Camera2D.limit_bottom = 10000000
 
+# Only real concern is seeing if a ladder has been exited
 func _on_LevelCheckArea_area_exited(area: Area2D) -> void:
 	if area.get_collision_layer_bit(2): on_ladder = false

@@ -1,4 +1,4 @@
-[gd_scene load_steps=24 format=2]
+[gd_scene load_steps=31 format=2]
 
 [ext_resource path="res://assets/Title Screen/TechnoBG4.png" type="Texture" id=1]
 [ext_resource path="res://src/EXTRA/TitleScreen.gd" type="Script" id=2]
@@ -14,6 +14,13 @@
 [ext_resource path="res://assets/Title Screen/ControlsBG.png" type="Texture" id=12]
 [ext_resource path="res://assets/Font/AzureVR.ttf" type="DynamicFontData" id=13]
 [ext_resource path="res://assets/Sprites/Azzy/Outfits/Shorts.png" type="Texture" id=14]
+[ext_resource path="res://assets/Title Screen/FilesBG.png" type="Texture" id=15]
+[ext_resource path="res://assets/HUD/SaveFileIcon.png" type="Texture" id=16]
+[ext_resource path="res://assets/HUD/SaveFileIconEmpty.png" type="Texture" id=17]
+[ext_resource path="res://assets/HUD/CollectedFileIcons.png" type="Texture" id=18]
+[ext_resource path="res://assets/Font/avrf19pt.fnt" type="BitmapFont" id=19]
+[ext_resource path="res://assets/HUD/SaveFileIconCursor.png" type="Texture" id=20]
+[ext_resource path="res://assets/HUD/OverrideSaveCursor.png" type="Texture" id=21]
 
 [sub_resource type="Animation" id=1]
 resource_name = "IdleBlink"
@@ -255,6 +262,12 @@ margin_right = 1680.0
 margin_bottom = 600.0
 texture = ExtResource( 8 )
 
+[node name="FileBG" type="TextureRect" parent="."]
+margin_left = 1680.0
+margin_right = 2100.0
+margin_bottom = 300.0
+texture = ExtResource( 15 )
+
 [node name="FirstMenu" type="Node2D" parent="."]
 position = Vector2( 840, 0 )
 
@@ -386,5 +399,413 @@ margin_top = 436.0
 margin_right = 604.0
 margin_bottom = 478.0
 texture = ExtResource( 10 )
+
+[node name="FilesMenu" type="Node2D" parent="."]
+
+[node name="File1" type="Sprite" parent="FilesMenu"]
+position = Vector2( 1912, 170 )
+texture = ExtResource( 17 )
+
+[node name="MainIcons" type="Sprite" parent="FilesMenu/File1"]
+texture = ExtResource( 16 )
+
+[node name="Sprite" type="Sprite" parent="FilesMenu/File1"]
+position = Vector2( -31, 14 )
+texture = ExtResource( 18 )
+offset = Vector2( -7, 10 )
+hframes = 3
+
+[node name="Sprite2" type="Sprite" parent="FilesMenu/File1"]
+position = Vector2( 13, 14 )
+texture = ExtResource( 18 )
+offset = Vector2( -7, 10 )
+hframes = 3
+frame = 1
+
+[node name="Sprite3" type="Sprite" parent="FilesMenu/File1"]
+position = Vector2( 57, 14 )
+texture = ExtResource( 18 )
+offset = Vector2( -7, 10 )
+hframes = 3
+frame = 2
+
+[node name="CoinAmount" type="Label" parent="FilesMenu/File1"]
+margin_left = -127.0
+margin_top = 11.0
+margin_right = -70.0
+margin_bottom = 49.0
+custom_fonts/font = ExtResource( 6 )
+text = "000"
+
+[node name="ExitAmount" type="Label" parent="FilesMenu/File1"]
+margin_left = -128.0
+margin_top = -34.0
+margin_right = -71.0
+margin_bottom = 4.0
+custom_fonts/font = ExtResource( 6 )
+text = "00"
+
+[node name="FileNumber" type="Label" parent="FilesMenu/File1"]
+margin_left = -25.0
+margin_top = -44.0
+margin_right = 70.0
+margin_bottom = -6.0
+custom_fonts/font = ExtResource( 19 )
+text = "FILE 1"
+
+[node name="EmptyText" type="Label" parent="FilesMenu/File1"]
+visible = false
+margin_left = -112.0
+margin_top = -4.0
+margin_right = 115.0
+margin_bottom = 34.0
+custom_fonts/font = ExtResource( 6 )
+text = "- EMPTY FILE -"
+
+[node name="File2" type="Sprite" parent="FilesMenu"]
+position = Vector2( 1912, 284 )
+texture = ExtResource( 17 )
+
+[node name="MainIcons" type="Sprite" parent="FilesMenu/File2"]
+texture = ExtResource( 16 )
+
+[node name="Sprite" type="Sprite" parent="FilesMenu/File2"]
+position = Vector2( -31, 14 )
+texture = ExtResource( 18 )
+offset = Vector2( -7, 10 )
+hframes = 3
+
+[node name="Sprite2" type="Sprite" parent="FilesMenu/File2"]
+position = Vector2( 13, 14 )
+texture = ExtResource( 18 )
+offset = Vector2( -7, 10 )
+hframes = 3
+frame = 1
+
+[node name="Sprite3" type="Sprite" parent="FilesMenu/File2"]
+position = Vector2( 57, 14 )
+texture = ExtResource( 18 )
+offset = Vector2( -7, 10 )
+hframes = 3
+frame = 2
+
+[node name="CoinAmount" type="Label" parent="FilesMenu/File2"]
+margin_left = -127.0
+margin_top = 11.0
+margin_right = -70.0
+margin_bottom = 49.0
+custom_fonts/font = ExtResource( 6 )
+text = "000"
+
+[node name="ExitAmount" type="Label" parent="FilesMenu/File2"]
+margin_left = -128.0
+margin_top = -34.0
+margin_right = -71.0
+margin_bottom = 4.0
+custom_fonts/font = ExtResource( 6 )
+text = "00"
+
+[node name="FileNumber" type="Label" parent="FilesMenu/File2"]
+margin_left = -25.0
+margin_top = -44.0
+margin_right = 70.0
+margin_bottom = -6.0
+custom_fonts/font = ExtResource( 19 )
+text = "FILE 2"
+
+[node name="EmptyText" type="Label" parent="FilesMenu/File2"]
+visible = false
+margin_left = -112.0
+margin_top = -4.0
+margin_right = 115.0
+margin_bottom = 34.0
+custom_fonts/font = ExtResource( 6 )
+text = "- EMPTY FILE -"
+
+[node name="File3" type="Sprite" parent="FilesMenu"]
+position = Vector2( 1912, 398 )
+texture = ExtResource( 17 )
+
+[node name="MainIcons" type="Sprite" parent="FilesMenu/File3"]
+texture = ExtResource( 16 )
+
+[node name="Sprite" type="Sprite" parent="FilesMenu/File3"]
+position = Vector2( -31, 14 )
+texture = ExtResource( 18 )
+offset = Vector2( -7, 10 )
+hframes = 3
+
+[node name="Sprite2" type="Sprite" parent="FilesMenu/File3"]
+position = Vector2( 13, 14 )
+texture = ExtResource( 18 )
+offset = Vector2( -7, 10 )
+hframes = 3
+frame = 1
+
+[node name="Sprite3" type="Sprite" parent="FilesMenu/File3"]
+position = Vector2( 57, 14 )
+texture = ExtResource( 18 )
+offset = Vector2( -7, 10 )
+hframes = 3
+frame = 2
+
+[node name="CoinAmount" type="Label" parent="FilesMenu/File3"]
+margin_left = -127.0
+margin_top = 11.0
+margin_right = -70.0
+margin_bottom = 49.0
+custom_fonts/font = ExtResource( 6 )
+text = "000"
+
+[node name="ExitAmount" type="Label" parent="FilesMenu/File3"]
+margin_left = -128.0
+margin_top = -34.0
+margin_right = -71.0
+margin_bottom = 4.0
+custom_fonts/font = ExtResource( 6 )
+text = "00"
+
+[node name="FileNumber" type="Label" parent="FilesMenu/File3"]
+margin_left = -25.0
+margin_top = -44.0
+margin_right = 70.0
+margin_bottom = -6.0
+custom_fonts/font = ExtResource( 19 )
+text = "FILE 3"
+
+[node name="EmptyText" type="Label" parent="FilesMenu/File3"]
+visible = false
+margin_left = -112.0
+margin_top = -4.0
+margin_right = 115.0
+margin_bottom = 34.0
+custom_fonts/font = ExtResource( 6 )
+text = "- EMPTY FILE -"
+
+[node name="File4" type="Sprite" parent="FilesMenu"]
+position = Vector2( 2288, 170 )
+texture = ExtResource( 17 )
+
+[node name="MainIcons" type="Sprite" parent="FilesMenu/File4"]
+texture = ExtResource( 16 )
+
+[node name="Sprite" type="Sprite" parent="FilesMenu/File4"]
+position = Vector2( -31, 14 )
+texture = ExtResource( 18 )
+offset = Vector2( -7, 10 )
+hframes = 3
+
+[node name="Sprite2" type="Sprite" parent="FilesMenu/File4"]
+position = Vector2( 13, 14 )
+texture = ExtResource( 18 )
+offset = Vector2( -7, 10 )
+hframes = 3
+frame = 1
+
+[node name="Sprite3" type="Sprite" parent="FilesMenu/File4"]
+position = Vector2( 57, 14 )
+texture = ExtResource( 18 )
+offset = Vector2( -7, 10 )
+hframes = 3
+frame = 2
+
+[node name="CoinAmount" type="Label" parent="FilesMenu/File4"]
+margin_left = -127.0
+margin_top = 11.0
+margin_right = -70.0
+margin_bottom = 49.0
+custom_fonts/font = ExtResource( 6 )
+text = "000"
+
+[node name="ExitAmount" type="Label" parent="FilesMenu/File4"]
+margin_left = -128.0
+margin_top = -34.0
+margin_right = -71.0
+margin_bottom = 4.0
+custom_fonts/font = ExtResource( 6 )
+text = "00"
+
+[node name="FileNumber" type="Label" parent="FilesMenu/File4"]
+margin_left = -25.0
+margin_top = -44.0
+margin_right = 70.0
+margin_bottom = -6.0
+custom_fonts/font = ExtResource( 19 )
+text = "FILE 4"
+
+[node name="EmptyText" type="Label" parent="FilesMenu/File4"]
+visible = false
+margin_left = -112.0
+margin_top = -4.0
+margin_right = 115.0
+margin_bottom = 34.0
+custom_fonts/font = ExtResource( 6 )
+text = "- EMPTY FILE -"
+
+[node name="File5" type="Sprite" parent="FilesMenu"]
+position = Vector2( 2288, 284 )
+texture = ExtResource( 17 )
+
+[node name="MainIcons" type="Sprite" parent="FilesMenu/File5"]
+texture = ExtResource( 16 )
+
+[node name="Sprite" type="Sprite" parent="FilesMenu/File5"]
+position = Vector2( -31, 14 )
+texture = ExtResource( 18 )
+offset = Vector2( -7, 10 )
+hframes = 3
+
+[node name="Sprite2" type="Sprite" parent="FilesMenu/File5"]
+position = Vector2( 13, 14 )
+texture = ExtResource( 18 )
+offset = Vector2( -7, 10 )
+hframes = 3
+frame = 1
+
+[node name="Sprite3" type="Sprite" parent="FilesMenu/File5"]
+position = Vector2( 57, 14 )
+texture = ExtResource( 18 )
+offset = Vector2( -7, 10 )
+hframes = 3
+frame = 2
+
+[node name="CoinAmount" type="Label" parent="FilesMenu/File5"]
+margin_left = -127.0
+margin_top = 11.0
+margin_right = -70.0
+margin_bottom = 49.0
+custom_fonts/font = ExtResource( 6 )
+text = "000"
+
+[node name="ExitAmount" type="Label" parent="FilesMenu/File5"]
+margin_left = -128.0
+margin_top = -34.0
+margin_right = -71.0
+margin_bottom = 4.0
+custom_fonts/font = ExtResource( 6 )
+text = "00"
+
+[node name="FileNumber" type="Label" parent="FilesMenu/File5"]
+margin_left = -25.0
+margin_top = -44.0
+margin_right = 70.0
+margin_bottom = -6.0
+custom_fonts/font = ExtResource( 19 )
+text = "FILE 5"
+
+[node name="EmptyText" type="Label" parent="FilesMenu/File5"]
+visible = false
+margin_left = -112.0
+margin_top = -4.0
+margin_right = 115.0
+margin_bottom = 34.0
+custom_fonts/font = ExtResource( 6 )
+text = "- EMPTY FILE -"
+
+[node name="File6" type="Sprite" parent="FilesMenu"]
+position = Vector2( 2288, 398 )
+texture = ExtResource( 17 )
+
+[node name="MainIcons" type="Sprite" parent="FilesMenu/File6"]
+texture = ExtResource( 16 )
+
+[node name="Sprite" type="Sprite" parent="FilesMenu/File6"]
+position = Vector2( -31, 14 )
+texture = ExtResource( 18 )
+offset = Vector2( -7, 10 )
+hframes = 3
+
+[node name="Sprite2" type="Sprite" parent="FilesMenu/File6"]
+position = Vector2( 13, 14 )
+texture = ExtResource( 18 )
+offset = Vector2( -7, 10 )
+hframes = 3
+frame = 1
+
+[node name="Sprite3" type="Sprite" parent="FilesMenu/File6"]
+position = Vector2( 57, 14 )
+texture = ExtResource( 18 )
+offset = Vector2( -7, 10 )
+hframes = 3
+frame = 2
+
+[node name="CoinAmount" type="Label" parent="FilesMenu/File6"]
+margin_left = -127.0
+margin_top = 11.0
+margin_right = -70.0
+margin_bottom = 49.0
+custom_fonts/font = ExtResource( 6 )
+text = "000"
+
+[node name="ExitAmount" type="Label" parent="FilesMenu/File6"]
+margin_left = -128.0
+margin_top = -34.0
+margin_right = -71.0
+margin_bottom = 4.0
+custom_fonts/font = ExtResource( 6 )
+text = "00"
+
+[node name="FileNumber" type="Label" parent="FilesMenu/File6"]
+margin_left = -25.0
+margin_top = -44.0
+margin_right = 70.0
+margin_bottom = -6.0
+custom_fonts/font = ExtResource( 19 )
+text = "FILE 6"
+
+[node name="EmptyText" type="Label" parent="FilesMenu/File6"]
+visible = false
+margin_left = -112.0
+margin_top = -4.0
+margin_right = 115.0
+margin_bottom = 34.0
+custom_fonts/font = ExtResource( 6 )
+text = "- EMPTY FILE -"
+
+[node name="Label" type="Label" parent="FilesMenu"]
+margin_left = 1979.0
+margin_top = 61.0
+margin_right = 2225.0
+margin_bottom = 99.0
+custom_fonts/font = ExtResource( 6 )
+text = "- FILE SELECT -"
+
+[node name="EraseText" type="Label" parent="FilesMenu"]
+margin_left = 2011.0
+margin_top = 483.0
+margin_right = 2182.0
+margin_bottom = 521.0
+custom_fonts/font = ExtResource( 6 )
+text = "ERASE FILE"
+align = 1
+
+[node name="EraseCursor" type="Sprite" parent="FilesMenu"]
+visible = false
+position = Vector2( 2096, 496 )
+texture = ExtResource( 9 )
+
+[node name="FileCursor" type="Sprite" parent="FilesMenu"]
+position = Vector2( 1912, 170 )
+texture = ExtResource( 20 )
+
+[node name="DeleteText" type="Label" parent="FilesMenu"]
+margin_left = 1806.0
+margin_top = 483.0
+margin_right = 2472.0
+margin_bottom = 521.0
+custom_fonts/font = ExtResource( 6 )
+text = "DELETE FILE?              YES        NO"
+
+[node name="YNCursor" type="Sprite" parent="FilesMenu"]
+position = Vector2( 2354, 496 )
+texture = ExtResource( 21 )
+
+[node name="DeletedText" type="Label" parent="FilesMenu"]
+margin_left = 1992.0
+margin_top = 483.0
+margin_right = 2201.0
+margin_bottom = 521.0
+custom_fonts/font = ExtResource( 6 )
+text = "FILE DELETED"
 
 [node name="Transition" parent="." instance=ExtResource( 7 )]

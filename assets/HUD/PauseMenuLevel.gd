@@ -129,6 +129,7 @@ func _process(delta: float) -> void:
 				Globals.start_transition(Vector2(420, 300), 1)
 				$Cursor1.modulate = Color(0,1,0)
 
+# The following functions are clones of ones from TitleScreen.gd
 func get_menu_direction():
 	var x_dir = 1 if Input.is_action_just_pressed("move_right") else (
 		-1 if Input.is_action_just_pressed("move_left") else 0)

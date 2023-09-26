@@ -266,6 +266,7 @@ func load_new_game():
 	ultimate_selected = true
 	
 	var flag_str = ''
+	# warning-ignore:unused_variable
 	for i in range(LEVEL_COUNT):
 		flag_str += '0'
 	level_flags = str_to_level_flags(flag_str)
@@ -438,3 +439,15 @@ func recenter_camera():
 	var temp_eq_cam = earthquake_camera
 	earthquake_camera = null
 	get_current_scene().remove_child(temp_eq_cam)
+
+# Returns a list of a random permutation of n integers including 0
+func random_permutation(n):
+	var unused_numbers = []
+	var permutation = []
+	for i in range(n):
+		unused_numbers += [i]
+	while unused_numbers.size() > 0:
+		var index = call_rng(0, unused_numbers.size()-1)
+		permutation += [unused_numbers[index]]
+		unused_numbers.remove(index)
+	return permutation

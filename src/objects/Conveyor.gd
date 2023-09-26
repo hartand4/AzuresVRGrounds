@@ -47,7 +47,8 @@ func _process(delta: float) -> void:
 	
 	for area in $ObjectMoveArea.get_overlapping_areas():
 		if area.get_collision_layer_bit(1):
-			area.get_parent().position.x += speed*direction
+			area.get_parent().add_position(Vector2(speed*direction, 1))
+			#area.get_parent().position.x += speed*direction
 		
 		elif (area.get_collision_layer_bit(2) or area.get_collision_layer_bit(3)):
 			var top_node = area

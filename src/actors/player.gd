@@ -884,3 +884,10 @@ func set_checkpoint(num, pos):
 	Globals.checkpoint_data[3] = collected_coins[2]
 	Globals.checkpoint_data[4] = pos
 	print(Globals.checkpoint_data)
+
+# Safely adds a vector to your current position, then slides to correct. Used for conveyors.
+func add_position(add_pos):
+	# warning-ignore:return_value_discarded
+	position += add_pos
+	move_and_slide(Vector2.ZERO, FLOOR_NORMAL, true)
+	#move_and_slide(add_pos, FLOOR_NORMAL, true)

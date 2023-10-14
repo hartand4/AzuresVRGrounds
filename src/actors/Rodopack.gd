@@ -13,7 +13,7 @@ func _ready() -> void:
 	original_position = self.position
 	reset_values()
 
-func _process(delta: float) -> void:
+func _process(_delta: float) -> void:
 	if Globals.game_paused:
 		$AnimationPlayer.stop(false)
 		return
@@ -37,7 +37,7 @@ func _process(delta: float) -> void:
 	
 	var player_position = Globals.find_player().position
 	
-	self.position += fly_direction*speed*delta
+	self.position += fly_direction*speed/60.0
 	
 	if anim_timer:
 		anim_timer -= 1
@@ -59,7 +59,7 @@ func _process(delta: float) -> void:
 		2:
 			if anim_timer <= 0:
 				is_obeying_gravity = true
-				self.position.y += velocity.y*delta
+				self.position.y += velocity.y / 60.0
 	
 	if state != 2:
 		$AnimationPlayer.play("Fly")

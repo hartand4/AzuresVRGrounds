@@ -31,8 +31,7 @@ func _ready() -> void:
 			$ObjectMoveArea.add_child(collision_copy)
 			collision_copy.position.x += 48*(i+1)
 
-# warning-ignore:unused_argument
-func _process(delta: float) -> void:
+func _process(_delta: float) -> void:
 	if Globals.game_paused:
 		$AnimationPlayer.stop(false)
 		return

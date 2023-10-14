@@ -12,14 +12,13 @@ func _ready() -> void:
 	$AnimationPlayer.play("Hue Changing" if not secret_exit else "Hue Changing S")
 
 
-# warning-ignore:unused_argument
-func _process(delta: float) -> void:
+func _process(_delta: float) -> void:
 	if Globals.get("game_paused"):
 		$AnimationPlayer.stop(false)
 		return
 	$AnimationPlayer.play("Hue Changing" if not secret_exit else "Hue Changing S")
 	if obey_gravity:
-		_velocity.y += 1200.0*delta*(0.4 if is_in_water else 1.0)
+		_velocity.y += 20.0*(0.4 if is_in_water else 1.0)
 		_velocity.y = min(_velocity.y, 1200.0*(0.6 if is_in_water else 1.0))
 		_velocity = move_and_slide(_velocity, Vector2.UP, true)
 

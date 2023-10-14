@@ -9,8 +9,7 @@ func _ready() -> void:
 	pass # Replace with function body.
 
 
-# warning-ignore:unused_argument
-func _process(delta: float) -> void:
+func _process(_delta: float) -> void:
 	if health <= 0:
 		call_deferred("disable_all")
 	$Sprite.modulate = Color(1,1,1)

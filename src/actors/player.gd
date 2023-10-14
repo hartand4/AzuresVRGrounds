@@ -91,8 +91,7 @@ func _ready():
 	var outfit_list = ['Shorts', 'Casual', 'Ace', 'Maid']
 	$Sprite/Outfit.texture = load("res://assets/Sprites/Azzy/Outfits/" + outfit_list[Globals.current_costume] + ".png")
 
-# warning-ignore:unused_argument
-func _physics_process(delta: float) -> void:
+func _physics_process(_delta: float) -> void:
 	var direction := Vector2.ZERO
 	var is_jumping := false
 	
@@ -204,7 +203,7 @@ func get_direction_normal() -> Vector2:
 func calculate_move_direction(linear_velocity: Vector2, speed: Vector2, direction: Vector2, is_jumping: bool) -> Vector2:
 	var out_vel := linear_velocity
 	out_vel.x = speed.x * direction.x
-	out_vel.y += gravity * get_physics_process_delta_time()
+	out_vel.y += gravity / 60.0 #*get_physics_process_delta_time()
 	if direction.y == -1.0:
 		out_vel.y = 500.0 * direction.y - linear_velocity.y
 		
@@ -217,8 +216,7 @@ func calculate_move_direction(linear_velocity: Vector2, speed: Vector2, directio
 		out_vel.y -= 1*pow(jump_timer,4)/4600 #First few frames matter more
 	return out_vel
 
-# warning-ignore:unused_argument
-func _process(delta):
+func _process(_delta):
 	if not (state in [ST_ATTACK, ST_AIR_ATTACK, ST_WALL_ATTACK, ST_LADDER_ATTACK]):
 		do_slash_effect(0)
 	

@@ -10,8 +10,7 @@ func _ready() -> void:
 	bouncing = false
 
 
-# warning-ignore:unused_argument
-func _process(delta: float) -> void:
+func _process(_delta: float) -> void:
 	if Globals.game_paused:
 		$AnimationPlayer.stop(false)
 		return

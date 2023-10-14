@@ -13,7 +13,7 @@ var is_in_water := false
 var _gravity := 2000.0
 
 
-func _process(delta: float) -> void:
+func _process(_delta: float) -> void:
 	if (Globals.get("game_paused") and not _giving_health) or _health_to_give == 0:
 		$AnimationPlayer.stop(false)
 		return
@@ -29,7 +29,7 @@ func _process(delta: float) -> void:
 				call_deferred('disable_all')
 		return
 	$AnimationPlayer.play(_animation)
-	_velocity.y += _gravity*delta*(0.4 if is_in_water else 1.0)
+	_velocity.y += _gravity*(1.0 / 60.0)*(0.4 if is_in_water else 1.0)
 	_velocity.y = min(_velocity.y, 1200.0*(0.6 if is_in_water else 1.0))
 	_velocity = move_and_slide(_velocity, Vector2.UP, true)
 	

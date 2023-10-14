@@ -14,8 +14,7 @@ func _ready() -> void:
 		_anim_index = coin_number
 
 
-# warning-ignore:unused_argument
-func _process(delta: float) -> void:
+func _process(_delta: float) -> void:
 	if collected and _anim_timer == 0: pass
 	if Globals.game_paused:
 		$AnimationPlayer.stop(false)

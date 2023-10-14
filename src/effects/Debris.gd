@@ -12,11 +12,11 @@ func _ready() -> void:
 	
 	call_deferred("set_texture")
 
-func _process(delta: float) -> void:
+func _process(_delta: float) -> void:
 	if Globals.game_paused: return
 	
-	position += _velocity*delta
-	_velocity.y += 1200*delta
+	position += _velocity / 60.0
+	_velocity.y += 20
 	$Sprite.visible = true
 	if Globals.timer % 2 == 0: $Sprite.visible = false
 	

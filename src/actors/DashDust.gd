@@ -5,14 +5,11 @@ var animation_timer := 0
 var pos := Vector2.ZERO
 
 
-# Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	pass # Replace with function body.
 
 
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-# warning-ignore:unused_argument
-func _process(delta: float) -> void:
+func _process(_delta: float) -> void:
 	if Globals.game_paused or not visible:
 		$AnimationPlayer.stop(false)
 		return

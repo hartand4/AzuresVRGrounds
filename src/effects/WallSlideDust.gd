@@ -2,8 +2,7 @@ extends Sprite
 
 var animation_timer := 21
 
-# warning-ignore:unused_argument
-func _process(delta: float) -> void:
+func _process(_delta: float) -> void:
 	if Globals.game_paused:
 		$AnimationPlayer.stop(false)
 		return

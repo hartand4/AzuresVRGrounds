@@ -1,9 +1,10 @@
-[gd_scene load_steps=108 format=2]
+[gd_scene load_steps=109 format=2]
 
 [ext_resource path="res://src/enemyobjects/Turret.tscn" type="PackedScene" id=1]
 [ext_resource path="res://src/actors/Hopshot.tscn" type="PackedScene" id=2]
 [ext_resource path="res://src/objects/ValCoin.tscn" type="PackedScene" id=3]
 [ext_resource path="res://src/MapObjects/Transition.tscn" type="PackedScene" id=4]
+[ext_resource path="res://src/objects/TinyBreakingPlatform.tscn" type="PackedScene" id=5]
 [ext_resource path="res://src/actors/player.tscn" type="PackedScene" id=7]
 [ext_resource path="res://src/actors/BuzzClinger.tscn" type="PackedScene" id=9]
 [ext_resource path="res://src/actors/Lagomo.tscn" type="PackedScene" id=10]
@@ -1363,7 +1364,7 @@ rotation = 4.71239
 position = Vector2( 2034, 1248 )
 
 [node name="GoalOrb" parent="." instance=ExtResource( 17 )]
-position = Vector2( 734, 1103 )
+position = Vector2( 735, 867 )
 
 [node name="Anamoth" parent="." instance=ExtResource( 16 )]
 position = Vector2( 1092, 984 )
@@ -1377,3 +1378,6 @@ position = Vector2( 2734, 1249 )
 [node name="BuzzClinger" parent="." instance=ExtResource( 9 )]
 position = Vector2( 2910, 938 )
 speed = 4
+
+[node name="TinyBreakingPlatform" parent="." instance=ExtResource( 5 )]
+position = Vector2( 363, 987 )

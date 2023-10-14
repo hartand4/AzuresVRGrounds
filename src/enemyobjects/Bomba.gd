@@ -1,22 +1,21 @@
 extends Projectile
 
-export var gravity := 1200
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	$ExplosionColl.disabled = true
 	damage = 4
+	gravity = 1200.0
 
 
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta: float) -> void:
+func _process(_delta: float) -> void:
 	if Globals.game_paused: return
 	elif animation_timer:
 		if animation_timer == 1:
 			$ExplosionColl.disabled = true
 		return
-	velocity.y += gravity*delta
-	self.position += velocity*delta
+	velocity.y = min(velocity.y + gravity/60.0, 1200.0)
+	self.position += velocity/60.0
 
 func enable_explosion():
 	$ExplosionColl.disabled = false

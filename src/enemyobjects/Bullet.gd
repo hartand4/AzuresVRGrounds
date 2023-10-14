@@ -5,9 +5,9 @@ func _ready() -> void:
 	is_obeying_gravity = false
 
 
-func _process(delta: float) -> void:
+func _process(_delta: float) -> void:
 	if Globals.game_paused: return
-	self.position += velocity*delta
+	self.position += velocity/60.0
 
 func _on_Bullet_area_entered(area: Area2D) -> void:
 	if area.get_collision_layer_bit(1):

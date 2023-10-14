@@ -25,8 +25,7 @@ func _ready() -> void:
 		load_controls(save_data['controls'])
 	reset_title_screen()
 
-# warning-ignore:unused_argument
-func _process(delta: float) -> void:
+func _process(_delta: float) -> void:
 	
 	var menu_dir = get_menu_direction()
 	var menu_input = get_menu_input()

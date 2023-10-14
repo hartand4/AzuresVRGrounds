@@ -53,7 +53,7 @@ const EN_DEAD := 5
 func _ready():
 	original_pos = self.position
 
-func _physics_process(delta: float) -> void:
+func _physics_process(_delta: float) -> void:
 	if _player and (Globals.get("game_paused") or Globals.pause_menu_on):
 		return
 	
@@ -63,15 +63,14 @@ func _physics_process(delta: float) -> void:
 	speed.x = 300.0 * (0.9 if is_in_water else 1.0)
 	
 	# Perform gravity updates (different for upward gravity)
-	if _velocity.y > 0: _velocity.y += gravity*delta*(0.4 if is_in_water else 1.0)
-	else: _velocity.y += up_gravity*delta*(0.4 if is_in_water else 1.0)
+	if _velocity.y > 0: _velocity.y += gravity*(1.0/60.0)*(0.4 if is_in_water else 1.0)
+	else: _velocity.y += up_gravity*(1.0/60.0)*(0.4 if is_in_water else 1.0)
 	
 	# Cap speed at a certain point
 	_velocity.y = min(_velocity.y, speed.y)
 	
 
-# warning-ignore:unused_argument
-func _process(delta):
+func _process(_delta):
 	var last_state := state
 	state = update_state()
 	if state != last_state:

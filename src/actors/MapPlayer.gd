@@ -22,7 +22,6 @@ var on_ladder = false
 
 onready var transition_layer = get_parent().find_node('Transition')
 
-# Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	entering_level = false
 	animation_timer = 40
@@ -37,8 +36,7 @@ func _ready() -> void:
 	print('current level is ' + str(Globals.current_level))
 
 
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta: float) -> void:
+func _process(_delta: float) -> void:
 	# Check for camera limit areas
 	camera_limit_checks()
 		
@@ -51,6 +49,7 @@ func _process(delta: float) -> void:
 			direction = closest_right_angle(direction)
 			
 			if direction.x == 0:
+				
 				position.x = round((position.x-16)/32) * 32 + 16
 			elif direction.y == 0:
 				position.y = round((position.y-12)/16) * 16 + 12
@@ -76,7 +75,7 @@ func _process(delta: float) -> void:
 			else:
 				position.x += 1
 		
-		position += 160 * delta * Vector2(direction.x, direction.y*0.8)
+		position += (8.0 / 3.0) * Vector2(direction.x, direction.y*0.8)
 		
 		if on_level and get_global_position().distance_to(on_level.get_global_position()) < 4:
 			is_moving = false

@@ -9,8 +9,7 @@ func _ready() -> void:
 	pass
 
 
-# warning-ignore:unused_argument
-func _process(delta: float) -> void:
+func _process(_delta: float) -> void:
 	if Globals.game_paused: return
 	if $Collision.disabled and animation_timer == 0: call_deferred("disable_all")
 	if animation_timer: animation_timer -= 1

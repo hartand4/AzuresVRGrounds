@@ -10,7 +10,7 @@ var velocity = Vector2.ZERO
 func _ready():
 	original_position = position
 
-func _process(delta: float) -> void:
+func _process(_delta: float) -> void:
 	if Globals.game_paused: return
 	elif broken:
 		respawn()
@@ -23,7 +23,7 @@ func _process(delta: float) -> void:
 			Globals.spawn_debris(load("res://assets/Sprites/Debris/BreakingPlatform/MiniDebris2.png"),
 			position + Vector2(0, -24))
 	elif animation_timer == 0:
-		velocity.y += 60*delta
+		velocity.y += 1
 		velocity.y = min(3000, velocity.y)
 		position += velocity
 		

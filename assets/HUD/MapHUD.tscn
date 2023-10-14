@@ -432,7 +432,6 @@ visible = false
 visible = false
 
 [node name="AirDashLabel" type="Label" parent="PauseMenu/PauseText3"]
-visible = false
 margin_left = 240.0
 margin_top = 132.0
 margin_right = 375.0

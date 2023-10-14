@@ -3,8 +3,7 @@ extends Actor
 func _ready() -> void:
 	max_health = 2
 
-# warning-ignore:unused_argument
-func _physics_process(delta: float) -> void:
+func _physics_process(_delta: float) -> void:
 	if Globals.game_paused or Globals.pause_menu_on: return
 	
 	match state:
@@ -17,8 +16,7 @@ func _physics_process(delta: float) -> void:
 	
 	_velocity = move_and_slide(_velocity, FLOOR_NORMAL, true)
 
-# warning-ignore:unused_argument
-func _process(delta: float) -> void:
+func _process(_delta: float) -> void:
 	if Globals.game_paused or Globals.pause_menu_on: return
 	
 	if state == 4:

@@ -19,8 +19,7 @@ var is_editing_control = false
 func _ready() -> void:
 	$Cursor1.set_position(Vector2(250, 152 + 84*selection_cursor))
 
-# warning-ignore:unused_argument
-func _process(delta: float) -> void:
+func _process(_delta: float) -> void:
 	if not Globals.pause_menu_on:
 		menu_type = PAUSE_NORMAL
 		selection_cursor = 0

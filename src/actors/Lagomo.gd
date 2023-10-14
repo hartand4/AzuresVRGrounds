@@ -12,8 +12,7 @@ func _ready() -> void:
 	recurring_x_dir = -1 if Globals.find_player().position.x < position.x else 1
 
 
-# warning-ignore:unused_argument
-func _process(delta: float) -> void:
+func _process(_delta: float) -> void:
 	if Globals.game_paused:
 		$AnimationPlayer.stop(false)
 		return

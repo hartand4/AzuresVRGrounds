@@ -10,13 +10,11 @@ onready var side_list = [$DownCheck, $LeftCheck, $UpCheck, $RighttCheck]
 var direction_list = [Vector2.DOWN, Vector2.LEFT, Vector2.UP, Vector2.RIGHT]
 
 
-# Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	pass
 
 
-# warning-ignore:unused_argument
-func _process(delta: float) -> void:
+func _process(_delta: float) -> void:
 	if Globals.game_paused:
 		$AnimationPlayer.stop(false)
 		return

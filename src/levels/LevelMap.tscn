@@ -512,6 +512,7 @@ __meta__ = {
 }
 
 [node name="Locked" type="TileMap" parent="Paths"]
+visible = false
 tile_set = SubResource( 10 )
 cell_size = Vector2( 32, 16 )
 format = 1

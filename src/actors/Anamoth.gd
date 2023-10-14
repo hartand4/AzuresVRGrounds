@@ -9,14 +9,12 @@ var angular_speed := 3
 var health := 1
 var broken := false
 
-# Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	original_position = position
 	fly_direction = starting_fly_direction
 
 
-# warning-ignore:unused_argument
-func _process(delta: float) -> void:
+func _process(_delta: float) -> void:
 	if Globals.game_paused:
 		$AnimationPlayer.stop(false)
 		return

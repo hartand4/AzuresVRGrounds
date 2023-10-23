@@ -47,6 +47,11 @@ onready var normal_wallcheck_transform = [$WalljumpAreaL/WalljumpBoxL.get_positi
 
 var ultimate_move_timer = [0,0,-1]
 
+var stunned_shake_counter := 0
+var needed_stunned_shakes := 15
+var sprite_default_location
+var stunned_bump_timer := 0
+
 #var double_jumped := false
 #export var game_paused := false
 var floor_angle := PI/2
@@ -83,13 +88,18 @@ func _ready():
 	$Camera2D.limit_right = camera_limit_max.x
 	$Camera2D.limit_bottom = camera_limit_max.y
 	
+	# Respawn at checkpoint location if passed one
 	if Globals.checkpoint_data[0]:
 		position = Globals.checkpoint_data[4]
 		for i in range(3):
 			collected_coins[i] = Globals.checkpoint_data[i+1]
 	
+	# Cute outfit.jpeg
 	var outfit_list = ['Shorts', 'Casual', 'Ace', 'Maid']
 	$Sprite/Outfit.texture = load("res://assets/Sprites/Azzy/Outfits/" + outfit_list[Globals.current_costume] + ".png")
+	
+	# Possible use for getting stunned
+	sprite_default_location = $Sprite.position
 
 func _physics_process(_delta: float) -> void:
 	var direction := Vector2.ZERO
@@ -138,6 +148,12 @@ func _physics_process(_delta: float) -> void:
 			
 	elif state == ST_HURT:
 		direction.x = recurring_x_dir * -0.5
+	
+	elif state in [ST_STUNNED, ST_STUNNED_DRAG]:
+		if Input.is_action_just_pressed("move_left"):
+			recurring_x_dir = -1
+		elif Input.is_action_just_pressed("move_right"):
+			recurring_x_dir = 1
 		
 	elif state == ST_DASH:
 		if jump_timer > 0:
@@ -176,7 +192,7 @@ func _physics_process(_delta: float) -> void:
 	elif state == ST_DASH:
 		if not is_on_floor() and air_dash_enabled:
 			_velocity.y = 0
-	elif state == ST_LADDER_ATTACK: return
+	elif state in [ST_LADDER_ATTACK, ST_STUNNED_DRAG]: return
 	elif state == ST_ULTIMATE:
 		_velocity = Vector2(recurring_x_dir*500, 0)
 	
@@ -267,7 +283,7 @@ func _process(_delta):
 	check_for_collisions()
 	
 	if last_state != state:
-		print(state)
+		print("state: %s" % state)
 		last_state = state
 
 # Handles various animations of player using state. Also calls change_dash_hitbox to match dash sprite
@@ -311,6 +327,8 @@ func animation_handler():
 		$TailWall.flip_h = recurring_x_dir + 1
 		$Tail/AnimationPlayer.play("TailWall")
 		$TailWall.set_position(Vector2(recurring_x_dir*3,-5))
+	elif state == ST_WALK:
+		$Tail.set_position(Vector2(recurring_x_dir*-36,-35))
 	else:
 		$Tail.z_index = 0
 		$Tail.set_position(Vector2(recurring_x_dir*-28,-35))
@@ -319,6 +337,13 @@ func animation_handler():
 	$Sprite/Outfit.flip_h = $Sprite.flip_h
 	
 	if health > 0: change_dash_hitbox(state in [ST_DASH, ST_ULTIMATE])
+	
+	# Sprite bumping during stun
+	if not state in [ST_STUNNED, ST_STUNNED_DRAG]: stunned_bump_timer = 0
+	if stunned_bump_timer > 0: stunned_bump_timer -= 1
+	$Sprite.position = sprite_default_location if not (
+		state in [ST_STUNNED, ST_STUNNED_DRAG] and stunned_bump_timer
+	) else $Sprite.position
 	
 	if state in animation_dict:
 		_animation.play(animation_dict[state])
@@ -367,6 +392,22 @@ func animation_handler():
 				_animation.play('Victory')
 			else:
 				_animation.play("Victory2")
+		ST_STUNNED:
+			$AnimationPlayer.play("Hurt")
+			if Input.is_action_just_pressed("attack") or Input.is_action_just_pressed("jump") or (
+				Input.is_action_just_pressed("move_down") or Input.is_action_just_pressed("move_up") or
+				Input.is_action_just_pressed("dash")
+				):
+				$Sprite.position.x += 6 if stunned_shake_counter % 2 == 0 else -6
+				stunned_bump_timer = 2
+		ST_STUNNED_DRAG:
+			$AnimationPlayer.play("Hurt")
+			if Input.is_action_just_pressed("attack") or Input.is_action_just_pressed("jump") or (
+				Input.is_action_just_pressed("move_down") or Input.is_action_just_pressed("move_up") or
+				Input.is_action_just_pressed("dash")
+				):
+				$Sprite.position.x += 6 if stunned_shake_counter % 2 == 0 else -6
+				stunned_bump_timer = 2
 
 # Updates the player state if game unpaused. Also updates attack_timer and dashing variables,
 # and calls start_walljump()
@@ -390,6 +431,19 @@ func update_state():
 		do_hurt_animation(damage_doing)
 		return ST_HURT
 	
+	# STUNNED STATE, SHAKE OUT OF IT
+	if state == ST_STUNNED:
+		if Input.is_action_just_pressed("attack") or Input.is_action_just_pressed("jump") or (
+			Input.is_action_just_pressed("move_down") or Input.is_action_just_pressed("move_up") or
+			Input.is_action_just_pressed("move_left") or Input.is_action_just_pressed("move_right") or
+			Input.is_action_just_pressed("dash")
+		):
+			stunned_shake_counter += 1
+		if stunned_shake_counter >= needed_stunned_shakes:
+			state = ST_IDLE
+			return update_state()
+	
+	# STOP DOING ULTIMATE AFTER TIME EXPIRES
 	if state == ST_ULTIMATE:
 		if animation_timer >= 45:
 			state = ST_IDLE
@@ -889,3 +943,11 @@ func add_position(add_pos):
 	position += add_pos
 	move_and_slide(Vector2.ZERO, FLOOR_NORMAL, true)
 	#move_and_slide(add_pos, FLOOR_NORMAL, true)
+
+# Activates player stun state, including the needed stun inputs
+func set_stun(stun_amount, type=0):
+	stunned_shake_counter = stun_amount
+	if type == 0:
+		state = ST_STUNNED
+	elif type == 1:
+		state = ST_STUNNED_DRAG

@@ -40,6 +40,8 @@ const ST_WALL_ATTACK := 11
 const ST_LADDER_ATTACK := 12
 const ST_VICTORY := 13
 const ST_ULTIMATE := 14
+const ST_STUNNED := 15
+const ST_STUNNED_DRAG := 16 # Stunned that ignores gravity and drags player
 
 # Enemy State constants:
 const EN_IDLE := 0

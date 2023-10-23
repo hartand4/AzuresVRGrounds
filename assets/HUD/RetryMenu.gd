@@ -10,6 +10,9 @@ func _ready() -> void:
 
 # warning-ignore:unused_argument
 func _process(delta: float) -> void:
+	
+	$RetryCursor.modulate.a = 0.25*sin(PI*Globals.timer/30) + 0.75
+	
 	if not Globals.retry_menu_on:
 		selection_cursor = false
 		input_delay = 1

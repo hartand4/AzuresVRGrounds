@@ -25,6 +25,7 @@ func _process(_delta: float) -> void:
 
 func disable_all():
 	get_parent().remove_child(self)
+	queue_free()
 
 func set_texture():
 	$Sprite.texture = tex

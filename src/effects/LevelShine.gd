@@ -13,3 +13,4 @@ func _process(delta: float) -> void:
 
 func disable():
 	get_parent().remove_child(self)
+	queue_free()

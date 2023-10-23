@@ -14,3 +14,4 @@ func _process(_delta: float) -> void:
 
 func remove_self():
 	get_parent().remove_child(self)
+	queue_free()

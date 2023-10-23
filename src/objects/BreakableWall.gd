@@ -32,6 +32,7 @@ func disable_all():
 		Globals.spawn_debris(load("res://assets/Sprites/Debris/BreakableWall/Debris4.png"),
 		position + Vector2(12, 24))
 		get_parent().remove_child(self)
+		queue_free()
 
 func _on_AttackArea_area_entered(area: Area2D) -> void:
 	if area.get_collision_layer_bit(4):

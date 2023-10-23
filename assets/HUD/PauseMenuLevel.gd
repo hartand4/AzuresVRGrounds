@@ -19,6 +19,10 @@ func _ready() -> void:
 
 # warning-ignore:unused_argument
 func _process(delta: float) -> void:
+	
+	$Cursor1.modulate.a = 0.25*sin(PI*Globals.timer/30) + 0.75
+	$Cursor2.modulate.a = 0.25*sin(PI*Globals.timer/30) + 0.75
+	
 	if not Globals.pause_menu_on:
 		menu_type = PAUSE_NORMAL
 		selection_cursor = 0

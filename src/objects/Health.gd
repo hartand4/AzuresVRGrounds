@@ -48,6 +48,7 @@ func disable_all():
 	$HealthHitbox.disabled = true
 	$HealthArea/HealthHitbox2.disabled = true
 	get_parent().remove_child(self)
+	queue_free()
 
 func get_velocity():
 	return _velocity

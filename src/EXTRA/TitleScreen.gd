@@ -23,7 +23,13 @@ func _ready() -> void:
 	save_data = Globals.load_save_data()
 	if save_data and 'controls' in save_data:
 		load_controls(save_data['controls'])
+	if save_data and 'music_volume' in save_data:
+		Globals.music_volume = save_data['music_volume']
+	if save_data and 'sfx_volume' in save_data:
+		Globals.sfx_volume = save_data['sfx_volume']
 	reset_title_screen()
+	
+	Globals.load_new_game()
 
 func _process(_delta: float) -> void:
 	
@@ -45,6 +51,12 @@ func _process(_delta: float) -> void:
 	$FilesMenu/EraseText.visible = extra_index < 2
 	$FilesMenu/DeleteText.visible = extra_index == 2
 	$FilesMenu/DeletedText.visible = extra_index == 3
+	
+	$FirstMenu/Cursor.modulate.a = 0.25*sin(PI*Globals.timer/30) + 0.75
+	$ControlsMenu/Cursor.modulate.a = 0.25*sin(PI*Globals.timer/30) + 0.75
+	$FilesMenu/FileCursor.modulate.a = 0.25*sin(PI*Globals.timer/30) + 0.75
+	$FilesMenu/EraseCursor.modulate.a = 0.25*sin(PI*Globals.timer/30) + 0.75
+	$FilesMenu/YNCursor.modulate.a = 0.25*sin(PI*Globals.timer/30) + 0.75
 	
 	if is_transitioning:
 		animation_timer -= 1

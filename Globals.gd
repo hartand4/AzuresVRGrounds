@@ -9,6 +9,9 @@ export var timer := 0
 
 export var vswitch_timer := 0
 
+export var music_volume := 1.0
+export var sfx_volume := 1.0
+
 # Earthquake variables
 var eq_timer := 0
 var eq_intensity := 3
@@ -21,6 +24,7 @@ export var armour_selected := true
 export var ultimate_unlocked := false
 export var ultimate_selected := true
 
+var fullscreen_on := false
 export var pause_menu_on := false
 export var retry_menu_on := false
 export var current_level := 1
@@ -50,6 +54,9 @@ func _process(delta: float) -> void:
 	timer += 1
 	if timer == pow(2, 30):
 		timer = 0
+	
+	if Input.is_action_just_pressed("fullscreen_toggle"):
+		OS.window_fullscreen = not OS.window_fullscreen
 	
 	if eq_timer:
 		do_earthquake()
@@ -279,6 +286,7 @@ func load_new_game():
 	current_level = 1
 	
 	for i in range(3): coins_collected_in_level[i] = false
+	for i in range(2): goal_reached_in_current_level[i] = false
 
 # Returns a dictionary of the nth save file, -1 if non-existent, -2 if corrupted
 func view_save_game(save_data, n):
@@ -361,6 +369,9 @@ func save_current_game_to_file(n):
 		
 	current_data['file'+str(n)]['val_coins'] = val_coin_numbers
 	current_data['file'+str(n)]['exits'] = exit_numbers
+	
+	current_data['music_volume'] = music_volume
+	current_data['sfx_volume'] = sfx_volume
 	
 	var file = File.new()
 	var dir = Directory.new()

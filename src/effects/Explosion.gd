@@ -24,3 +24,4 @@ func change_collision(value):
 
 func disable_all():
 	get_parent().remove_child(self)
+	queue_free()

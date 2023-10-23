@@ -20,6 +20,10 @@ func _ready() -> void:
 	$Cursor1.set_position(Vector2(250, 152 + 84*selection_cursor))
 
 func _process(_delta: float) -> void:
+	
+	$Cursor1.modulate.a = 0.25*sin(PI*Globals.timer/30) + 0.75
+	$Cursor2.modulate.a = 0.25*sin(PI*Globals.timer/30) + 0.75
+	
 	if not Globals.pause_menu_on:
 		menu_type = PAUSE_NORMAL
 		selection_cursor = 0
@@ -87,7 +91,7 @@ func _process(_delta: float) -> void:
 				menu_type = selection_cursor
 				if menu_type == 4: selection_cursor = 8
 				elif menu_type == 5: selection_cursor = 1
-				elif menu_type == 3: selection_cursor = 3
+				elif menu_type == 3: selection_cursor = 5
 				else: selection_cursor = 0
 				$Cursor1.visible = false
 				if menu_type == 1: file_print()
@@ -153,15 +157,14 @@ func _process(_delta: float) -> void:
 				$PauseText1/YNCursor.position = Vector2(540 + 150*selection_cursor,502)
 		
 		PAUSE_OPTIONS:
-			$Cursor1.set_position(Vector2(416,380))
-			$Cursor1.visible = selection_cursor == 3
-			var unlocked_stuff = [Globals.air_dash_unlocked, Globals.armour_unlocked, Globals.ultimate_unlocked, true]
-			selection_cursor = mod_wrap(selection_cursor + int(direction_input.y), 4)
+			$Cursor1.set_position(Vector2(416,480))
+			$Cursor1.visible = selection_cursor == 5
+			var unlocked_stuff = [Globals.air_dash_unlocked, Globals.armour_unlocked, Globals.ultimate_unlocked, true, true, true]
+			selection_cursor = mod_wrap(selection_cursor + int(direction_input.y), 6)
 			while not unlocked_stuff[selection_cursor]:
-				selection_cursor = mod_wrap(selection_cursor + int(direction_input.y), 4)
-			
-			var options_index = ["AirDashLabel", "ArmourLabel", "UltimateLabel"]
-			if selection_cursor < 3:
+				selection_cursor = mod_wrap(selection_cursor + int(direction_input.y), 6)
+			var options_index = ["AirDashLabel", "ArmourLabel", "UltimateLabel", "MusicLabel", "SFXLabel"]
+			if selection_cursor < 5:
 				$PauseText3.find_node(options_index[selection_cursor]).modulate = Color(1,1,0)
 			
 			# Flip switches
@@ -175,7 +178,14 @@ func _process(_delta: float) -> void:
 				if menu_input == 2 or Globals.ultimate_selected == (direction_input.x < 0):
 					Globals.ultimate_selected = not Globals.ultimate_selected
 			
-			if menu_input == 1 or (selection_cursor == 3 and menu_input == 2):
+			elif selection_cursor == 3 and (direction_input.y == 0 and direction_input.x != 0):
+				if direction_input.x > 0: Globals.music_volume = min(1, Globals.music_volume + 0.125)
+				elif direction_input.x < 0: Globals.music_volume = max(0, Globals.music_volume - 0.125)
+			elif selection_cursor == 4 and (direction_input.y == 0 and direction_input.x != 0):
+				if direction_input.x > 0: Globals.sfx_volume = min(1, Globals.sfx_volume + 0.125)
+				elif direction_input.x < 0: Globals.sfx_volume = max(0, Globals.sfx_volume - 0.125)
+			
+			if menu_input == 1 or (selection_cursor == 5 and menu_input == 2):
 				selection_cursor = 3
 				menu_type = 0
 				$Cursor1.visible = false
@@ -368,6 +378,9 @@ func options_menu_visuals():
 	$PauseText3/UltimateLabel.text = "ULTIMATE" if Globals.ultimate_unlocked else "?????"
 	$PauseText3/UltimateLabel.modulate = Color(1,1,1) if Globals.ultimate_unlocked else Color(0.5,0.5,0.5)
 	
+	$PauseText3/MusicLabel.modulate = Color(1,1,1)
+	$PauseText3/SFXLabel.modulate = Color(1,1,1)
+	
 	# Switch positions
 	if Globals.air_dash_selected and $PauseText3/Switch1.get_position().x < 513:
 		$PauseText3/Switch1.set_position($PauseText3/Switch1.get_position() + Vector2(4.75,0))
@@ -382,6 +395,13 @@ func options_menu_visuals():
 	elif not Globals.ultimate_selected and $PauseText3/Switch3.get_position().x > 475:
 		$PauseText3/Switch3.set_position($PauseText3/Switch3.get_position() + Vector2(-4.75,0))
 	
+	# Meter positions:
+	$PauseText3/MusicFill.set_size(Vector2(496*Globals.music_volume,12))
+	$PauseText3/MusicSlider.position = Vector2(496*Globals.music_volume + 251, 372)
+	$PauseText3/SFXFill.set_size(Vector2(496*Globals.sfx_volume,12))
+	$PauseText3/SFXSlider.position = Vector2(496*Globals.sfx_volume + 251, 418)
+	
+	# Switch colours
 	$PauseText3/Switch1.modulate = Color(($PauseText3/Switch1.get_position().x-475)*(-7)/380 + 1,
 		($PauseText3/Switch1.get_position().x-475)*(2)/380 + 1,
 		($PauseText3/Switch1.get_position().x-475)*(-2)/380 + 1)

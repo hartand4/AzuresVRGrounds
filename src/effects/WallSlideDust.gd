@@ -13,5 +13,4 @@ func _process(_delta: float) -> void:
 	position.y -= 2
 
 func remove_self():
-	get_parent().remove_child(self)
 	queue_free()

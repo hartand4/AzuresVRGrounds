@@ -12,5 +12,4 @@ func _process(delta: float) -> void:
 	anim_timer -= 1
 
 func disable():
-	get_parent().remove_child(self)
 	queue_free()

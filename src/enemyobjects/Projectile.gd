@@ -22,7 +22,6 @@ func get_damage():
 	return damage
 
 func disable_all():
-	get_parent().remove_child(self)
 	queue_free()
 
 func disable_collision():

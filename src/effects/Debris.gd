@@ -24,7 +24,6 @@ func _process(_delta: float) -> void:
 		call_deferred("disable_all")
 
 func disable_all():
-	get_parent().remove_child(self)
 	queue_free()
 
 func set_texture():

@@ -9,6 +9,8 @@ var dash_timer := 0
 var attack_timer := 0
 var dash_dust_timer := 0
 
+var coyote_timer := 0
+
 # Booleans
 export var dashing := false
 export var air_dash_enabled := true
@@ -119,10 +121,13 @@ func _physics_process(_delta: float) -> void:
 	if state in [0,1,3,4,5,8]:
 		if jump_timer > 0:
 			jump_timer -= 1
-		elif is_on_floor():
+		elif is_on_floor() or coyote_timer > 0:
 			jump_timer = 0
 			if Input.is_action_just_pressed("jump"):
 				jump_timer = 30
+				if coyote_timer > 0:
+					_velocity.y = -pow(30,4)/2150
+					coyote_timer = 0
 		is_jumping = Input.is_action_pressed("jump") and jump_timer > 0 and _velocity.y < 0
 		if not Input.is_action_pressed("jump"):
 			jump_timer = 0
@@ -267,6 +272,9 @@ func _process(_delta):
 	if dash_timer: dash_timer -= 1
 	elif is_on_floor(): dashing = false
 	if attack_timer: attack_timer -= 1
+	
+	if state != ST_AIR: coyote_timer = 0
+	coyote_timer = coyote_timer - 1 if coyote_timer > 0 else 0
 	
 	# Ultimate_move_check
 	if not ultimate_enabled or state > 5 or health < 32: ultimate_move_timer = [0,0,-1]
@@ -530,6 +538,7 @@ func update_state():
 			):
 			state = ST_AIR
 			dash_timer = 0
+			if (started_dash_on_floor and not is_on_floor()): set_coyote_timer()
 			return update_state()
 	
 	# ATTACKING
@@ -587,13 +596,15 @@ func update_state():
 	# IF LANDED BEFORE AIR ATTACK DONE, CONTINUE ATTACK
 	if state == 5 and is_on_floor() and attack_timer:
 		return ST_ATTACK
-		
+	
 	# IF JUMPED OR FELL OR AIR ATTACK ENDED
 	if state in [0,1,2,4] and Input.is_action_just_pressed("jump"): 
 		if is_on_floor() or state < 2:
 			dashing = state == 2#Input.is_action_pressed("dash")
 			return ST_AIR
-	elif state in [0,1,4] and not is_on_floor(): return ST_AIR
+	elif state in [0,1,4] and not is_on_floor():
+		set_coyote_timer()
+		return ST_AIR
 	
 	#if state < 2 and Input.is_action_just_pressed("interact") and interactable thing: return ST_INTERACT
 	elif state < 2 and dir.x != 0: return ST_WALK
@@ -951,3 +962,6 @@ func set_stun(stun_amount, type=0):
 		state = ST_STUNNED
 	elif type == 1:
 		state = ST_STUNNED_DRAG
+
+func set_coyote_timer():
+	coyote_timer = 4

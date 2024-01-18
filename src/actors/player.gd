@@ -10,6 +10,7 @@ var attack_timer := 0
 var dash_dust_timer := 0
 
 var coyote_timer := 0
+var acceleration_timer := 0
 
 # Booleans
 export var dashing := false
@@ -64,7 +65,7 @@ var max_slope := PI/3
 export var camera_limit_min = Vector2(0,0)
 export var camera_limit_max = Vector2(10000000, 10000)
 
-var animation_dict := {ST_IDLE: 'Idle', ST_WALK: 'Run', ST_WALLJUMP: 'Walljump',
+var animation_dict := {ST_IDLE: 'Idle', ST_WALLJUMP: 'Walljump',
 					   ST_DASH: "Dash", ST_ULTIMATE: "Ultimate"}
 
 # From enemy
@@ -223,7 +224,8 @@ func get_direction_normal() -> Vector2:
 
 func calculate_move_direction(linear_velocity: Vector2, speed: Vector2, direction: Vector2, is_jumping: bool) -> Vector2:
 	var out_vel := linear_velocity
-	out_vel.x = speed.x * direction.x
+	var speed_x_factor := 0.1 if (state == ST_IDLE or acceleration_timer > 3) else 0.3 if acceleration_timer > 0 else 1.0
+	out_vel.x = speed.x * direction.x * speed_x_factor
 	out_vel.y += gravity / 60.0 #*get_physics_process_delta_time()
 	if direction.y == -1.0:
 		out_vel.y = 500.0 * direction.y - linear_velocity.y
@@ -275,6 +277,8 @@ func _process(_delta):
 	
 	if state != ST_AIR: coyote_timer = 0
 	coyote_timer = coyote_timer - 1 if coyote_timer > 0 else 0
+	if state != ST_WALK: acceleration_timer -= 1
+	acceleration_timer = acceleration_timer - 1 if acceleration_timer > 0 else 0
 	
 	# Ultimate_move_check
 	if not ultimate_enabled or state > 5 or health < 32: ultimate_move_timer = [0,0,-1]
@@ -416,6 +420,11 @@ func animation_handler():
 				):
 				$Sprite.position.x += 6 if stunned_shake_counter % 2 == 0 else -6
 				stunned_bump_timer = 2
+		ST_WALK:
+			if acceleration_timer > 0:
+				_animation.play('Step Forward')
+			else:
+				_animation.play('Run')
 
 # Updates the player state if game unpaused. Also updates attack_timer and dashing variables,
 # and calls start_walljump()
@@ -607,7 +616,10 @@ func update_state():
 		return ST_AIR
 	
 	#if state < 2 and Input.is_action_just_pressed("interact") and interactable thing: return ST_INTERACT
-	elif state < 2 and dir.x != 0: return ST_WALK
+	elif state < 2 and dir.x != 0:
+		if state == 0 and (Input.is_action_just_pressed("move_left") or 
+			Input.is_action_just_pressed("move_right")): acceleration_timer = 5
+		return ST_WALK
 	elif state < 2 and dir.x == 0: return ST_IDLE
 	return state
 

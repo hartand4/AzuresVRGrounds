@@ -1,4 +1,4 @@
-[gd_scene load_steps=97 format=2]
+[gd_scene load_steps=98 format=2]
 
 [ext_resource path="res://assets/BG/Technotileset.png" type="Texture" id=1]
 [ext_resource path="res://src/actors/player.tscn" type="PackedScene" id=2]
@@ -14,7 +14,7 @@
 [ext_resource path="res://src/objects/GoalOrb.tscn" type="PackedScene" id=12]
 [ext_resource path="res://src/MapObjects/Transition.tscn" type="PackedScene" id=13]
 [ext_resource path="res://assets/BG/TechnoBG3.png" type="Texture" id=14]
-[ext_resource path="res://assets/Font/avrf38pt.fnt" type="BitmapFont" id=15]
+[ext_resource path="res://assets/Font/AzureVR 1.1.ttf" type="DynamicFontData" id=15]
 [ext_resource path="res://src/objects/BreakingPlatform.tscn" type="PackedScene" id=16]
 [ext_resource path="res://src/objects/BreakableWall.tscn" type="PackedScene" id=17]
 [ext_resource path="res://src/objects/Conveyor.tscn" type="PackedScene" id=18]
@@ -1066,6 +1066,10 @@ points = PoolVector2Array( 30, 48, 18, 48, 18, 0, 30, 0 )
 [sub_resource type="RectangleShape2D" id=109]
 extents = Vector2( 12, 24 )
 
+[sub_resource type="DynamicFont" id=111]
+size = 34
+font_data = ExtResource( 15 )
+
 [node name="TestLevel" type="Node2D"]
 
 [node name="ParallaxBackground" type="ParallaxBackground" parent="."]
@@ -1232,12 +1236,12 @@ __meta__ = {
 start_black = true
 
 [node name="Label" type="Label" parent="."]
-margin_left = 414.0
-margin_top = 192.0
-margin_right = 828.0
-margin_bottom = 246.0
+margin_left = 415.0
+margin_top = 188.0
+margin_right = 829.0
+margin_bottom = 242.0
 custom_colors/font_color = Color( 1, 1, 1, 1 )
-custom_fonts/font = ExtResource( 15 )
+custom_fonts/font = SubResource( 111 )
 text = "This is Azure lmao UwU~"
 
 [node name="BreakingPlatform" parent="." instance=ExtResource( 16 )]

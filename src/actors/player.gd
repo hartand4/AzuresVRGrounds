@@ -17,7 +17,6 @@ export var dashing := false
 export var air_dash_enabled := true
 export var armour_enabled := false
 export var ultimate_enabled := false
-var in_water := false
 var dying_process := false
 
 var did_ultimate_already := false
@@ -129,6 +128,8 @@ func _physics_process(_delta: float) -> void:
 				if coyote_timer > 0:
 					_velocity.y = -pow(30,4)/2150
 					coyote_timer = 0
+			else:
+				jump_timer = 0
 		is_jumping = Input.is_action_pressed("jump") and jump_timer > 0 and _velocity.y < 0
 		if not Input.is_action_pressed("jump"):
 			jump_timer = 0
@@ -226,7 +227,8 @@ func calculate_move_direction(linear_velocity: Vector2, speed: Vector2, directio
 	var out_vel := linear_velocity
 	var speed_x_factor := 0.1 if (state == ST_IDLE or acceleration_timer > 3) else 0.3 if acceleration_timer > 0 else 1.0
 	out_vel.x = speed.x * direction.x * speed_x_factor
-	out_vel.y += gravity / 60.0 #*get_physics_process_delta_time()
+	out_vel.y += gravity / 60.0 * (3.0 if is_in_water and _velocity.y < 0 and
+		jump_timer == 0 else 1.0)#*get_physics_process_delta_time()
 	if direction.y == -1.0:
 		out_vel.y = 500.0 * direction.y - linear_velocity.y
 		
@@ -244,6 +246,7 @@ func _process(_delta):
 		do_slash_effect(0)
 	
 	outfit_animation()
+	#print(get_floor_tile_type())
 	
 	if Globals.get("game_paused"):
 		$AttackHitboxArea/SlashPlayer.stop(false)
@@ -618,7 +621,7 @@ func update_state():
 	#if state < 2 and Input.is_action_just_pressed("interact") and interactable thing: return ST_INTERACT
 	elif state < 2 and dir.x != 0:
 		if state == 0 and (Input.is_action_just_pressed("move_left") or 
-			Input.is_action_just_pressed("move_right")): acceleration_timer = 5
+			Input.is_action_just_pressed("move_right")): acceleration_timer = 4
 		return ST_WALK
 	elif state < 2 and dir.x == 0: return ST_IDLE
 	return state
@@ -967,7 +970,7 @@ func add_position(add_pos):
 	move_and_slide(Vector2.ZERO, FLOOR_NORMAL, true)
 	#move_and_slide(add_pos, FLOOR_NORMAL, true)
 
-# Activates player stun state, including the needed stun inputs
+# Activates player stun state, including the needed stun inputs.
 func set_stun(stun_amount, type=0):
 	stunned_shake_counter = stun_amount
 	if type == 0:
@@ -975,5 +978,23 @@ func set_stun(stun_amount, type=0):
 	elif type == 1:
 		state = ST_STUNNED_DRAG
 
+# Sets the coyote timer variable (4)
 func set_coyote_timer():
 	coyote_timer = 4
+
+# Return the tile type of the background tile the player is in front of.
+func get_background_tiles():
+	var tilemap = Globals.get_tilemap(2)
+	var positions = [Vector2(-8, -72), Vector2(0,-72), Vector2(8,-72),
+					Vector2(-8, -14), Vector2(0,-14), Vector2(8,-14)]
+	var block_types = []
+	for pos in positions:
+		var block_pos = Vector2(nearest_block((position+pos).x)-24, nearest_block((position+pos).y)-24)/48
+		block_types += [Globals.get_block_type(tilemap.get_cellv(block_pos), 2)]
+	return block_types
+
+# Return the floor type type.
+func get_floor_tile_type():
+	var tilemap = Globals.get_tilemap()
+	var block_pos = Vector2(nearest_block(position.x)-24, nearest_block(position.y)-22)/48
+	return Globals.get_block_type(tilemap.get_cellv(block_pos))

@@ -1155,7 +1155,7 @@ coin_number = 2
 position = Vector2( -390, 720 )
 coin_number = 3
 
-[node name="TileMapHideSecrets" type="TileMap" parent="."]
+[node name="TileMapFront" type="TileMap" parent="."]
 tile_set = SubResource( 99 )
 cell_size = Vector2( 48, 48 )
 format = 1

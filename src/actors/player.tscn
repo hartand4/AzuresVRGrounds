@@ -727,6 +727,7 @@ anims/DashDust = SubResource( 36 )
 anims/RESET = SubResource( 37 )
 
 [node name="CrushCheckArea" type="Area2D" parent="."]
+visible = false
 
 [node name="Collision" type="CollisionShape2D" parent="CrushCheckArea"]
 position = Vector2( 0, -43 )

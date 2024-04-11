@@ -61,12 +61,12 @@ func _physics_process(_delta: float) -> void:
 	
 	
 	#Differences in water physics
-	speed.y = 1200.0 * (0.6 if is_in_water else 1.0)
-	speed.x = 300.0 * (0.9 if is_in_water else 1.0)
+	speed.y = 1200.0 * (0.4 if is_in_water else 1.0)
+	speed.x = 300.0 * (0.8 if is_in_water else 1.0)
 	
 	# Perform gravity updates (different for upward gravity)
-	if _velocity.y > 0: _velocity.y += gravity*(1.0/60.0)*(0.4 if is_in_water else 1.0)
-	else: _velocity.y += up_gravity*(1.0/60.0)*(0.4 if is_in_water else 1.0)
+	if _velocity.y > 0: _velocity.y += gravity*(1.0/60.0)*(0.2 if is_in_water else 1.0)
+	else: _velocity.y += up_gravity*(1.0/60.0)*(0.35 if is_in_water else 1.0)
 	
 	# Cap speed at a certain point
 	_velocity.y = min(_velocity.y, speed.y)

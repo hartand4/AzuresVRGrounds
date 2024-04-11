@@ -462,3 +462,16 @@ func random_permutation(n):
 		permutation += [unused_numbers[index]]
 		unused_numbers.remove(index)
 	return permutation
+
+# Returns the tilemap in the current level/scene
+func get_tilemap(layer=1):
+	var tilemap_name = "TileMap" + ("Mask" if layer==2 else "Front" if layer==0 else "")
+	return get_current_scene().find_node(tilemap_name)
+
+# Get the function of a tilemap tile based on the current scene
+# 0 = Nothing
+func get_block_type(block_index, layer=1):
+	# Current level will play a part
+	block_index = block_index
+	layer=layer
+	return 0

@@ -41,6 +41,7 @@ export var unlocked_in_store = []
 export var spent_coins = 0
 
 export var current_camera_pos = Vector2.ZERO
+var stored_camera_for_earthquake
 
 func _ready() -> void:
 	# warning-ignore:unused_variable
@@ -100,11 +101,13 @@ func get_current_camera_pos():
 	var player = Globals.find_player()
 	if player and player.find_node("Camera2D").current:
 		return player.find_node("Camera2D").get_camera_screen_center()
-	return current_camera_pos
+	return get_current_camera().get_camera_screen_center()
 
 # Sets the current camera
 func set_current_camera_pos(vector):
 	current_camera_pos = vector
+	if get_current_camera():
+		get_current_camera().global_position = vector
 
 # Generates a debris object with specified texture at a given position
 func spawn_debris(texture, pos):
@@ -418,7 +421,8 @@ func total_exit_count(exit_list = level_flags):
 func start_earthquake(length, intensity=3):
 	eq_timer = length
 	eq_intensity = intensity
-	var camera = find_player().find_node('Camera2D')
+	var camera = get_current_camera()
+	stored_camera_for_earthquake = camera
 	var current_scene = get_current_scene()
 	camera.current = false
 	var new_camera = Camera2D.new()
@@ -431,7 +435,7 @@ func start_earthquake(length, intensity=3):
 
 # Continue earthquake effect until eq_timer ends
 func do_earthquake():
-	var camera = find_player().find_node('Camera2D')
+	var camera = stored_camera_for_earthquake
 	var variance = eq_intensity if timer % 6 < 2 else 0 if timer % 6 < 4 else -eq_intensity
 	
 	earthquake_camera.limit_top = camera.limit_top - eq_intensity
@@ -439,14 +443,12 @@ func do_earthquake():
 	earthquake_camera.limit_left = camera.limit_left
 	earthquake_camera.limit_right = camera.limit_right
 	camera.current = true
-	earthquake_camera.current = false
 	earthquake_camera.global_position = camera.get_camera_screen_center() + Vector2(0,variance)
-	camera.current = false
 	earthquake_camera.current = true
 
 # Removes the temporary eq camera from the scene
 func recenter_camera():
-	find_player().find_node('Camera2D').current = true
+	stored_camera_for_earthquake.current = true
 	var temp_eq_cam = earthquake_camera
 	earthquake_camera = null
 	get_current_scene().remove_child(temp_eq_cam)
@@ -475,3 +477,15 @@ func get_block_type(block_index, layer=1):
 	block_index = block_index
 	layer=layer
 	return 0
+
+# Returns the current camera of the viewport
+func get_current_camera():
+	var viewport = get_viewport()
+	if not viewport:
+		return null
+	var camera_group_id = "__cameras_%d" % viewport.get_viewport_rid().get_id()
+	var cameras = get_tree().get_nodes_in_group(camera_group_id)
+	for camera in cameras:
+		if camera is Camera2D and camera.current:
+			return camera
+	return null

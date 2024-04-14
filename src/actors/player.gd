@@ -247,6 +247,10 @@ func _process(_delta):
 	
 	outfit_animation()
 	#print(get_floor_tile_type())
+	if Input.is_action_just_pressed("attack"):
+		Globals.start_earthquake(60)
+	if Input.is_action_just_pressed("dash"):
+		print(Globals.get_current_camera().get_camera_screen_center())
 	
 	if Globals.get("game_paused"):
 		$AttackHitboxArea/SlashPlayer.stop(false)
@@ -260,7 +264,7 @@ func _process(_delta):
 		if animation_timer < 40: return
 		Globals.retry_menu_on = true
 		Globals.lock_input = false
-	elif position.y > $Camera2D.get_camera_screen_center().y + 600:
+	elif position.y > $Camera2D.get_camera_screen_center().y + 600 and $Camera2D.current:
 		animation_timer = 0
 		do_hurt_animation(32)
 		$Camera2D.current = false
@@ -710,7 +714,8 @@ func do_hurt_animation(damage):
 		dying_process = true
 		
 		# Just for bookkeeping
-		Globals.set_current_camera_pos($Camera2D.get_camera_screen_center())
+		if $Camera.current:
+			Globals.set_current_camera_pos($Camera2D.get_camera_screen_center())
 	return
 
 # Alters dash hitbox and walljump/crush detectors based on the dashing state

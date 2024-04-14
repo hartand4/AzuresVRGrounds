@@ -31,7 +31,7 @@ func _process(delta: float) -> void:
 		breaking = false
 
 func respawn():
-	var camera_pos = Globals.find_player().find_node('Camera2D').get_camera_screen_center()
+	var camera_pos = Globals.get_current_camera().get_camera_screen_center()
 	if camera_pos.x - 420 - 120 < position.x and camera_pos.x +420 + 120 > position.x and (
 		camera_pos.y - 300 - 120 < position.y and camera_pos.y + 300 + 120 > position.y): return
 	$Collision.disabled = false

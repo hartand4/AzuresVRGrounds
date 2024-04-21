@@ -246,11 +246,6 @@ func _process(_delta):
 		do_slash_effect(0)
 	
 	outfit_animation()
-	#print(get_floor_tile_type())
-	if Input.is_action_just_pressed("attack"):
-		Globals.start_earthquake(60)
-	if Input.is_action_just_pressed("dash"):
-		print(Globals.get_current_camera().get_camera_screen_center())
 	
 	if Globals.get("game_paused"):
 		$AttackHitboxArea/SlashPlayer.stop(false)

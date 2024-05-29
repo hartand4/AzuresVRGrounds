@@ -699,6 +699,11 @@ func do_hurt_animation(damage):
 	_velocity = Vector2(recurring_x_dir * -500.0,-500)
 	_velocity = move_and_slide(_velocity, FLOOR_NORMAL)
 	if health <= 0:
+		
+		# Just for bookkeeping
+		if $Camera2D.current:
+			Globals.set_current_camera_pos($Camera2D.get_camera_screen_center())
+		
 		$Camera2D.current = false
 		$PlayerHitbox.disabled = true
 		$PlayerHitboxArea/PlayerHitbox.disabled = true
@@ -708,9 +713,7 @@ func do_hurt_animation(damage):
 		animation_timer = 0
 		dying_process = true
 		
-		# Just for bookkeeping
-		if $Camera.current:
-			Globals.set_current_camera_pos($Camera2D.get_camera_screen_center())
+
 	return
 
 # Alters dash hitbox and walljump/crush detectors based on the dashing state

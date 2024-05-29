@@ -100,8 +100,11 @@ func get_current_scene():
 func get_current_camera_pos():
 	var player = Globals.find_player()
 	if player and player.find_node("Camera2D").current:
+		#print(player.find_node("Camera2D").get_camera_screen_center())
 		return player.find_node("Camera2D").get_camera_screen_center()
-	return get_current_camera().get_camera_screen_center()
+	elif get_current_camera():
+		return get_current_camera().get_camera_screen_center()
+	return current_camera_pos
 
 # Sets the current camera
 func set_current_camera_pos(vector):

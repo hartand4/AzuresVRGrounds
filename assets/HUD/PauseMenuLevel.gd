@@ -167,7 +167,9 @@ func display_controls():
 			if InputMap.get_action_list(input_label_dict[label])[1] is InputEventJoypadButton:
 				$PauseText2.find_node(label).text += ', Joypad: ' + str(InputMap.get_action_list(input_label_dict[label])[1].button_index)
 			elif InputMap.get_action_list(input_label_dict[label])[1] is InputEventJoypadMotion:
-				$PauseText2.find_node(label).text += ', Joypad: ' + str(InputMap.get_action_list(input_label_dict[label])[1].axis)
+				$PauseText2.find_node(label).text += ', Joypad: ' + str(InputMap.get_action_list(input_label_dict[label])[1].axis) + (
+					(" +" if InputMap.get_action_list(input_label_dict[label])[1].get_axis_value() > 0 else " -")
+				)
 
 func _unhandled_input(event):
 	if not is_editing_control: return
@@ -257,7 +259,9 @@ func get_key_action(event):
 		event_button_index = event.axis
 		for i in range(8):
 			var input_on_map = InputMap.get_action_list(input_index_to_str(i))[1]
-			if input_on_map is InputEventJoypadMotion and event_button_index == input_on_map.axis:
+			if input_on_map is InputEventJoypadMotion and event_button_index == input_on_map.axis and (
+				input_on_map.axis_value*event.axis_value > 0
+			):
 				return i
 		return -1
 	return -1

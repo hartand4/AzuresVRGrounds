@@ -219,7 +219,7 @@ func _physics_process(_delta: float) -> void:
 func get_direction_normal() -> Vector2:
 	if Globals.lock_input: return Vector2.DOWN
 	return Vector2(
-		Input.get_action_strength("move_right") - Input.get_action_strength("move_left"),
+		ceil(Input.get_action_strength("move_right")) - ceil(Input.get_action_strength("move_left")),
 		-1.0 if Input.is_action_just_pressed("jump") and (is_on_floor()) else 1.0 #or not double_jumped) else 1.0
 	)
 

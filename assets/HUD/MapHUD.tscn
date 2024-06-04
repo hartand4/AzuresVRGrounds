@@ -1,9 +1,9 @@
-[gd_scene load_steps=23 format=2]
+[gd_scene load_steps=22 format=2]
 
 [ext_resource path="res://assets/HUD/PauseMenuMap.png" type="Texture" id=1]
 [ext_resource path="res://assets/HUD/PauseMenuTextLevelTitle.png" type="Texture" id=2]
 [ext_resource path="res://assets/HUD/PauseMenuTextLevelControls.png" type="Texture" id=3]
-[ext_resource path="res://assets/Font/AzureVR.ttf" type="DynamicFontData" id=4]
+[ext_resource path="res://assets/Font/AzureVR1.1Size17.tres" type="DynamicFont" id=4]
 [ext_resource path="res://assets/HUD/PauseMenuMapText1.png" type="Texture" id=5]
 [ext_resource path="res://assets/HUD/PauseMenuControlSelect.png" type="Texture" id=6]
 [ext_resource path="res://assets/HUD/PauseMenuSelect.png" type="Texture" id=7]
@@ -21,10 +21,6 @@
 [ext_resource path="res://assets/HUD/OverrideSaveCursor.png" type="Texture" id=19]
 [ext_resource path="res://assets/HUD/VolumeMeter.png" type="Texture" id=20]
 [ext_resource path="res://assets/HUD/VolumeSlider.png" type="Texture" id=21]
-
-[sub_resource type="DynamicFont" id=1]
-size = 24
-font_data = ExtResource( 4 )
 
 [node name="MapHUD" type="CanvasLayer"]
 
@@ -568,7 +564,7 @@ margin_top = 233.0
 margin_right = 301.0
 margin_bottom = 252.0
 rect_scale = Vector2( 1.5, 1.5 )
-custom_fonts/font = SubResource( 1 )
+custom_fonts/font = ExtResource( 4 )
 text = "AZURE azure :3"
 clip_text = true
 
@@ -578,7 +574,7 @@ margin_top = 275.0
 margin_right = 301.0
 margin_bottom = 294.0
 rect_scale = Vector2( 1.5, 1.5 )
-custom_fonts/font = SubResource( 1 )
+custom_fonts/font = ExtResource( 4 )
 text = "Easter egg lol"
 clip_text = true
 
@@ -588,7 +584,7 @@ margin_top = 317.0
 margin_right = 301.0
 margin_bottom = 336.0
 rect_scale = Vector2( 1.5, 1.5 )
-custom_fonts/font = SubResource( 1 )
+custom_fonts/font = ExtResource( 4 )
 text = "Valerie is very sexy"
 clip_text = true
 
@@ -598,7 +594,7 @@ margin_top = 359.0
 margin_right = 301.0
 margin_bottom = 378.0
 rect_scale = Vector2( 1.5, 1.5 )
-custom_fonts/font = SubResource( 1 )
+custom_fonts/font = ExtResource( 4 )
 text = "and pretty hehe~"
 clip_text = true
 
@@ -608,7 +604,7 @@ margin_top = 233.0
 margin_right = 682.0
 margin_bottom = 252.0
 rect_scale = Vector2( 1.5, 1.5 )
-custom_fonts/font = SubResource( 1 )
+custom_fonts/font = ExtResource( 4 )
 text = "But seriously...thank"
 clip_text = true
 
@@ -618,7 +614,7 @@ margin_top = 275.0
 margin_right = 682.0
 margin_bottom = 294.0
 rect_scale = Vector2( 1.5, 1.5 )
-custom_fonts/font = SubResource( 1 )
+custom_fonts/font = ExtResource( 4 )
 text = "you so much for"
 clip_text = true
 
@@ -628,7 +624,7 @@ margin_top = 317.0
 margin_right = 682.0
 margin_bottom = 336.0
 rect_scale = Vector2( 1.5, 1.5 )
-custom_fonts/font = SubResource( 1 )
+custom_fonts/font = ExtResource( 4 )
 text = "playing my game. It"
 clip_text = true
 
@@ -638,7 +634,7 @@ margin_top = 359.0
 margin_right = 682.0
 margin_bottom = 378.0
 rect_scale = Vector2( 1.5, 1.5 )
-custom_fonts/font = SubResource( 1 )
+custom_fonts/font = ExtResource( 4 )
 text = "means so much to me"
 clip_text = true
 

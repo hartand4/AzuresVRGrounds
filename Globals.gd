@@ -240,10 +240,29 @@ func save_controls_format(action):
 	if InputMap.get_action_list(action).size() < 2: return []
 	var button_event = InputMap.get_action_list(action)[1]
 	if button_event is InputEventJoypadButton:
-		return [button_event.button_index, 0]
+		return [button_event.button_index, 0, null]
 	elif button_event is InputEventJoypadMotion:
-		return [button_event.axis, 1]
+		return [button_event.axis, 1, (1 if button_event.axis_value > 0 else -1)]
 	return []
+
+# Saves music and sfx volume data
+func save_volume_data():
+	var path = './saves/data.json'
+	var current_data = load_save_data()
+	if not current_data:
+		current_data = {}
+	
+	current_data["music_volume"] = music_volume
+	current_data["sfx_volume"] = sfx_volume
+	
+	var file = File.new()
+	var dir = Directory.new()
+	if not dir.file_exists('./saves'):
+		dir.open('./')
+		dir.make_dir('saves')
+	file.open(path, File.WRITE)
+	file.store_line(to_json(current_data))
+	file.close()
 
 # Loads flags in file n to global data
 func load_save_game(save_data, n):

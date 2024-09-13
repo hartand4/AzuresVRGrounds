@@ -156,6 +156,7 @@ func _process(_delta: float) -> void:
 			transition_layer.start_transition(get_position() - $Camera2D.get_camera_screen_center() + Vector2(420,300), 1)
 			animation_timer = 120
 			entering_level = true
+			Globals.goal_reached_in_current_level = [false, false]
 			return
 		else:
 			transition_layer.start_transition(Vector2(420,300), 3)

@@ -214,17 +214,18 @@ expand = true
 
 [node name="Azzy" type="Sprite" parent="TitleObject/TitleVisibility/Title"]
 position = Vector2( 725, 172 )
+scale = Vector2( 2, 2 )
 texture = ExtResource( 5 )
-hframes = 5
+hframes = 10
 vframes = 10
 
 [node name="Clothes" type="Sprite" parent="TitleObject/TitleVisibility/Title/Azzy"]
 texture = ExtResource( 14 )
-hframes = 5
+hframes = 10
 vframes = 10
 
 [node name="AzzyTail" type="Sprite" parent="TitleObject/TitleVisibility/Title/Azzy"]
-position = Vector2( 40, 12 )
+position = Vector2( 20, 6 )
 z_index = -1
 texture = ExtResource( 4 )
 hframes = 3

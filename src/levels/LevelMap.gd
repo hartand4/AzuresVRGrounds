@@ -198,8 +198,7 @@ func add_val_coins():
 		Globals.val_coin_list[Globals.current_level][i] = (
 			Globals.val_coin_list[Globals.current_level][i] or Globals.coins_collected_in_level[i])
 
-# warning-ignore:unused_argument
-func _process(delta: float) -> void:
+func _process(_delta) -> void:
 	
 	if done_initial_setup and not doing_map_events:
 		if Globals.current_level < 200:

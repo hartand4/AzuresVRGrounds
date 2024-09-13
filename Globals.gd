@@ -74,7 +74,9 @@ func find_player():
 
 # Begins a transition effect centred at pos, and of transition type 'type'
 func start_transition(pos, type):
-	get_current_scene().find_node('Transition').start_transition(pos, type)
+	var curr_scene = get_current_scene()
+	if curr_scene:
+		curr_scene.find_node('Transition').start_transition(pos, type)
 
 func level_number_to_obj(n):
 	var boss_level_numbers = [7]

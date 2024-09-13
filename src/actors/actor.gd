@@ -85,8 +85,10 @@ func _process(_delta):
 			anim_timer -= 1
 		if i_frames:
 			i_frames -= 1
+		_animation.playback_speed = 1
 	else:
-		_animation.stop(false)
+		_animation.playback_speed = 0
+		#_animation.stop(false)
 
 func animation_handler():
 	return

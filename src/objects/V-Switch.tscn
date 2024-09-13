@@ -21,7 +21,7 @@ hframes = 2
 shape = SubResource( 1 )
 
 [node name="PlayerAttackCheck" type="Area2D" parent="."]
-collision_layer = 8
+collision_layer = 1024
 collision_mask = 16
 
 [node name="Collision" type="CollisionShape2D" parent="PlayerAttackCheck"]

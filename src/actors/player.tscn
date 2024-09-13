@@ -11,6 +11,8 @@
 [ext_resource path="res://assets/Sprites/Azzy/AzzyTailWall.png" type="Texture" id=9]
 [ext_resource path="res://assets/Sprites/Azzy/AzzyUltimateFire.png" type="Texture" id=10]
 [ext_resource path="res://assets/Sprites/Azzy/Outfits/Shorts.png" type="Texture" id=11]
+[ext_resource path="res://assets/Sprites/Azzy/AzzySlashEffectDown.png" type="Texture" id=12]
+[ext_resource path="res://assets/Sprites/Azzy/AzzySlashEffectUp.png" type="Texture" id=13]
 
 [sub_resource type="Animation" id=40]
 length = 0.001
@@ -112,6 +114,76 @@ tracks/0/keys = {
 "update": 1,
 "values": [ 28, 29, 30 ]
 }
+tracks/1/type = "value"
+tracks/1/path = NodePath("SlashEffects/SlashEffect:frame")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0, 0.0500001, 0.166667, 0.233333 ),
+"transitions": PoolRealArray( 1, 1, 1, 1 ),
+"update": 1,
+"values": [ 3, 0, 1, 2 ]
+}
+
+[sub_resource type="Animation" id=52]
+resource_name = "Air Slash Down"
+length = 0.3
+step = 0.0166667
+tracks/0/type = "value"
+tracks/0/path = NodePath("Sprite:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.1 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 1,
+"values": [ 48, 49 ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("SlashEffects/SlashEffectDown:frame")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0, 0.1, 0.2 ),
+"transitions": PoolRealArray( 1, 1, 1 ),
+"update": 1,
+"values": [ 2, 0, 1 ]
+}
+
+[sub_resource type="Animation" id=51]
+resource_name = "Air Slash Up"
+length = 0.3
+step = 0.0166667
+tracks/0/type = "value"
+tracks/0/path = NodePath("Sprite:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.1 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 1,
+"values": [ 46, 47 ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("SlashEffects/SlashEffectUp:frame")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0, 0.1, 0.2 ),
+"transitions": PoolRealArray( 1, 1, 1 ),
+"update": 1,
+"values": [ 2, 0, 1 ]
+}
 
 [sub_resource type="Animation" id=28]
 resource_name = "Climb"
@@ -209,6 +281,47 @@ tracks/0/keys = {
 "update": 1,
 "values": [ 25, 26, 27 ]
 }
+tracks/1/type = "value"
+tracks/1/path = NodePath("SlashEffects/SlashEffect:frame")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0, 0.0500001, 0.166667, 0.233334 ),
+"transitions": PoolRealArray( 1, 1, 1, 1 ),
+"update": 1,
+"values": [ 3, 0, 1, 2 ]
+}
+
+[sub_resource type="Animation" id=53]
+resource_name = "Ground Slash Up"
+length = 0.3
+step = 0.0166667
+tracks/0/type = "value"
+tracks/0/path = NodePath("Sprite:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.1 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 1,
+"values": [ 44, 45 ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("SlashEffects/SlashEffectUp:frame")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0, 0.1, 0.2 ),
+"transitions": PoolRealArray( 1, 1, 1 ),
+"update": 1,
+"values": [ 2, 0, 1 ]
+}
 
 [sub_resource type="Animation" id=13]
 resource_name = "Hurt"
@@ -260,6 +373,7 @@ tracks/0/keys = {
 [sub_resource type="Animation" id=35]
 resource_name = "Ladder Slash"
 length = 0.3
+step = 0.0166667
 tracks/0/type = "value"
 tracks/0/path = NodePath("Sprite:frame")
 tracks/0/interp = 1
@@ -272,6 +386,18 @@ tracks/0/keys = {
 "update": 1,
 "values": [ 34, 33 ]
 }
+tracks/1/type = "value"
+tracks/1/path = NodePath("SlashEffects/SlashEffectAlt:frame")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0, 0.1, 0.2 ),
+"transitions": PoolRealArray( 1, 1, 1 ),
+"update": 1,
+"values": [ 2, 0, 1 ]
+}
 
 [sub_resource type="Animation" id=3]
 length = 0.001
@@ -282,6 +408,78 @@ tracks/0/loop_wrap = true
 tracks/0/imported = false
 tracks/0/enabled = true
 tracks/0/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ 0 ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("SlashEffects/SlashEffectUp:frame")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ 0 ]
+}
+tracks/2/type = "value"
+tracks/2/path = NodePath("SlashEffects/SlashEffectUp:frame_coords")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ Vector2( 1, 0 ) ]
+}
+tracks/3/type = "value"
+tracks/3/path = NodePath("SlashEffects/SlashEffect:frame")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ 3 ]
+}
+tracks/4/type = "value"
+tracks/4/path = NodePath("SlashEffects/SlashEffectAlt:frame")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ 2 ]
+}
+tracks/5/type = "value"
+tracks/5/path = NodePath("SlashEffects/UltimateFire:frame")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ 0 ]
+}
+tracks/6/type = "value"
+tracks/6/path = NodePath("SlashEffects/SlashEffectDown:frame")
+tracks/6/interp = 1
+tracks/6/loop_wrap = true
+tracks/6/imported = false
+tracks/6/enabled = true
+tracks/6/keys = {
 "times": PoolRealArray( 0 ),
 "transitions": PoolRealArray( 1 ),
 "update": 0,
@@ -336,6 +534,18 @@ tracks/0/keys = {
 "update": 1,
 "values": [ 42, 43, 42 ]
 }
+tracks/1/type = "value"
+tracks/1/path = NodePath("SlashEffects/UltimateFire:frame")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0.0833335, 0.15, 0.216667, 0.283334, 0.350001, 0.416667, 0.483334, 0.550001, 0.616668, 0.683335 ),
+"transitions": PoolRealArray( 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 ),
+"update": 1,
+"values": [ 0, 1, 0, 1, 0, 1, 0, 1, 0, 1 ]
+}
 
 [sub_resource type="Animation" id=38]
 resource_name = "Victory"
@@ -376,6 +586,7 @@ tracks/0/keys = {
 [sub_resource type="Animation" id=33]
 resource_name = "Wall Slash"
 length = 0.3
+step = 0.0166667
 tracks/0/type = "value"
 tracks/0/path = NodePath("Sprite:frame")
 tracks/0/interp = 1
@@ -387,6 +598,18 @@ tracks/0/keys = {
 "transitions": PoolRealArray( 1, 1 ),
 "update": 1,
 "values": [ 31, 32 ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("SlashEffects/SlashEffectAlt:frame")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0, 0.1, 0.2 ),
+"transitions": PoolRealArray( 1, 1, 1 ),
+"update": 1,
+"values": [ 2, 0, 1 ]
 }
 
 [sub_resource type="Animation" id=23]
@@ -422,104 +645,10 @@ tracks/0/keys = {
 }
 
 [sub_resource type="RectangleShape2D" id=21]
-extents = Vector2( 40.75, 16 )
-
-[sub_resource type="Animation" id=30]
-length = 0.001
-step = 0.0166667
-tracks/0/type = "value"
-tracks/0/path = NodePath(".:frame")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/keys = {
-"times": PoolRealArray( 0 ),
-"transitions": PoolRealArray( 1 ),
-"update": 0,
-"values": [ 0 ]
-}
-tracks/1/type = "value"
-tracks/1/path = NodePath("../SlashEffectAlt:frame")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/keys = {
-"times": PoolRealArray( 0 ),
-"transitions": PoolRealArray( 1 ),
-"update": 0,
-"values": [ 2 ]
-}
-
-[sub_resource type="Animation" id=31]
-resource_name = "Slash"
-length = 0.3
-step = 0.0166667
-tracks/0/type = "value"
-tracks/0/path = NodePath(".:frame")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/keys = {
-"times": PoolRealArray( 0, 0.05, 0.166667, 0.233333 ),
-"transitions": PoolRealArray( 1, 1, 1, 1 ),
-"update": 1,
-"values": [ 3, 0, 1, 2 ]
-}
-
-[sub_resource type="Animation" id=34]
-resource_name = "Wall Slash"
-length = 0.3
-tracks/0/type = "value"
-tracks/0/path = NodePath("../SlashEffectAlt:frame")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/keys = {
-"times": PoolRealArray( 0, 0.1, 0.2 ),
-"transitions": PoolRealArray( 1, 1, 1 ),
-"update": 1,
-"values": [ 2, 0, 1 ]
-}
+extents = Vector2( 42, 32 )
 
 [sub_resource type="RectangleShape2D" id=45]
 extents = Vector2( 52, 30 )
-
-[sub_resource type="Animation" id=46]
-resource_name = "Flame"
-length = 0.133333
-loop = true
-step = 0.0166667
-tracks/0/type = "value"
-tracks/0/path = NodePath(".:frame")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/keys = {
-"times": PoolRealArray( 0, 0.0666667 ),
-"transitions": PoolRealArray( 1, 1 ),
-"update": 1,
-"values": [ 0, 1 ]
-}
-
-[sub_resource type="Animation" id=47]
-length = 0.001
-tracks/0/type = "value"
-tracks/0/path = NodePath(".:frame")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/keys = {
-"times": PoolRealArray( 0 ),
-"transitions": PoolRealArray( 1 ),
-"update": 0,
-"values": [ 0 ]
-}
 
 [sub_resource type="RectangleShape2D" id=20]
 extents = Vector2( 13, 36.4063 )
@@ -571,6 +700,7 @@ script = ExtResource( 2 )
 
 [node name="Tail" type="Sprite" parent="."]
 position = Vector2( 34, -37 )
+scale = Vector2( 2, 2 )
 texture = ExtResource( 8 )
 hframes = 3
 vframes = 2
@@ -584,17 +714,19 @@ anims/TailWall = SubResource( 43 )
 [node name="TailWall" type="Sprite" parent="."]
 visible = false
 position = Vector2( 73, -91 )
+scale = Vector2( 2, 2 )
 texture = ExtResource( 9 )
 
 [node name="Sprite" type="Sprite" parent="."]
 position = Vector2( 0, -48 )
+scale = Vector2( 2, 2 )
 texture = ExtResource( 3 )
-hframes = 5
+hframes = 10
 vframes = 10
 
 [node name="Outfit" type="Sprite" parent="Sprite"]
 texture = ExtResource( 11 )
-hframes = 5
+hframes = 10
 vframes = 10
 frame = 10
 
@@ -611,7 +743,7 @@ disabled = true
 visible = false
 position = Vector2( 0, -40 )
 collision_layer = 2
-collision_mask = 101
+collision_mask = 109
 
 [node name="PlayerHitbox" type="CollisionShape2D" parent="PlayerHitboxArea"]
 visible = false
@@ -627,12 +759,15 @@ drag_margin_v_enabled = true
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 "anims/Air Slash" = SubResource( 32 )
+"anims/Air Slash Down" = SubResource( 52 )
+"anims/Air Slash Up" = SubResource( 51 )
 anims/Climb = SubResource( 28 )
 anims/Dash = SubResource( 24 )
 anims/Duck = SubResource( 4 )
 anims/Fall = SubResource( 7 )
 "anims/Get up" = SubResource( 15 )
 "anims/Ground Slash" = SubResource( 29 )
+"anims/Ground Slash Up" = SubResource( 53 )
 anims/Hurt = SubResource( 13 )
 anims/Idle = SubResource( 2 )
 anims/Jump = SubResource( 6 )
@@ -651,28 +786,43 @@ anims/Wallslide = SubResource( 22 )
 
 [node name="AttackHitboxArea" type="Area2D" parent="."]
 collision_layer = 16
-collision_mask = 109
+collision_mask = 1133
 
 [node name="AttackHitbox" type="CollisionShape2D" parent="AttackHitboxArea"]
-position = Vector2( -40.75, -48 )
+position = Vector2( -6, 8 )
 shape = SubResource( 21 )
 
-[node name="SlashEffect" type="Sprite" parent="AttackHitboxArea"]
+[node name="SlashEffects" type="Node2D" parent="."]
+
+[node name="SlashEffect" type="Sprite" parent="SlashEffects"]
 position = Vector2( 0, -48 )
 texture = ExtResource( 1 )
 vframes = 4
+frame = 3
 
-[node name="SlashEffectAlt" type="Sprite" parent="AttackHitboxArea"]
+[node name="SlashEffectAlt" type="Sprite" parent="SlashEffects"]
 position = Vector2( -61, -48 )
 texture = ExtResource( 5 )
 vframes = 3
 frame = 2
 
-[node name="SlashPlayer" type="AnimationPlayer" parent="AttackHitboxArea"]
-root_node = NodePath("../SlashEffect")
-anims/RESET = SubResource( 30 )
-anims/Slash = SubResource( 31 )
-"anims/Wall Slash" = SubResource( 34 )
+[node name="UltimateFire" type="Sprite" parent="SlashEffects"]
+position = Vector2( 2, -40 )
+texture = ExtResource( 10 )
+vframes = 2
+
+[node name="SlashEffectUp" type="Sprite" parent="SlashEffects"]
+position = Vector2( 4, -110 )
+scale = Vector2( 2, 2 )
+texture = ExtResource( 13 )
+hframes = 3
+frame = 1
+
+[node name="SlashEffectDown" type="Sprite" parent="SlashEffects"]
+position = Vector2( -6, 8 )
+scale = Vector2( 2, 2 )
+texture = ExtResource( 12 )
+hframes = 3
 
 [node name="UltimateHitboxArea" type="Area2D" parent="."]
 collision_layer = 16
@@ -681,15 +831,6 @@ collision_mask = 109
 [node name="CollisionShape2D" type="CollisionShape2D" parent="UltimateHitboxArea"]
 position = Vector2( 0, -38 )
 shape = SubResource( 45 )
-
-[node name="UltimateFire" type="Sprite" parent="UltimateHitboxArea"]
-position = Vector2( 2, -40 )
-texture = ExtResource( 10 )
-vframes = 2
-
-[node name="UltimateFireAnimation" type="AnimationPlayer" parent="UltimateHitboxArea/UltimateFire"]
-anims/Flame = SubResource( 46 )
-anims/RESET = SubResource( 47 )
 
 [node name="WalljumpAreaL" type="Area2D" parent="."]
 visible = false
@@ -711,6 +852,7 @@ shape = SubResource( 20 )
 
 [node name="LadderTopArea" type="Area2D" parent="."]
 visible = false
+collision_layer = 0
 
 [node name="LadderTopBox" type="CollisionShape2D" parent="LadderTopArea"]
 shape = SubResource( 25 )
@@ -728,6 +870,7 @@ anims/RESET = SubResource( 37 )
 
 [node name="CrushCheckArea" type="Area2D" parent="."]
 visible = false
+collision_layer = 0
 
 [node name="Collision" type="CollisionShape2D" parent="CrushCheckArea"]
 position = Vector2( 0, -43 )
@@ -739,6 +882,7 @@ shape = SubResource( 49 )
 
 [connection signal="area_entered" from="PlayerHitboxArea" to="." method="_on_PlayerHitboxArea_area_entered"]
 [connection signal="area_exited" from="PlayerHitboxArea" to="." method="_on_PlayerHitboxArea_area_exited"]
+[connection signal="area_entered" from="AttackHitboxArea" to="." method="_on_AttackHitboxArea_area_entered"]
 [connection signal="body_entered" from="WalljumpAreaL" to="." method="_on_WalljumpAreaL_body_entered"]
 [connection signal="body_exited" from="WalljumpAreaL" to="." method="_on_WalljumpAreaL_body_exited"]
 [connection signal="body_entered" from="WalljumpAreaR" to="." method="_on_WalljumpAreaR_body_entered"]

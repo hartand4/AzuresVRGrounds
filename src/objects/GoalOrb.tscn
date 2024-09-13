@@ -72,6 +72,7 @@ shape = SubResource( 3 )
 
 [node name="OrbArea" type="Area2D" parent="."]
 visible = false
+collision_layer = 8
 
 [node name="OrbHitbox" type="CollisionShape2D" parent="OrbArea"]
 position = Vector2( 0, -14 )

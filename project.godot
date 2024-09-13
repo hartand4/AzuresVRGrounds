@@ -134,6 +134,7 @@ fullscreen_toggle={
 2d_physics/layer_8="damage_tiles"
 2d_physics/layer_9="ladder_tiles"
 2d_physics/layer_10="water"
+2d_physics/layer_11="bounceable_object"
 
 [physics]
 

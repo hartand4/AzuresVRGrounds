@@ -39,7 +39,7 @@ onready var hitbox := $PlayerHitboxArea
 onready var wjboxl := $WalljumpAreaL
 onready var wjboxr := $WalljumpAreaR
 onready var attack_collision := $AttackHitboxArea
-onready var attack_particle := attack_collision.find_node('SlashEffect')
+onready var attack_particle := $SlashEffects/SlashEffect
 
 # Other variables
 onready var normal_hitbox_shape = hitbox_collider.shape.extents
@@ -54,8 +54,8 @@ var needed_stunned_shakes := 15
 var sprite_default_location
 var stunned_bump_timer := 0
 
-#var double_jumped := false
-#export var game_paused := false
+var attacking_direction := 0
+
 var floor_angle := PI/2
 var last_state := 0
 var shot_damage := 5
@@ -114,7 +114,7 @@ func _physics_process(_delta: float) -> void:
 		not Globals.retry_menu_on) and not state in [ST_VICTORY]:
 		Globals.set("game_paused", true)
 		Globals.pause_menu_on = true
-		_velocity = move_and_slide(_velocity, FLOOR_NORMAL, true)
+		_velocity = move_and_slide(_velocity, FLOOR_NORMAL, true) if not jump_timer else _velocity
 		return
 		
 	# Jump logic
@@ -248,10 +248,10 @@ func _process(_delta):
 	outfit_animation()
 	
 	if Globals.get("game_paused"):
-		$AttackHitboxArea/SlashPlayer.stop(false)
-		$Tail/AnimationPlayer.stop(false)
-		$UltimateHitboxArea/UltimateFire/UltimateFireAnimation.stop(false)
+		$Tail/AnimationPlayer.playback_speed = 0
 		return
+	
+	$Tail/AnimationPlayer.playback_speed = 1
 	
 	if health <= 0:
 		if not dying_process:
@@ -263,12 +263,6 @@ func _process(_delta):
 		animation_timer = 0
 		do_hurt_animation(32)
 		$Camera2D.current = false
-	
-	if (state == ST_ATTACK or state == ST_AIR_ATTACK) and attack_timer < 24:
-		$AttackHitboxArea/SlashPlayer.play('Slash')
-	
-	if state in [ST_WALL_ATTACK, ST_LADDER_ATTACK] and attack_timer < 18:
-		$AttackHitboxArea/SlashPlayer.play('Wall Slash')
 	
 	if health < 0: health = 0
 	if stop_wallslide_timer: stop_wallslide_timer -= 1
@@ -310,12 +304,8 @@ func animation_handler():
 	$Tail/AnimationPlayer.play("TailWag")
 	$Tail.z_as_relative = true
 	
-	$UltimateHitboxArea/UltimateFire.visible = state == ST_ULTIMATE and animation_timer > 4 and animation_timer < 42
-	if state == ST_ULTIMATE:
-		$UltimateHitboxArea/UltimateFire.flip_h = recurring_x_dir == 1
-		$UltimateHitboxArea/UltimateFire/UltimateFireAnimation.play("Flame")
-	else:
-		$UltimateHitboxArea/UltimateFire/UltimateFireAnimation.stop(true)
+	$SlashEffects/UltimateFire.visible = state == ST_ULTIMATE and animation_timer > 4 and animation_timer < 42
+	$SlashEffects/UltimateFire.flip_h = recurring_x_dir == 1
 	
 	
 	if i_frames and Globals.timer % 8 <= 1:
@@ -370,14 +360,23 @@ func animation_handler():
 			else:
 				_animation.play('Fall')
 		ST_ATTACK:
-			_animation.play('Ground Slash')
+			_animation.play('Ground Slash' if attacking_direction == 0 else 'Ground Slash Up')
 			if animation_timer == 6:
-				do_slash_effect(1)
+				do_slash_effect(1 if attacking_direction == 0 else 3)
 			update_slash_hitbox()
 		ST_AIR_ATTACK:
-			_animation.play('Air Slash')
-			if animation_timer == 6:
-				do_slash_effect(1)
+			if attacking_direction == 0:
+				_animation.play('Air Slash')
+				if animation_timer == 6:
+					do_slash_effect(1)
+			elif attacking_direction == 1:
+				_animation.play('Air Slash Up')
+				if animation_timer == 6:
+					do_slash_effect(3)
+			elif attacking_direction == 2:
+				_animation.play('Air Slash Down')
+				if animation_timer == 6:
+					do_slash_effect(4)
 			update_slash_hitbox()
 		ST_WALL_ATTACK:
 			_animation.play('Wall Slash')
@@ -471,9 +470,13 @@ func update_state():
 	# DOING AN AIR ATTACK
 	if state == ST_AIR and Input.is_action_just_pressed("attack"):
 		attack_timer = 18
+		attacking_direction = 1 if Input.is_action_pressed("move_up") else 2 if\
+			Input.is_action_pressed("move_down") else 0
 		return ST_AIR_ATTACK
 	elif state == ST_DASH and Input.is_action_just_pressed("attack") and not is_on_floor():
 		attack_timer = 18
+		attacking_direction = 1 if Input.is_action_pressed("move_up") else 2 if\
+			Input.is_action_pressed("move_down") else 0
 		return ST_AIR_ATTACK
 	if state == ST_AIR_ATTACK and attack_timer <= 0: return ST_AIR
 	
@@ -556,6 +559,7 @@ func update_state():
 	if state < 3 and Input.is_action_just_pressed("attack"):
 		dashing = false
 		attack_timer = 18
+		attacking_direction = 1 if Input.is_action_pressed("move_up") else 0
 		return ST_ATTACK
 	
 	#STOP ATTACK
@@ -606,12 +610,14 @@ func update_state():
 	
 	# IF LANDED BEFORE AIR ATTACK DONE, CONTINUE ATTACK
 	if state == 5 and is_on_floor() and attack_timer:
-		return ST_ATTACK
+		if attacking_direction < 2: return ST_ATTACK
+		state = 0
+		return update_state()
 	
 	# IF JUMPED OR FELL OR AIR ATTACK ENDED
 	if state in [0,1,2,4] and Input.is_action_just_pressed("jump"): 
 		if is_on_floor() or state < 2:
-			dashing = state == 2#Input.is_action_pressed("dash")
+			dashing = state == 2
 			return ST_AIR
 	elif state in [0,1,4] and not is_on_floor():
 		set_coyote_timer()
@@ -644,41 +650,68 @@ func do_slash_effect(start):
 	match start:
 		0:
 			attack_particle.visible = false
-			$AttackHitboxArea/SlashEffectAlt.visible = false
+			$SlashEffects/SlashEffectAlt.visible = false
+			$SlashEffects/SlashEffectUp.visible = false
+			$SlashEffects/SlashEffectDown.visible = false
 			attack_collision.find_node('AttackHitbox').disabled = true
-			$AttackHitboxArea/SlashPlayer.stop(true)
 		1:
 			attack_particle.visible = true
 			attack_particle.flip_h = (recurring_x_dir + 1)/2
-			attack_particle.set_position(Vector2(recurring_x_dir * -48.0,-48.0))
-			$AttackHitboxArea/SlashPlayer.play('Slash')
 	
 			attack_collision.set_position(Vector2(recurring_x_dir * 48.0,0))
 			attack_collision.find_node('AttackHitbox').set_position(Vector2(recurring_x_dir * 2.0,-46))
 			attack_collision.find_node('AttackHitbox').shape.extents = Vector2(48.75, 16)
 			attack_collision.find_node('AttackHitbox').disabled = false
 		2:
-			$AttackHitboxArea/SlashEffectAlt.visible = true
-			$AttackHitboxArea/SlashEffectAlt.flip_h = (recurring_x_dir + 1)/2
-			$AttackHitboxArea/SlashEffectAlt.set_position(Vector2(recurring_x_dir * 13.0,-48.0))
-			$AttackHitboxArea/SlashPlayer.play('Wall Slash')
+			$SlashEffects/SlashEffectAlt.visible = true
+			$SlashEffects/SlashEffectAlt.flip_h = (recurring_x_dir + 1)/2
+			$SlashEffects/SlashEffectAlt.position.x = recurring_x_dir*61
 			
 			attack_collision.set_position(Vector2(recurring_x_dir * 48.0,0))
 			attack_collision.find_node('AttackHitbox').set_position(Vector2(recurring_x_dir * 10.0,-60))
 			attack_collision.find_node('AttackHitbox').shape.extents = Vector2(40.75, 34)
 			attack_collision.find_node('AttackHitbox').disabled = false
+		3:
+			$SlashEffects/SlashEffectUp.visible = true
+			$SlashEffects/SlashEffectUp.flip_h = (recurring_x_dir + 1)/2
+			$SlashEffects/SlashEffectUp.position.x = recurring_x_dir*-4
+			
+			attack_collision.set_position(Vector2(recurring_x_dir * 48.0,0))
+			attack_collision.find_node('AttackHitbox').set_position(Vector2(recurring_x_dir * -46,-111.0))
+			attack_collision.find_node('AttackHitbox').shape.extents = Vector2(41.5, 29)
+			attack_collision.find_node('AttackHitbox').disabled = false
+		4:
+			$SlashEffects/SlashEffectDown.visible = true
+			$SlashEffects/SlashEffectDown.flip_h = (recurring_x_dir + 1)/2
+			$SlashEffects/SlashEffectDown.position.x = recurring_x_dir*6
+			
+			attack_collision.set_position(Vector2(recurring_x_dir * 48.0,0))
+			attack_collision.find_node('AttackHitbox').set_position(Vector2(recurring_x_dir * -42.0,8.0))
+			attack_collision.find_node('AttackHitbox').shape.extents = Vector2(42, 32)
+			attack_collision.find_node('AttackHitbox').disabled = false
 
 # Updates the slash hitboxes throughout the full slash effect
 func update_slash_hitbox():
-	if state in [ST_ATTACK, ST_AIR_ATTACK]:
+	if state in [ST_ATTACK, ST_AIR_ATTACK] and attacking_direction == 0:
 		if attack_timer > 3 and attack_timer <= 8:
 			attack_collision.find_node('AttackHitbox').set_position(Vector2(recurring_x_dir * -36.0,-40))
 			attack_collision.find_node('AttackHitbox').shape.extents = Vector2(62, 18)
 		elif attack_timer <= 4:
 			attack_collision.find_node('AttackHitbox').set_position(Vector2(recurring_x_dir * -102.0,-38))
 			attack_collision.find_node('AttackHitbox').shape.extents = Vector2(26, 12)
+	
+	elif state in [ST_ATTACK, ST_AIR_ATTACK] and attacking_direction == 1:
+		if attack_timer <= 6:
+			attack_collision.find_node('AttackHitbox').set_position(Vector2(recurring_x_dir * -85.0,-102))
+			attack_collision.find_node('AttackHitbox').shape.extents = Vector2(15, 22)
+	
+	elif state == ST_AIR_ATTACK and attacking_direction == 2:
+		if attack_timer <= 6:
+			attack_collision.find_node('AttackHitbox').set_position(Vector2(recurring_x_dir * -76.0,-1.0))
+			attack_collision.find_node('AttackHitbox').shape.extents = Vector2(8, 23)
+	
 	elif state in [ST_WALL_ATTACK, ST_LADDER_ATTACK]:
-		if attack_timer <= 4:
+		if attack_timer <= 6:
 			attack_collision.find_node('AttackHitbox').set_position(Vector2(recurring_x_dir * 6.0,-34))
 			attack_collision.find_node('AttackHitbox').shape.extents = Vector2(32,14)
 
@@ -784,7 +817,7 @@ func _on_PlayerHitboxArea_area_entered(area: Area2D) -> void:
 	
 	elif area.get_collision_layer_bit(9):
 		is_in_water = true
-# warning-ignore:unused_argument
+
 func _on_PlayerHitboxArea_area_exited(area: Area2D) -> void:
 	if area.get_collision_layer_bit(9):
 		is_in_water = false
@@ -821,8 +854,8 @@ func _on_WalljumpAreaR_body_entered(body: Node) -> void:
 		near_wall[1] = true
 	elif body.get_collision_layer_bit(6):
 		near_wall[1] = true
-# warning-ignore:unused_argument
-func _on_WalljumpAreaL_body_exited(body: Node) -> void:
+
+func _on_WalljumpAreaL_body_exited(_body: Node) -> void:
 	colliding_with_wall_l = false
 	near_wall[0] = false
 	for box in wjboxl.get_overlapping_bodies():
@@ -831,8 +864,7 @@ func _on_WalljumpAreaL_body_exited(body: Node) -> void:
 			near_wall[0] = true
 		elif box.get_collision_layer_bit(6):
 			near_wall[0] = true
-# warning-ignore:unused_argument
-func _on_WalljumpAreaR_body_exited(body: Node) -> void:
+func _on_WalljumpAreaR_body_exited(_body: Node) -> void:
 	colliding_with_wall_r = false
 	near_wall[1] = false
 	for box in wjboxr.get_overlapping_bodies():
@@ -846,8 +878,7 @@ func _on_WalljumpAreaR_body_exited(body: Node) -> void:
 func _on_LadderTopArea_body_entered(body: Node) -> void:
 	if body.get_collision_layer_bit(8):
 		colliding_with_ladder_top = true
-# warning-ignore:unused_argument
-func _on_LadderTopArea_body_exited(body: Node) -> void:
+func _on_LadderTopArea_body_exited(_body: Node) -> void:
 	colliding_with_ladder_top = false
 	for box in $LadderTopArea.get_overlapping_bodies():
 		if box.get_collision_layer_bit(8):
@@ -916,6 +947,8 @@ func do_ultimate_check():
 			if Input.is_action_just_pressed('move_right'):
 				if ultimate_move_timer[2] == -1: ultimate_move_timer[0] = 3
 				elif ultimate_move_timer[2] == 1: ultimate_move_timer[0] = 0
+			elif Input.is_action_just_pressed("move_down"):
+				ultimate_move_timer = [1,ULTIMATE_TIMER,-1]
 			else:
 				for action in ['jump', 'attack', 'dash', 'pause']:
 					if Input.is_action_just_pressed(action): ultimate_move_timer = [0,0,-1]
@@ -1001,3 +1034,11 @@ func get_floor_tile_type():
 	var tilemap = Globals.get_tilemap()
 	var block_pos = Vector2(nearest_block(position.x)-24, nearest_block(position.y)-22)/48
 	return Globals.get_block_type(tilemap.get_cellv(block_pos))
+
+# Bounces player if object was struck with a down slash.
+func _on_AttackHitboxArea_area_entered(area):
+	if not (attacking_direction == 2 and state == ST_AIR_ATTACK) or area.get_collision_layer_bit(3)\
+	or area.get_collision_layer_bit(0):
+		return
+	#print(area)
+	_velocity.y = -800.0

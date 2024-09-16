@@ -36,7 +36,7 @@ func switch():
 
 
 func _on_PlayerAttackCheck_area_entered(area: Area2D) -> void:
-	if not area.get_collision_layer_bit(4): return
+	if not (area.get_collision_layer_bit(4) or area.get_collision_layer_bit(11)): return
 	if anim_timer: $Sprite.position = Vector2.ZERO
 	anim_timer = 20
 	if Globals.vswitch_timer > 0:

@@ -68,9 +68,9 @@ func disable_all():
 	$AttackCheckArea/Collision.disabled = true
 
 func _on_AttackCheckArea_area_entered(area: Area2D) -> void:
-	if not area.get_collision_layer_bit(4): return
-	health -= 2
-	i_frames = 6
+	if not (area.get_collision_layer_bit(4) or area.get_collision_layer_bit(11)): return
+	health -= 2 if area.get_collision_layer_bit(4) else 1
+	i_frames = 6 if area.get_collision_layer_bit(4) else 0
 	if health <= 0:
 		no_health()
 

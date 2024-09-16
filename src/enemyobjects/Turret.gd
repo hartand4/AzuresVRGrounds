@@ -4,6 +4,7 @@ var animation_timer = 0
 var broken = false
 var state = 0
 export var damage = 3
+var health = 3
 
 func _ready() -> void:
 	pass
@@ -56,11 +57,16 @@ func respawn():
 	$Sprite.visible = true
 	broken = false
 	state = 0
+	health = 3
 	$Visibility.process_parent = true
 
 
 func _on_Turret_area_entered(area: Area2D) -> void:
 	if area.get_collision_layer_bit(4):
+		health -= 3
+	elif area.get_collision_layer_bit(11):
+		health -= 1
+	if health <= 0:
 		broken = true
 		animation_timer = 3
 

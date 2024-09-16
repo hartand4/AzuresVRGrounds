@@ -1,7 +1,7 @@
 extends StaticBody2D
 
 
-export var health = 3
+export var health = 5
 var animation_timer = 0
 
 
@@ -34,7 +34,8 @@ func disable_all():
 		queue_free()
 
 func _on_AttackArea_area_entered(area: Area2D) -> void:
-	if area.get_collision_layer_bit(4):
-		health -= 1
-		if health > 0: animation_timer = 6
-		else: animation_timer = 3
+	if not (area.get_collision_layer_bit(4) or area.get_collision_layer_bit(11)): return
+	
+	health -= 2 if area.get_collision_layer_bit(4) else 1
+	if health > 0: animation_timer = 6
+	else: animation_timer = 3

@@ -214,6 +214,7 @@ func _physics_process(_delta: float) -> void:
 	if not is_jumping:
 		_velocity = move_and_slide_with_snap(_velocity, snap, FLOOR_NORMAL, true)
 	else:
+		#corner_correction(6)
 		_velocity = move_and_slide(_velocity, FLOOR_NORMAL, true)
 
 func get_direction_normal() -> Vector2:
@@ -361,6 +362,8 @@ func animation_handler():
 				_animation.play('Fall')
 		ST_ATTACK:
 			_animation.play('Ground Slash' if attacking_direction == 0 else 'Ground Slash Up')
+			_animation.seek((18-attack_timer)/60.0)
+			if $Sprite.frame == 47: $Sprite.frame -= 2
 			if animation_timer == 6:
 				do_slash_effect(1 if attacking_direction == 0 else 3)
 			update_slash_hitbox()
@@ -693,25 +696,25 @@ func do_slash_effect(start):
 # Updates the slash hitboxes throughout the full slash effect
 func update_slash_hitbox():
 	if state in [ST_ATTACK, ST_AIR_ATTACK] and attacking_direction == 0:
-		if attack_timer > 3 and attack_timer <= 8:
+		if $SlashEffects/SlashEffect.frame == 1:
 			attack_collision.find_node('AttackHitbox').set_position(Vector2(recurring_x_dir * -36.0,-40))
 			attack_collision.find_node('AttackHitbox').shape.extents = Vector2(62, 18)
-		elif attack_timer <= 4:
+		elif $SlashEffects/SlashEffect.frame == 2:
 			attack_collision.find_node('AttackHitbox').set_position(Vector2(recurring_x_dir * -102.0,-38))
 			attack_collision.find_node('AttackHitbox').shape.extents = Vector2(26, 12)
 	
 	elif state in [ST_ATTACK, ST_AIR_ATTACK] and attacking_direction == 1:
-		if attack_timer <= 6:
+		if $SlashEffects/SlashEffectUp.frame == 1:
 			attack_collision.find_node('AttackHitbox').set_position(Vector2(recurring_x_dir * -85.0,-102))
 			attack_collision.find_node('AttackHitbox').shape.extents = Vector2(15, 22)
 	
 	elif state == ST_AIR_ATTACK and attacking_direction == 2:
-		if attack_timer <= 6:
+		if $SlashEffects/SlashEffectDown.frame == 1:
 			attack_collision.find_node('AttackHitbox').set_position(Vector2(recurring_x_dir * -76.0,-1.0))
 			attack_collision.find_node('AttackHitbox').shape.extents = Vector2(8, 23)
 	
 	elif state in [ST_WALL_ATTACK, ST_LADDER_ATTACK]:
-		if attack_timer <= 6:
+		if $SlashEffects/SlashEffectAlt.frame == 1:
 			attack_collision.find_node('AttackHitbox').set_position(Vector2(recurring_x_dir * 6.0,-34))
 			attack_collision.find_node('AttackHitbox').shape.extents = Vector2(32,14)
 
@@ -1042,3 +1045,17 @@ func _on_AttackHitboxArea_area_entered(area):
 		return
 	#print(area)
 	_velocity.y = -800.0
+
+# Corner correction juts you left/right when jumping into a corner (unused)
+func corner_correction(pixel_amt):
+	if _velocity.y >= 0: return
+	if test_move(global_transform, Vector2(0, _velocity.y)):
+		for i in range(1, pixel_amt+1):
+			if !test_move(global_transform.translated(Vector2(i,0.0)), Vector2(0, _velocity.y)):
+				translate(Vector2(i,0.0))
+				_velocity.x = min(_velocity.x, 0)
+				return
+			elif !test_move(global_transform.translated(Vector2(-i,0.0)), Vector2(0, _velocity.y)):
+				translate(Vector2(-i,0.0))
+				_velocity.x = max(_velocity.x, 0)
+				return

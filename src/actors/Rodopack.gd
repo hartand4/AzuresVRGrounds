@@ -116,3 +116,5 @@ func _on_Rodopack_area_entered(area: Area2D) -> void:
 		health -= 2
 	elif area.get_collision_layer_bit(9):
 		is_in_water = true
+	elif area.get_collision_layer_bit(11):
+		health -= 1

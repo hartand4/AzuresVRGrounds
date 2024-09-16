@@ -80,5 +80,5 @@ func get_damage():
 	return damage # set to 0 for a sweet ride
 
 func _on_Anamoth_area_entered(area: Area2D) -> void:
-	if not area.get_collision_layer_bit(4): return
+	if not (area.get_collision_layer_bit(4) or area.get_collision_layer_bit(11)): return
 	health -= 2

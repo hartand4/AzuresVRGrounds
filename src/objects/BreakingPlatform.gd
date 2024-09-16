@@ -31,12 +31,15 @@ func _process(delta: float) -> void:
 		breaking = false
 
 func respawn():
-	var camera_pos = Globals.get_current_camera().get_camera_screen_center()
-	if camera_pos.x - 420 - 120 < position.x and camera_pos.x +420 + 120 > position.x and (
-		camera_pos.y - 300 - 120 < position.y and camera_pos.y + 300 + 120 > position.y): return
+	if in_camera_range(position): return
 	$Collision.disabled = false
 	$Sprite.visible = true
 	$PlayerCheckArea/PlayerCheckCollision.disabled = false
+
+func in_camera_range(pos):
+	var camera_pos = Globals.get_current_camera_pos()
+	return camera_pos.x - 420 - 120 < pos.x and camera_pos.x + 420 + 120 > pos.x and (
+		camera_pos.y - 300 - 120 < pos.y and camera_pos.y + 300 + 120 > pos.y)
 
 func _on_PlayerCheckArea_area_entered(area: Area2D) -> void:
 	if area.get_collision_layer_bit(1):

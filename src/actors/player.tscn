@@ -728,7 +728,6 @@ vframes = 10
 texture = ExtResource( 11 )
 hframes = 10
 vframes = 10
-frame = 10
 
 [node name="PlayerHitbox" type="CollisionShape2D" parent="."]
 position = Vector2( 0, -42.0664 )
@@ -789,29 +788,33 @@ collision_layer = 16
 collision_mask = 1133
 
 [node name="AttackHitbox" type="CollisionShape2D" parent="AttackHitboxArea"]
-position = Vector2( -6, 8 )
+position = Vector2( -3, -39 )
 shape = SubResource( 21 )
 
 [node name="SlashEffects" type="Node2D" parent="."]
 
 [node name="SlashEffect" type="Sprite" parent="SlashEffects"]
+visible = false
 position = Vector2( 0, -48 )
 texture = ExtResource( 1 )
 vframes = 4
 frame = 3
 
 [node name="SlashEffectAlt" type="Sprite" parent="SlashEffects"]
+visible = false
 position = Vector2( -61, -48 )
 texture = ExtResource( 5 )
 vframes = 3
 frame = 2
 
 [node name="UltimateFire" type="Sprite" parent="SlashEffects"]
+visible = false
 position = Vector2( 2, -40 )
 texture = ExtResource( 10 )
 vframes = 2
 
 [node name="SlashEffectUp" type="Sprite" parent="SlashEffects"]
+visible = false
 position = Vector2( 4, -110 )
 scale = Vector2( 2, 2 )
 texture = ExtResource( 13 )
@@ -819,6 +822,7 @@ hframes = 3
 frame = 1
 
 [node name="SlashEffectDown" type="Sprite" parent="SlashEffects"]
+visible = false
 position = Vector2( -6, 8 )
 scale = Vector2( 2, 2 )
 texture = ExtResource( 12 )

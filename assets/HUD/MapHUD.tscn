@@ -1,4 +1,4 @@
-[gd_scene load_steps=22 format=2]
+[gd_scene load_steps=24 format=2]
 
 [ext_resource path="res://assets/HUD/PauseMenuMap.png" type="Texture" id=1]
 [ext_resource path="res://assets/HUD/PauseMenuTextLevelTitle.png" type="Texture" id=2]
@@ -21,11 +21,12 @@
 [ext_resource path="res://assets/HUD/OverrideSaveCursor.png" type="Texture" id=19]
 [ext_resource path="res://assets/HUD/VolumeMeter.png" type="Texture" id=20]
 [ext_resource path="res://assets/HUD/VolumeSlider.png" type="Texture" id=21]
+[ext_resource path="res://assets/HUD/HUD Weapon Icons.png" type="Texture" id=22]
+[ext_resource path="res://assets/HUD/FileWeaponsBorder.png" type="Texture" id=23]
 
 [node name="MapHUD" type="CanvasLayer"]
 
 [node name="PauseMenu" type="TextureRect" parent="."]
-visible = false
 margin_right = 40.0
 margin_bottom = 40.0
 texture = ExtResource( 1 )
@@ -38,7 +39,6 @@ margin_bottom = 40.0
 texture = ExtResource( 5 )
 
 [node name="PauseText1" type="Node2D" parent="PauseMenu"]
-visible = false
 
 [node name="File1" type="Sprite" parent="PauseMenu/PauseText1"]
 position = Vector2( 234, 166 )
@@ -67,6 +67,50 @@ offset = Vector2( -7, 10 )
 hframes = 3
 frame = 2
 
+[node name="Weapon1" type="TextureRect" parent="PauseMenu/PauseText1/File1"]
+visible = false
+margin_left = 76.0
+margin_top = 18.0
+margin_right = 88.0
+margin_bottom = 30.0
+rect_scale = Vector2( 2, 2 )
+texture = ExtResource( 23 )
+
+[node name="Sprite" type="Sprite" parent="PauseMenu/PauseText1/File1/Weapon1"]
+position = Vector2( 6, 6 )
+texture = ExtResource( 22 )
+hframes = 3
+
+[node name="Weapon2" type="TextureRect" parent="PauseMenu/PauseText1/File1"]
+visible = false
+margin_left = 104.0
+margin_top = 18.0
+margin_right = 116.0
+margin_bottom = 30.0
+rect_scale = Vector2( 2, 2 )
+texture = ExtResource( 23 )
+
+[node name="Sprite" type="Sprite" parent="PauseMenu/PauseText1/File1/Weapon2"]
+position = Vector2( 6, 6 )
+texture = ExtResource( 22 )
+hframes = 3
+frame = 1
+
+[node name="Weapon3" type="TextureRect" parent="PauseMenu/PauseText1/File1"]
+visible = false
+margin_left = 132.0
+margin_top = 18.0
+margin_right = 144.0
+margin_bottom = 30.0
+rect_scale = Vector2( 2, 2 )
+texture = ExtResource( 23 )
+
+[node name="Sprite" type="Sprite" parent="PauseMenu/PauseText1/File1/Weapon3"]
+position = Vector2( 6, 6 )
+texture = ExtResource( 22 )
+hframes = 3
+frame = 2
+
 [node name="CoinAmount" type="Label" parent="PauseMenu/PauseText1/File1"]
 margin_left = -127.0
 margin_top = 11.0
@@ -90,6 +134,14 @@ margin_right = 70.0
 margin_bottom = -6.0
 custom_fonts/font = ExtResource( 15 )
 text = "FILE 1"
+
+[node name="HealthNumber" type="Label" parent="PauseMenu/PauseText1/File1"]
+margin_left = 98.0
+margin_top = -34.0
+margin_right = 155.0
+margin_bottom = 4.0
+custom_fonts/font = ExtResource( 10 )
+text = "00"
 
 [node name="EmptyText" type="Label" parent="PauseMenu/PauseText1/File1"]
 visible = false
@@ -127,6 +179,50 @@ offset = Vector2( -7, 10 )
 hframes = 3
 frame = 2
 
+[node name="Weapon1" type="TextureRect" parent="PauseMenu/PauseText1/File2"]
+visible = false
+margin_left = 76.0
+margin_top = 18.0
+margin_right = 88.0
+margin_bottom = 30.0
+rect_scale = Vector2( 2, 2 )
+texture = ExtResource( 23 )
+
+[node name="Sprite" type="Sprite" parent="PauseMenu/PauseText1/File2/Weapon1"]
+position = Vector2( 6, 6 )
+texture = ExtResource( 22 )
+hframes = 3
+
+[node name="Weapon2" type="TextureRect" parent="PauseMenu/PauseText1/File2"]
+visible = false
+margin_left = 104.0
+margin_top = 18.0
+margin_right = 116.0
+margin_bottom = 30.0
+rect_scale = Vector2( 2, 2 )
+texture = ExtResource( 23 )
+
+[node name="Sprite" type="Sprite" parent="PauseMenu/PauseText1/File2/Weapon2"]
+position = Vector2( 6, 6 )
+texture = ExtResource( 22 )
+hframes = 3
+frame = 1
+
+[node name="Weapon3" type="TextureRect" parent="PauseMenu/PauseText1/File2"]
+visible = false
+margin_left = 132.0
+margin_top = 18.0
+margin_right = 144.0
+margin_bottom = 30.0
+rect_scale = Vector2( 2, 2 )
+texture = ExtResource( 23 )
+
+[node name="Sprite" type="Sprite" parent="PauseMenu/PauseText1/File2/Weapon3"]
+position = Vector2( 6, 6 )
+texture = ExtResource( 22 )
+hframes = 3
+frame = 2
+
 [node name="CoinAmount" type="Label" parent="PauseMenu/PauseText1/File2"]
 margin_left = -127.0
 margin_top = 11.0
@@ -150,6 +246,14 @@ margin_right = 70.0
 margin_bottom = -6.0
 custom_fonts/font = ExtResource( 15 )
 text = "FILE 2"
+
+[node name="HealthNumber" type="Label" parent="PauseMenu/PauseText1/File2"]
+margin_left = 98.0
+margin_top = -34.0
+margin_right = 155.0
+margin_bottom = 4.0
+custom_fonts/font = ExtResource( 10 )
+text = "00"
 
 [node name="EmptyText" type="Label" parent="PauseMenu/PauseText1/File2"]
 visible = false
@@ -187,6 +291,50 @@ offset = Vector2( -7, 10 )
 hframes = 3
 frame = 2
 
+[node name="Weapon1" type="TextureRect" parent="PauseMenu/PauseText1/File3"]
+visible = false
+margin_left = 76.0
+margin_top = 18.0
+margin_right = 88.0
+margin_bottom = 30.0
+rect_scale = Vector2( 2, 2 )
+texture = ExtResource( 23 )
+
+[node name="Sprite" type="Sprite" parent="PauseMenu/PauseText1/File3/Weapon1"]
+position = Vector2( 6, 6 )
+texture = ExtResource( 22 )
+hframes = 3
+
+[node name="Weapon2" type="TextureRect" parent="PauseMenu/PauseText1/File3"]
+visible = false
+margin_left = 104.0
+margin_top = 18.0
+margin_right = 116.0
+margin_bottom = 30.0
+rect_scale = Vector2( 2, 2 )
+texture = ExtResource( 23 )
+
+[node name="Sprite" type="Sprite" parent="PauseMenu/PauseText1/File3/Weapon2"]
+position = Vector2( 6, 6 )
+texture = ExtResource( 22 )
+hframes = 3
+frame = 1
+
+[node name="Weapon3" type="TextureRect" parent="PauseMenu/PauseText1/File3"]
+visible = false
+margin_left = 132.0
+margin_top = 18.0
+margin_right = 144.0
+margin_bottom = 30.0
+rect_scale = Vector2( 2, 2 )
+texture = ExtResource( 23 )
+
+[node name="Sprite" type="Sprite" parent="PauseMenu/PauseText1/File3/Weapon3"]
+position = Vector2( 6, 6 )
+texture = ExtResource( 22 )
+hframes = 3
+frame = 2
+
 [node name="CoinAmount" type="Label" parent="PauseMenu/PauseText1/File3"]
 margin_left = -127.0
 margin_top = 11.0
@@ -210,6 +358,14 @@ margin_right = 70.0
 margin_bottom = -6.0
 custom_fonts/font = ExtResource( 15 )
 text = "FILE 3"
+
+[node name="HealthNumber" type="Label" parent="PauseMenu/PauseText1/File3"]
+margin_left = 98.0
+margin_top = -34.0
+margin_right = 155.0
+margin_bottom = 4.0
+custom_fonts/font = ExtResource( 10 )
+text = "00"
 
 [node name="EmptyText" type="Label" parent="PauseMenu/PauseText1/File3"]
 visible = false
@@ -247,6 +403,50 @@ offset = Vector2( -7, 10 )
 hframes = 3
 frame = 2
 
+[node name="Weapon1" type="TextureRect" parent="PauseMenu/PauseText1/File4"]
+visible = false
+margin_left = 76.0
+margin_top = 18.0
+margin_right = 88.0
+margin_bottom = 30.0
+rect_scale = Vector2( 2, 2 )
+texture = ExtResource( 23 )
+
+[node name="Sprite" type="Sprite" parent="PauseMenu/PauseText1/File4/Weapon1"]
+position = Vector2( 6, 6 )
+texture = ExtResource( 22 )
+hframes = 3
+
+[node name="Weapon2" type="TextureRect" parent="PauseMenu/PauseText1/File4"]
+visible = false
+margin_left = 104.0
+margin_top = 18.0
+margin_right = 116.0
+margin_bottom = 30.0
+rect_scale = Vector2( 2, 2 )
+texture = ExtResource( 23 )
+
+[node name="Sprite" type="Sprite" parent="PauseMenu/PauseText1/File4/Weapon2"]
+position = Vector2( 6, 6 )
+texture = ExtResource( 22 )
+hframes = 3
+frame = 1
+
+[node name="Weapon3" type="TextureRect" parent="PauseMenu/PauseText1/File4"]
+visible = false
+margin_left = 132.0
+margin_top = 18.0
+margin_right = 144.0
+margin_bottom = 30.0
+rect_scale = Vector2( 2, 2 )
+texture = ExtResource( 23 )
+
+[node name="Sprite" type="Sprite" parent="PauseMenu/PauseText1/File4/Weapon3"]
+position = Vector2( 6, 6 )
+texture = ExtResource( 22 )
+hframes = 3
+frame = 2
+
 [node name="CoinAmount" type="Label" parent="PauseMenu/PauseText1/File4"]
 margin_left = -127.0
 margin_top = 11.0
@@ -270,6 +470,14 @@ margin_right = 70.0
 margin_bottom = -6.0
 custom_fonts/font = ExtResource( 15 )
 text = "FILE 4"
+
+[node name="HealthNumber" type="Label" parent="PauseMenu/PauseText1/File4"]
+margin_left = 98.0
+margin_top = -34.0
+margin_right = 155.0
+margin_bottom = 4.0
+custom_fonts/font = ExtResource( 10 )
+text = "00"
 
 [node name="EmptyText" type="Label" parent="PauseMenu/PauseText1/File4"]
 visible = false
@@ -307,6 +515,50 @@ offset = Vector2( -7, 10 )
 hframes = 3
 frame = 2
 
+[node name="Weapon1" type="TextureRect" parent="PauseMenu/PauseText1/File5"]
+visible = false
+margin_left = 76.0
+margin_top = 18.0
+margin_right = 88.0
+margin_bottom = 30.0
+rect_scale = Vector2( 2, 2 )
+texture = ExtResource( 23 )
+
+[node name="Sprite" type="Sprite" parent="PauseMenu/PauseText1/File5/Weapon1"]
+position = Vector2( 6, 6 )
+texture = ExtResource( 22 )
+hframes = 3
+
+[node name="Weapon2" type="TextureRect" parent="PauseMenu/PauseText1/File5"]
+visible = false
+margin_left = 104.0
+margin_top = 18.0
+margin_right = 116.0
+margin_bottom = 30.0
+rect_scale = Vector2( 2, 2 )
+texture = ExtResource( 23 )
+
+[node name="Sprite" type="Sprite" parent="PauseMenu/PauseText1/File5/Weapon2"]
+position = Vector2( 6, 6 )
+texture = ExtResource( 22 )
+hframes = 3
+frame = 1
+
+[node name="Weapon3" type="TextureRect" parent="PauseMenu/PauseText1/File5"]
+visible = false
+margin_left = 132.0
+margin_top = 18.0
+margin_right = 144.0
+margin_bottom = 30.0
+rect_scale = Vector2( 2, 2 )
+texture = ExtResource( 23 )
+
+[node name="Sprite" type="Sprite" parent="PauseMenu/PauseText1/File5/Weapon3"]
+position = Vector2( 6, 6 )
+texture = ExtResource( 22 )
+hframes = 3
+frame = 2
+
 [node name="CoinAmount" type="Label" parent="PauseMenu/PauseText1/File5"]
 margin_left = -127.0
 margin_top = 11.0
@@ -330,6 +582,14 @@ margin_right = 70.0
 margin_bottom = -6.0
 custom_fonts/font = ExtResource( 15 )
 text = "FILE 5"
+
+[node name="HealthNumber" type="Label" parent="PauseMenu/PauseText1/File5"]
+margin_left = 98.0
+margin_top = -34.0
+margin_right = 155.0
+margin_bottom = 4.0
+custom_fonts/font = ExtResource( 10 )
+text = "00"
 
 [node name="EmptyText" type="Label" parent="PauseMenu/PauseText1/File5"]
 visible = false
@@ -367,6 +627,50 @@ offset = Vector2( -7, 10 )
 hframes = 3
 frame = 2
 
+[node name="Weapon1" type="TextureRect" parent="PauseMenu/PauseText1/File6"]
+visible = false
+margin_left = 76.0
+margin_top = 18.0
+margin_right = 88.0
+margin_bottom = 30.0
+rect_scale = Vector2( 2, 2 )
+texture = ExtResource( 23 )
+
+[node name="Sprite" type="Sprite" parent="PauseMenu/PauseText1/File6/Weapon1"]
+position = Vector2( 6, 6 )
+texture = ExtResource( 22 )
+hframes = 3
+
+[node name="Weapon2" type="TextureRect" parent="PauseMenu/PauseText1/File6"]
+visible = false
+margin_left = 104.0
+margin_top = 18.0
+margin_right = 116.0
+margin_bottom = 30.0
+rect_scale = Vector2( 2, 2 )
+texture = ExtResource( 23 )
+
+[node name="Sprite" type="Sprite" parent="PauseMenu/PauseText1/File6/Weapon2"]
+position = Vector2( 6, 6 )
+texture = ExtResource( 22 )
+hframes = 3
+frame = 1
+
+[node name="Weapon3" type="TextureRect" parent="PauseMenu/PauseText1/File6"]
+visible = false
+margin_left = 132.0
+margin_top = 18.0
+margin_right = 144.0
+margin_bottom = 30.0
+rect_scale = Vector2( 2, 2 )
+texture = ExtResource( 23 )
+
+[node name="Sprite" type="Sprite" parent="PauseMenu/PauseText1/File6/Weapon3"]
+position = Vector2( 6, 6 )
+texture = ExtResource( 22 )
+hframes = 3
+frame = 2
+
 [node name="CoinAmount" type="Label" parent="PauseMenu/PauseText1/File6"]
 margin_left = -127.0
 margin_top = 11.0
@@ -390,6 +694,14 @@ margin_right = 70.0
 margin_bottom = -6.0
 custom_fonts/font = ExtResource( 15 )
 text = "FILE 6"
+
+[node name="HealthNumber" type="Label" parent="PauseMenu/PauseText1/File6"]
+margin_left = 98.0
+margin_top = -34.0
+margin_right = 155.0
+margin_bottom = 4.0
+custom_fonts/font = ExtResource( 10 )
+text = "00"
 
 [node name="EmptyText" type="Label" parent="PauseMenu/PauseText1/File6"]
 visible = false
@@ -560,9 +872,9 @@ texture = ExtResource( 3 )
 
 [node name="UpButtonLabel" type="Label" parent="PauseMenu/PauseText4"]
 margin_left = 145.0
-margin_top = 233.0
+margin_top = 215.0
 margin_right = 301.0
-margin_bottom = 252.0
+margin_bottom = 234.0
 rect_scale = Vector2( 1.5, 1.5 )
 custom_fonts/font = ExtResource( 4 )
 text = "AZURE azure :3"
@@ -570,9 +882,9 @@ clip_text = true
 
 [node name="DownButtonLabel" type="Label" parent="PauseMenu/PauseText4"]
 margin_left = 145.0
-margin_top = 275.0
+margin_top = 257.0
 margin_right = 301.0
-margin_bottom = 294.0
+margin_bottom = 276.0
 rect_scale = Vector2( 1.5, 1.5 )
 custom_fonts/font = ExtResource( 4 )
 text = "Easter egg lol"
@@ -580,9 +892,9 @@ clip_text = true
 
 [node name="LeftButtonLabel" type="Label" parent="PauseMenu/PauseText4"]
 margin_left = 145.0
-margin_top = 317.0
+margin_top = 299.0
 margin_right = 301.0
-margin_bottom = 336.0
+margin_bottom = 318.0
 rect_scale = Vector2( 1.5, 1.5 )
 custom_fonts/font = ExtResource( 4 )
 text = "Valerie is very sexy"
@@ -590,9 +902,9 @@ clip_text = true
 
 [node name="RightButtonLabel" type="Label" parent="PauseMenu/PauseText4"]
 margin_left = 145.0
-margin_top = 359.0
+margin_top = 341.0
 margin_right = 301.0
-margin_bottom = 378.0
+margin_bottom = 360.0
 rect_scale = Vector2( 1.5, 1.5 )
 custom_fonts/font = ExtResource( 4 )
 text = "and pretty hehe~"
@@ -600,9 +912,9 @@ clip_text = true
 
 [node name="JumpButtonLabel" type="Label" parent="PauseMenu/PauseText4"]
 margin_left = 526.0
-margin_top = 233.0
+margin_top = 215.0
 margin_right = 682.0
-margin_bottom = 252.0
+margin_bottom = 234.0
 rect_scale = Vector2( 1.5, 1.5 )
 custom_fonts/font = ExtResource( 4 )
 text = "But seriously...thank"
@@ -610,9 +922,9 @@ clip_text = true
 
 [node name="AttackButtonLabel" type="Label" parent="PauseMenu/PauseText4"]
 margin_left = 526.0
-margin_top = 275.0
+margin_top = 257.0
 margin_right = 682.0
-margin_bottom = 294.0
+margin_bottom = 276.0
 rect_scale = Vector2( 1.5, 1.5 )
 custom_fonts/font = ExtResource( 4 )
 text = "you so much for"
@@ -620,9 +932,9 @@ clip_text = true
 
 [node name="DashButtonLabel" type="Label" parent="PauseMenu/PauseText4"]
 margin_left = 526.0
-margin_top = 317.0
+margin_top = 299.0
 margin_right = 682.0
-margin_bottom = 336.0
+margin_bottom = 318.0
 rect_scale = Vector2( 1.5, 1.5 )
 custom_fonts/font = ExtResource( 4 )
 text = "playing my game. It"
@@ -630,12 +942,32 @@ clip_text = true
 
 [node name="PauseButtonLabel" type="Label" parent="PauseMenu/PauseText4"]
 margin_left = 526.0
-margin_top = 359.0
+margin_top = 341.0
 margin_right = 682.0
-margin_bottom = 378.0
+margin_bottom = 360.0
 rect_scale = Vector2( 1.5, 1.5 )
 custom_fonts/font = ExtResource( 4 )
 text = "means so much to me"
+clip_text = true
+
+[node name="ShiftLButtonLabel" type="Label" parent="PauseMenu/PauseText4"]
+margin_left = 145.0
+margin_top = 383.0
+margin_right = 301.0
+margin_bottom = 402.0
+rect_scale = Vector2( 1.5, 1.5 )
+custom_fonts/font = ExtResource( 4 )
+text = "********"
+clip_text = true
+
+[node name="ShiftRButtonLabel" type="Label" parent="PauseMenu/PauseText4"]
+margin_left = 526.0
+margin_top = 383.0
+margin_right = 682.0
+margin_bottom = 402.0
+rect_scale = Vector2( 1.5, 1.5 )
+custom_fonts/font = ExtResource( 4 )
+text = "********"
 clip_text = true
 
 [node name="PauseText5" type="TextureRect" parent="PauseMenu"]

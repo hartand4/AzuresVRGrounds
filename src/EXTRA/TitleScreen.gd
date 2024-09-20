@@ -138,7 +138,7 @@ func _process(_delta: float) -> void:
 					animation_timer = 75
 					file_print()
 				elif selection_cursor == 2:
-					selection_cursor = 8
+					selection_cursor = 10
 					title_screen_menu = 4
 				elif selection_cursor == 3:
 					Globals.start_transition(Vector2.ZERO, 5)
@@ -165,27 +165,27 @@ func _process(_delta: float) -> void:
 		
 		4:
 			# CONTROLS MENU
-			if selection_cursor == 8:
-				if menu_dir.y < 0: selection_cursor = 3
+			if selection_cursor == 10:
+				if menu_dir.y < 0: selection_cursor = 4
 				elif menu_dir.y > 0: selection_cursor = 0
 			elif menu_dir.x != 0:
-				selection_cursor = mod_wrap(selection_cursor + 4, 8)
-			elif (selection_cursor == 0 or selection_cursor == 4) and menu_dir.y < 0:
-				selection_cursor = 8
-			elif (selection_cursor == 3 or selection_cursor == 7) and menu_dir.y > 0:
-				selection_cursor = 8
+				selection_cursor = mod_wrap(selection_cursor + 5, 10)
+			elif (selection_cursor == 0 or selection_cursor == 5) and menu_dir.y < 0:
+				selection_cursor = 10
+			elif (selection_cursor == 4 or selection_cursor == 9) and menu_dir.y > 0:
+				selection_cursor = 10
 			else: selection_cursor += menu_dir.y
 			
-			if menu_input == 1 or (selection_cursor == 8 and menu_input == 2):
+			if menu_input == 1 or (selection_cursor == 10 and menu_input == 2):
 				selection_cursor = 2
 				title_screen_menu = 2
 				$ControlsMenu/Cursor.visible = false
 				Globals.save_controls_data()
 				return
-			if selection_cursor == 8: $ControlsMenu/Cursor.set_position(Vector2(382, 453))
+			if selection_cursor == 10: $ControlsMenu/Cursor.set_position(Vector2(382, 453))
 			else:
-				$ControlsMenu/Cursor.set_position(Vector2(196 if selection_cursor <= 3 else 564,
-				243 + 42*(selection_cursor % 4)))
+				$ControlsMenu/Cursor.set_position(Vector2(196 if selection_cursor <= 4 else 564,
+				225 + 42*(selection_cursor % 5)))
 			$ControlsMenu/Cursor.set_position($ControlsMenu/Cursor.get_position() + Vector2(-148,-16))
 			
 			display_controls()
@@ -297,11 +297,12 @@ func display_controls():
 	var input_label_dict = {
 		'UpButtonLabel':'move_up', 'DownButtonLabel':'move_down', 'LeftButtonLabel':'move_left',
 		'RightButtonLabel':'move_right', 'JumpButtonLabel':'jump', 'AttackButtonLabel':'attack',
-		'DashButtonLabel':'dash', 'PauseButtonLabel':'pause'}
+		'DashButtonLabel':'dash', 'PauseButtonLabel':'pause',
+		'ShiftLButtonLabel': 'toggle_weapons_l', 'ShiftRButtonLabel': 'toggle_weapons_r'}
 	if is_editing_controls: return
 	for label in input_label_dict:
 		$ControlsMenu/PauseText2.find_node(label).text = OS.get_scancode_string(InputMap.get_action_list(input_label_dict[label])[0].scancode)
-		if InputMap.get_action_list('move_up').size() > 1:
+		if InputMap.get_action_list(input_label_dict[label]).size() > 1:
 			if InputMap.get_action_list(input_label_dict[label])[1] is InputEventJoypadButton:
 				$ControlsMenu/PauseText2.find_node(label).text += ', Joypad: ' + str(InputMap.get_action_list(input_label_dict[label])[1].button_index)
 			elif InputMap.get_action_list(input_label_dict[label])[1] is InputEventJoypadMotion:
@@ -382,7 +383,7 @@ func get_key_action(event):
 	# Check if button is already assigned to an action (key first)
 	if event is InputEventKey:
 		event_button_index = event.scancode
-		for i in range(8):
+		for i in range(10):
 			if event_button_index == InputMap.get_action_list(input_index_to_str(i))[0].scancode:
 				return i
 		return -1
@@ -390,7 +391,7 @@ func get_key_action(event):
 	# If instead event is a joypad thing
 	elif event is InputEventJoypadButton:
 		event_button_index = event.button_index
-		for i in range(8):
+		for i in range(10):
 			var input_on_map = InputMap.get_action_list(input_index_to_str(i))[1]
 			if input_on_map is InputEventJoypadButton and event_button_index == input_on_map.button_index:
 				return i
@@ -398,7 +399,7 @@ func get_key_action(event):
 	
 	elif event is InputEventJoypadMotion:
 		event_button_index = event.axis
-		for i in range(8):
+		for i in range(10):
 			var input_on_map = InputMap.get_action_list(input_index_to_str(i))[1]
 			if input_on_map is InputEventJoypadMotion and event_button_index == input_on_map.axis and (
 				input_on_map.axis_value*event.axis_value > 0
@@ -409,18 +410,19 @@ func get_key_action(event):
 
 # Returns the action name from the index number
 func input_index_to_str(n):
-	if n in range(8):
-		return ['move_up', 'move_down', 'move_left', 'move_right', 
-		'jump', 'attack', 'dash', 'pause'][n]
+	if n in range(10):
+		return ['move_up', 'move_down', 'move_left', 'move_right', 'toggle_weapons_l',
+		'jump', 'attack', 'dash', 'pause', 'toggle_weapons_r'][n]
 	return ''
 
 # Runs preliminary checks, then loads controls from save data
 func load_controls(ctr_data):
 	# Perform security checks first...
-	if not ('move_up' in ctr_data and 'move_down' in ctr_data and 'move_left' in ctr_data and 'move_right' in ctr_data and
-	'attack' in ctr_data and 'jump' in ctr_data and 'dash' in ctr_data and 'pause' in ctr_data):
-		print('error!')
-		return
+	for action_name in ['move_up', 'move_down', 'move_left', 'move_right', 'toggle_weapons_l',
+	'attack', 'jump', 'dash', 'pause', 'toggle_weapons_r']:
+		if not action_name in ctr_data:
+			print('error!')
+			return
 	
 	for i in ctr_data:
 		if ctr_data[i].size() > 2 or ctr_data[i].size() < 1:
@@ -435,7 +437,7 @@ func load_controls(ctr_data):
 			(not ctr_data[i][1][2] or ctr_data[i][1][2] in [-1,1])): return
 	
 	# In the clear as far as I know, now to just load the controls!
-	for i in range(8):
+	for i in range(10):
 		var new_event = InputEventKey.new()
 		new_event.set_scancode(int(ctr_data[input_index_to_str(i)][0]))
 		new_event.pressed = true
@@ -543,12 +545,15 @@ func file_print():
 			file_display.find_node('EmptyText').visible = false
 			for node in ['Sprite','Sprite2','Sprite3']:
 				file_display.find_node(node).visible = false
+			for j in range(3):
+				file_display.find_node("Weapon"+str(j+1)).visible = false
 			
 			file_display.find_node('MainIcons').visible = true
 			file_display.find_node('CoinAmount').visible = true
 			file_display.find_node('ExitAmount').visible = true
 			file_display.find_node('CoinAmount').text = '???'
 			file_display.find_node('ExitAmount').text = '??'
+			file_display.find_node('HealthNumber').text = '??'
 		
 		else:
 			file_display.find_node('EmptyText').visible = false
@@ -565,3 +570,15 @@ func file_print():
 			var temp_exit_amt = Globals.total_exit_count(Globals.str_to_level_flags(file_data['exits']))
 			file_display.find_node('ExitAmount').text = (
 				str(temp_exit_amt/10) + str(temp_exit_amt % 10) )
+			
+			var temp_attack_list = Globals.int_to_bools(int(file_data['attacks']), 4)
+			file_display.find_node('Weapon1').visible = temp_attack_list[1]
+			file_display.find_node('Weapon2').visible = temp_attack_list[2]
+			file_display.find_node('Weapon3').visible = temp_attack_list[3]
+			
+			var temp_health_amt = Globals.DEFAULT_HEALTH
+			var temp_hearts_list = Globals.int_to_bools(int(file_data.hearts), 16)
+			for temp_heart in temp_hearts_list:
+				temp_health_amt += 2 if temp_heart else 0
+			file_display.find_node('HealthNumber').text = (
+				str(temp_health_amt/10) + str(temp_health_amt % 10) )

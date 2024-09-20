@@ -1,4 +1,4 @@
-[gd_scene load_steps=52 format=2]
+[gd_scene load_steps=60 format=2]
 
 [ext_resource path="res://assets/Sprites/Azzy/AzzySlashEffect.png" type="Texture" id=1]
 [ext_resource path="res://src/actors/player.gd" type="Script" id=2]
@@ -13,6 +13,8 @@
 [ext_resource path="res://assets/Sprites/Azzy/Outfits/Shorts.png" type="Texture" id=11]
 [ext_resource path="res://assets/Sprites/Azzy/AzzySlashEffectDown.png" type="Texture" id=12]
 [ext_resource path="res://assets/Sprites/Azzy/AzzySlashEffectUp.png" type="Texture" id=13]
+[ext_resource path="res://assets/Sprites/Azzy/AzzyShotDashHand.png" type="Texture" id=14]
+[ext_resource path="res://assets/Sprites/Azzy/AzzyHurtEffect.png" type="Texture" id=15]
 
 [sub_resource type="Animation" id=40]
 length = 0.001
@@ -218,6 +220,23 @@ tracks/0/keys = {
 "values": [ 35, 20 ]
 }
 
+[sub_resource type="Animation" id=54]
+resource_name = "Dash + Shoot"
+length = 3.0
+step = 0.0166667
+tracks/0/type = "value"
+tracks/0/path = NodePath("Sprite:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.0666667 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 1,
+"values": [ 58, 59 ]
+}
+
 [sub_resource type="Animation" id=4]
 resource_name = "Duck"
 length = 1.5
@@ -370,6 +389,38 @@ tracks/0/keys = {
 "values": [ 10 ]
 }
 
+[sub_resource type="Animation" id=59]
+resource_name = "Jump + Shoot"
+tracks/0/type = "value"
+tracks/0/path = NodePath("Sprite:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ 57 ]
+}
+
+[sub_resource type="Animation" id=58]
+resource_name = "Ladder Shoot"
+length = 0.233333
+step = 0.0166667
+tracks/0/type = "value"
+tracks/0/path = NodePath("Sprite:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.2 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 1,
+"values": [ 61, 22 ]
+}
+
 [sub_resource type="Animation" id=35]
 resource_name = "Ladder Slash"
 length = 0.3
@@ -500,6 +551,40 @@ tracks/0/keys = {
 "transitions": PoolRealArray( 1, 1, 1, 1, 1, 1, 1, 1 ),
 "update": 1,
 "values": [ 9, 5, 6, 5, 9, 7, 8, 7 ]
+}
+
+[sub_resource type="Animation" id=56]
+resource_name = "Run + Shoot"
+length = 0.8
+loop = true
+tracks/0/type = "value"
+tracks/0/path = NodePath("Sprite:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7 ),
+"transitions": PoolRealArray( 1, 1, 1, 1, 1, 1, 1, 1 ),
+"update": 1,
+"values": [ 56, 52, 53, 52, 56, 54, 55, 54 ]
+}
+
+[sub_resource type="Animation" id=55]
+resource_name = "Shoot"
+loop = true
+step = 0.0166667
+tracks/0/type = "value"
+tracks/0/path = NodePath("Sprite:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.1 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 1,
+"values": [ 51, 50 ]
 }
 
 [sub_resource type="Animation" id=50]
@@ -644,6 +729,22 @@ tracks/0/keys = {
 "values": [ 18 ]
 }
 
+[sub_resource type="Animation" id=57]
+resource_name = "Wallslide + Shoot"
+length = 0.2
+tracks/0/type = "value"
+tracks/0/path = NodePath("Sprite:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ 60 ]
+}
+
 [sub_resource type="RectangleShape2D" id=21]
 extents = Vector2( 42, 32 )
 
@@ -724,10 +825,20 @@ texture = ExtResource( 3 )
 hframes = 10
 vframes = 10
 
+[node name="DashHand" type="Sprite" parent="Sprite"]
+visible = false
+position = Vector2( -26.5, 8 )
+texture = ExtResource( 14 )
+
 [node name="Outfit" type="Sprite" parent="Sprite"]
 texture = ExtResource( 11 )
 hframes = 10
 vframes = 10
+
+[node name="HurtEffect" type="Sprite" parent="Sprite"]
+visible = false
+position = Vector2( 0, -0.5 )
+texture = ExtResource( 15 )
 
 [node name="PlayerHitbox" type="CollisionShape2D" parent="."]
 position = Vector2( 0, -42.0664 )
@@ -762,6 +873,7 @@ drag_margin_v_enabled = true
 "anims/Air Slash Up" = SubResource( 51 )
 anims/Climb = SubResource( 28 )
 anims/Dash = SubResource( 24 )
+"anims/Dash + Shoot" = SubResource( 54 )
 anims/Duck = SubResource( 4 )
 anims/Fall = SubResource( 7 )
 "anims/Get up" = SubResource( 15 )
@@ -770,9 +882,13 @@ anims/Fall = SubResource( 7 )
 anims/Hurt = SubResource( 13 )
 anims/Idle = SubResource( 2 )
 anims/Jump = SubResource( 6 )
+"anims/Jump + Shoot" = SubResource( 59 )
+"anims/Ladder Shoot" = SubResource( 58 )
 "anims/Ladder Slash" = SubResource( 35 )
 anims/RESET = SubResource( 3 )
 anims/Run = SubResource( 5 )
+"anims/Run + Shoot" = SubResource( 56 )
+anims/Shoot = SubResource( 55 )
 "anims/Step Forward" = SubResource( 50 )
 anims/Ultimate = SubResource( 44 )
 anims/Victory = SubResource( 38 )
@@ -780,6 +896,7 @@ anims/Victory2 = SubResource( 39 )
 "anims/Wall Slash" = SubResource( 33 )
 anims/Walljump = SubResource( 23 )
 anims/Wallslide = SubResource( 22 )
+"anims/Wallslide + Shoot" = SubResource( 57 )
 
 [node name="HUD" parent="." instance=ExtResource( 4 )]
 
@@ -829,6 +946,7 @@ texture = ExtResource( 12 )
 hframes = 3
 
 [node name="UltimateHitboxArea" type="Area2D" parent="."]
+visible = false
 collision_layer = 16
 collision_mask = 109
 

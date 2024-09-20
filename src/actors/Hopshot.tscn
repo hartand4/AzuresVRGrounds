@@ -4,10 +4,10 @@
 [ext_resource path="res://src/actors/Grasshopper.gd" type="Script" id=2]
 
 [sub_resource type="RectangleShape2D" id=1]
-extents = Vector2( 32, 18 )
+extents = Vector2( 32, 19 )
 
 [sub_resource type="RectangleShape2D" id=2]
-extents = Vector2( 32, 18 )
+extents = Vector2( 32, 19 )
 
 [sub_resource type="Animation" id=3]
 resource_name = "Crouch"
@@ -102,7 +102,7 @@ hframes = 6
 frame = 1
 
 [node name="Collision" type="CollisionShape2D" parent="."]
-position = Vector2( 0, -18 )
+position = Vector2( 0, -19 )
 shape = SubResource( 1 )
 
 [node name="AttackCheck" type="Area2D" parent="."]
@@ -110,7 +110,7 @@ collision_layer = 4
 collision_mask = 17
 
 [node name="AttackCheckColl" type="CollisionShape2D" parent="AttackCheck"]
-position = Vector2( 0, -18 )
+position = Vector2( 0, -19 )
 shape = SubResource( 2 )
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]

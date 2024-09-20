@@ -67,6 +67,8 @@ func get_damage():
 func animation_handler():
 	if Globals.game_paused or Globals.pause_menu_on: return
 	$Sprite.flip_h = recurring_x_dir+1
+	$Sprite.modulate = Color(1,1,1) if i_frames <= 0 else Color(2,2,2)
+	
 	match state:
 		0:
 			$AnimationPlayer.play("Idle")
@@ -100,6 +102,7 @@ func disable_all():
 func reset_values():
 	.reset_values()
 	anim_timer = 20
+	i_frames = 0
 	$Collision.disabled = false
 	$AttackCheck/AttackCheckColl.disabled = false
 	$Sprite.visible = true
@@ -107,10 +110,12 @@ func reset_values():
 func _on_AttackCheck_area_entered(area: Area2D) -> void:
 	if area.get_collision_layer_bit(4):
 		health -= 2
+		i_frames = 6
 	elif area.get_collision_layer_bit(9):
 		is_in_water = true
 	elif area.get_collision_layer_bit(11):
-		health -= 1
+		health -= area.player_attack_type if area.player_attack_type < 4 else 2
+		i_frames = 6
 
 
 func _on_AttackCheck_area_exited(area: Area2D) -> void:

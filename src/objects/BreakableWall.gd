@@ -35,7 +35,10 @@ func disable_all():
 
 func _on_AttackArea_area_entered(area: Area2D) -> void:
 	if not (area.get_collision_layer_bit(4) or area.get_collision_layer_bit(11)): return
-	
-	health -= 2 if area.get_collision_layer_bit(4) else 1
+	if area.get_collision_layer_bit(4):
+		health -= 2 
+	elif area.get_collision_layer_bit(11):
+		var dmg = area.get("player_attack_type")
+		health -= dmg if (dmg and dmg <= 3) else 1
 	if health > 0: animation_timer = 6
 	else: animation_timer = 3

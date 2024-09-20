@@ -21,6 +21,7 @@ texture = ExtResource( 2 )
 
 [node name="AttackArea" type="Area2D" parent="."]
 collision_layer = 1024
+collision_mask = 2049
 
 [node name="AttackCollision" type="CollisionShape2D" parent="AttackArea"]
 shape = SubResource( 2 )

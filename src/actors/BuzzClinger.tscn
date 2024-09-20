@@ -46,7 +46,7 @@ tracks/0/keys = {
 }
 
 [node name="BuzzClinger" type="Area2D"]
-collision_layer = 4
+collision_layer = 1028
 script = ExtResource( 2 )
 
 [node name="Sprite" type="Sprite" parent="."]

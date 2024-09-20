@@ -21,7 +21,7 @@ func _process(_delta: float) -> void:
 		if _health_to_give and Globals.timer % 2 == 0:
 			_health_to_give -= 1
 			_player.health += 1
-			if not _health_to_give or _player.health == 32:
+			if not _health_to_give or _player.health == _player.max_health:
 				_health_to_give = 0
 				Globals.lock_input = false
 				Globals.game_paused = false

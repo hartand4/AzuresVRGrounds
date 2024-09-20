@@ -75,7 +75,7 @@ func _process(delta: float) -> void:
 				return
 			elif menu_input == 2:
 				menu_type = selection_cursor
-				selection_cursor = 8 if menu_type == 2 else 1
+				selection_cursor = 10 if menu_type == 2 else 1
 				$Cursor1.visible = false
 		1:
 			selection_cursor = mod_wrap(selection_cursor + int(direction_input.y), 2)
@@ -90,27 +90,27 @@ func _process(delta: float) -> void:
 				Globals.start_transition(Vector2(420, 300), 1)
 				$Cursor1.modulate = Color(0,1,0)
 		2:
-			if selection_cursor == 8:
-				if direction_input.y < 0: selection_cursor = 3
+			if selection_cursor == 10:
+				if direction_input.y < 0: selection_cursor = 4
 				elif direction_input.y > 0: selection_cursor = 0
 			elif direction_input.x != 0:
-				selection_cursor = mod_wrap(selection_cursor + 4, 8)
-			elif (selection_cursor == 0 or selection_cursor == 4) and direction_input.y < 0:
-				selection_cursor = 8
-			elif (selection_cursor == 3 or selection_cursor == 7) and direction_input.y > 0:
-				selection_cursor = 8
+				selection_cursor = mod_wrap(selection_cursor + 5, 10)
+			elif (selection_cursor == 0 or selection_cursor == 5) and direction_input.y < 0:
+				selection_cursor = 10
+			elif (selection_cursor == 4 or selection_cursor == 9) and direction_input.y > 0:
+				selection_cursor = 10
 			else: selection_cursor += direction_input.y
 			
-			if menu_input == 1 or (selection_cursor == 8 and menu_input == 2):
+			if menu_input == 1 or (selection_cursor == 10 and menu_input == 2):
 				selection_cursor = 2
 				menu_type = 0
 				$Cursor2.visible = false
 				Globals.save_controls_data()
 				return
-			if selection_cursor == 8: $Cursor2.set_position(Vector2(382, 453))
+			if selection_cursor == 10: $Cursor2.set_position(Vector2(382, 453))
 			else:
-				$Cursor2.set_position(Vector2(196 if selection_cursor <= 3 else 564,
-				243 + 42*(selection_cursor % 4)))
+				$Cursor2.set_position(Vector2(196 if selection_cursor <= 4 else 564,
+				225 + 42*(selection_cursor % 5)))
 			
 			display_controls()
 			
@@ -159,11 +159,12 @@ func display_controls():
 	var input_label_dict = {
 		'UpButtonLabel':'move_up', 'DownButtonLabel':'move_down', 'LeftButtonLabel':'move_left',
 		'RightButtonLabel':'move_right', 'JumpButtonLabel':'jump', 'AttackButtonLabel':'attack',
-		'DashButtonLabel':'dash', 'PauseButtonLabel':'pause'}
+		'DashButtonLabel':'dash', 'PauseButtonLabel':'pause',
+		'ShiftLButtonLabel': 'toggle_weapons_l', 'ShiftRButtonLabel': 'toggle_weapons_r'}
 	if is_editing_control: return
 	for label in input_label_dict:
 		$PauseText2.find_node(label).text = OS.get_scancode_string(InputMap.get_action_list(input_label_dict[label])[0].scancode)
-		if InputMap.get_action_list('move_up').size() > 1:
+		if InputMap.get_action_list(input_label_dict[label]).size() > 1:
 			if InputMap.get_action_list(input_label_dict[label])[1] is InputEventJoypadButton:
 				$PauseText2.find_node(label).text += ', Joypad: ' + str(InputMap.get_action_list(input_label_dict[label])[1].button_index)
 			elif InputMap.get_action_list(input_label_dict[label])[1] is InputEventJoypadMotion:
@@ -241,7 +242,7 @@ func get_key_action(event):
 	# Check if button is already assigned to an action (key first)
 	if event is InputEventKey:
 		event_button_index = event.scancode
-		for i in range(8):
+		for i in range(10):
 			if event_button_index == InputMap.get_action_list(input_index_to_str(i))[0].scancode:
 				return i
 		return -1
@@ -249,7 +250,7 @@ func get_key_action(event):
 	# If instead event is a joypad thing
 	elif event is InputEventJoypadButton:
 		event_button_index = event.button_index
-		for i in range(8):
+		for i in range(10):
 			var input_on_map = InputMap.get_action_list(input_index_to_str(i))[1]
 			if input_on_map is InputEventJoypadButton and event_button_index == input_on_map.button_index:
 				return i
@@ -257,7 +258,7 @@ func get_key_action(event):
 	
 	elif event is InputEventJoypadMotion:
 		event_button_index = event.axis
-		for i in range(8):
+		for i in range(10):
 			var input_on_map = InputMap.get_action_list(input_index_to_str(i))[1]
 			if input_on_map is InputEventJoypadMotion and event_button_index == input_on_map.axis and (
 				input_on_map.axis_value*event.axis_value > 0
@@ -267,7 +268,7 @@ func get_key_action(event):
 	return -1
 
 func input_index_to_str(n):
-	if n in range(8):
-		return ['move_up', 'move_down', 'move_left', 'move_right', 
-		'jump', 'attack', 'dash', 'pause'][n]
+	if n in range(10):
+		return ['move_up', 'move_down', 'move_left', 'move_right', 'toggle_weapons_l',
+		'jump', 'attack', 'dash', 'pause', 'toggle_weapons_r'][n]
 	return ''

@@ -12,6 +12,8 @@ var dash_dust_timer := 0
 var coyote_timer := 0
 var acceleration_timer := 0
 
+var charge_shot_timer := 0
+
 # Booleans
 export var dashing := false
 export var air_dash_enabled := true
@@ -54,7 +56,19 @@ var needed_stunned_shakes := 15
 var sprite_default_location
 var stunned_bump_timer := 0
 
+# 0 = sideways, 1 = up, 2 = down
 var attacking_direction := 0
+# 0 = slash, 1 = shots, 2 = lob shots, 3 = ??? TODO
+export var current_attack := 1
+# Scenes for the attack projectiles
+var attack_scenes := [preload("res://src/objects/FlameBallS.tscn"),
+	preload("res://src/objects/FlameBallM.tscn"),
+	preload("res://src/objects/FlameBallL.tscn")]
+
+export var ammo := 96
+export var max_ammo := 96
+
+var list_of_projectiles = [null, null, null]
 
 var floor_angle := PI/2
 var last_state := 0
@@ -64,14 +78,16 @@ var max_slope := PI/3
 export var camera_limit_min = Vector2(0,0)
 export var camera_limit_max = Vector2(10000000, 10000)
 
-var animation_dict := {ST_IDLE: 'Idle', ST_WALLJUMP: 'Walljump',
-					   ST_DASH: "Dash", ST_ULTIMATE: "Ultimate"}
+var animation_dict := {ST_WALLJUMP: 'Walljump',ST_ULTIMATE: "Ultimate"}
 
 # From enemy
 var damage_doing := 0
 
 func _ready():
-	health = 32
+	max_health = Globals.DEFAULT_HEALTH
+	for heart in Globals.hearts_obtained:
+		max_health += 2 if heart else 0
+	health = max_health
 	recurring_x_dir = 1
 	call_deferred("_do_transition")
 	change_dash_hitbox(false)
@@ -107,8 +123,7 @@ func _physics_process(_delta: float) -> void:
 	var direction := Vector2.ZERO
 	var is_jumping := false
 	
-	if Globals.get("game_paused") or Globals.pause_menu_on:
-		do_pause_menu()
+	if Globals.get("game_paused"):
 		return
 	elif Input.is_action_just_pressed("pause") and not Globals.lock_input and (
 		not Globals.retry_menu_on) and not state in [ST_VICTORY]:
@@ -250,10 +265,13 @@ func _process(_delta):
 	
 	if Globals.get("game_paused"):
 		$Tail/AnimationPlayer.playback_speed = 0
+		if Globals.pause_menu_on:
+			do_pause_menu()
 		return
 	
 	$Tail/AnimationPlayer.playback_speed = 1
 	
+	# Checks to kill player: health <= 0 or too far offscreen
 	if health <= 0:
 		if not dying_process:
 			do_hurt_animation(0)
@@ -262,15 +280,26 @@ func _process(_delta):
 		Globals.lock_input = false
 	elif position.y > $Camera2D.get_camera_screen_center().y + 600 and $Camera2D.current:
 		animation_timer = 0
-		do_hurt_animation(32)
+		do_hurt_animation(max_health)
 		$Camera2D.current = false
 	
+	# Bound the health and ammo
 	if health < 0: health = 0
+	elif health > max_health: health = max_health
+	if ammo < 0: ammo = 0
+	elif ammo > max_ammo: ammo = max_ammo
+	
+	
 	if stop_wallslide_timer: stop_wallslide_timer -= 1
 	if walljump_momentum_timer: walljump_momentum_timer -= 1
 	if dash_timer: dash_timer -= 1
 	elif is_on_floor(): dashing = false
 	if attack_timer: attack_timer -= 1
+	
+	if current_attack == 1 and Input.is_action_pressed("attack"):
+		charge_shot_timer += 1
+		if charge_shot_timer > 200:
+			charge_shot_timer -= 20
 	
 	if state != ST_AIR: coyote_timer = 0
 	coyote_timer = coyote_timer - 1 if coyote_timer > 0 else 0
@@ -291,9 +320,21 @@ func _process(_delta):
 	
 	check_for_collisions()
 	
+	if Input.is_action_just_pressed("toggle_weapons_l"):
+		current_attack = (current_attack + 3) % 4
+		while !Globals.attacks_unlocked[current_attack]:
+			current_attack = (current_attack + 3) % 4
+			if current_attack == 0: break
+	if Input.is_action_just_pressed("toggle_weapons_r"):
+		current_attack = (current_attack + 1) % 4
+		while !Globals.attacks_unlocked[current_attack]:
+			current_attack = (current_attack + 1) % 4
+			if current_attack == 0: break
+	
 	if last_state != state:
 		print("state: %s" % state)
 		last_state = state
+	
 
 # Handles various animations of player using state. Also calls change_dash_hitbox to match dash sprite
 func animation_handler():
@@ -302,8 +343,10 @@ func animation_handler():
 	$Tail.flip_h = recurring_x_dir + 1
 	$Tail.visible = true
 	$TailWall.visible = false
+	$Sprite/DashHand.visible = false
 	$Tail/AnimationPlayer.play("TailWag")
 	$Tail.z_as_relative = true
+	$Sprite/HurtEffect.visible = false
 	
 	$SlashEffects/UltimateFire.visible = state == ST_ULTIMATE and animation_timer > 4 and animation_timer < 42
 	$SlashEffects/UltimateFire.flip_h = recurring_x_dir == 1
@@ -338,6 +381,12 @@ func animation_handler():
 		$Tail.z_index = 0
 		$Tail.set_position(Vector2(recurring_x_dir*-28,-35))
 	
+	# Add hand for dash + shoot sprite
+	if $Sprite.frame == 59:
+		$Sprite/DashHand.visible = true
+		$Sprite/DashHand.position.x = recurring_x_dir*26.5
+		$Sprite/DashHand.flip_h = recurring_x_dir + 1
+	
 	#Outfit flip
 	$Sprite/Outfit.flip_h = $Sprite.flip_h
 	
@@ -350,13 +399,56 @@ func animation_handler():
 		state in [ST_STUNNED, ST_STUNNED_DRAG] and stunned_bump_timer
 	) else $Sprite.position
 	
+	# Flash when charging
+	$Sprite.modulate = Color(1,1,1)
+	$Tail.modulate = Color(1,1,1)
+	$TailWall.modulate = Color(1,1,1)
+	if current_attack == 1:
+		if charge_shot_timer >= 45 and charge_shot_timer < 120 and charge_shot_timer % 10 >= 5:
+			$Sprite.modulate = Color(1.2,1.3,1.5)
+			$Tail.modulate = Color(1.2,1.3,1.5)
+			$TailWall.modulate = Color(1.2,1.3,1.5)
+		elif charge_shot_timer >= 120 and charge_shot_timer % 8 >= 4:
+			$Sprite.modulate = Color(1.2,1.6,1.3)
+			$Tail.modulate = Color(1.2,1.6,1.3)
+			$TailWall.modulate = Color(1.2,1.6,1.3)
+	
 	if state in animation_dict:
 		_animation.play(animation_dict[state])
 		$Sprite/Outfit.frame = $Sprite.frame
 		return
 	match state:
+		ST_IDLE:
+			if current_attack == 0 or attack_timer <= 0 or last_state != 0:
+				_animation.play("Idle")
+				if current_attack != 0: attack_timer = 0
+			else:
+				_animation.play("Shoot")
+				if Input.is_action_just_pressed("attack"):
+					_animation.stop()
+					_animation.play("Shoot")
+		ST_DASH:
+			if Globals.timer % 5 == 0 and animation_timer > 5 and is_on_floor():
+				spawn_dust_particle(true)
+			if current_attack == 0:
+				_animation.play("Dash")
+			elif current_attack != 0:
+				if last_state != 2:
+					_animation.play("Dash + Shoot" if attack_timer else "Dash")
+				elif $Sprite.frame == 59 and !attack_timer:
+					_animation.stop()
+					$Sprite.frame = 20
+				elif $Sprite.frame == 20 and attack_timer:
+					_animation.stop()
+					$Sprite.frame = 59
+				if $Sprite.frame == 59:
+					$Sprite/DashHand.visible = true
+					$Sprite/DashHand.position.x = recurring_x_dir*26.5
+					$Sprite/DashHand.flip_h = recurring_x_dir + 1
 		ST_AIR:
-			if _velocity.y < 0:
+			if current_attack and attack_timer:
+				_animation.play('Jump + Shoot')
+			elif _velocity.y < 0:
 				_animation.play('Jump')
 			else:
 				_animation.play('Fall')
@@ -387,10 +479,15 @@ func animation_handler():
 				do_slash_effect(2)
 			update_slash_hitbox()
 		ST_LADDER_ATTACK:
-			_animation.play('Ladder Slash')
-			if animation_timer == 6:
-				do_slash_effect(2)
-			update_slash_hitbox()
+			if !current_attack:
+				_animation.play('Ladder Slash')
+				if animation_timer == 6:
+					do_slash_effect(2)
+				update_slash_hitbox()
+			else:
+				_animation.stop()
+				$Sprite.frame = 61
+				#_animation.play("Ladder Shoot")
 		ST_CLIMB:
 			if Input.is_action_pressed("move_up"):
 				_animation.play('Climb')
@@ -399,7 +496,10 @@ func animation_handler():
 			else:
 				_animation.stop(false)
 		ST_WALLSLIDE:
-			_animation.play("Wallslide")
+			if current_attack == 0 or !attack_timer:
+				_animation.play("Wallslide")
+			else:
+				_animation.play("Wallslide + Shoot")
 			if Globals.timer % 7 == 0 and animation_timer > 5:
 				spawn_dust_particle()
 		ST_VICTORY:
@@ -425,10 +525,20 @@ func animation_handler():
 				$Sprite.position.x += 6 if stunned_shake_counter % 2 == 0 else -6
 				stunned_bump_timer = 2
 		ST_WALK:
-			if acceleration_timer > 0:
-				_animation.play('Step Forward')
+			if current_attack == 0:
+				if acceleration_timer > 0:
+					_animation.play('Step Forward')
+				else:
+					_animation.play('Run')
 			else:
-				_animation.play('Run')
+				var temp_seek = [_animation.current_animation, 0.0]
+				if temp_seek[0] != '': temp_seek[1] = _animation.current_animation_position
+				_animation.play('Run + Shoot' if attack_timer else "Run")
+				if temp_seek[0] != _animation.current_animation and temp_seek[0] != '':
+					_animation.seek(temp_seek[1])
+		ST_HURT:
+			$Sprite/HurtEffect.flip_h = recurring_x_dir > 0
+			$Sprite/HurtEffect.visible = animation_timer % 10 >= 5 and animation_timer % 10 <= 8
 
 # Updates the player state if game unpaused. Also updates attack_timer and dashing variables,
 # and calls start_walljump()
@@ -471,16 +581,24 @@ func update_state():
 			return update_state()
 	
 	# DOING AN AIR ATTACK
-	if state == ST_AIR and Input.is_action_just_pressed("attack"):
+	if state == ST_AIR and did_attack():
+		if current_attack == 1: shoot_flameball(charge_shot_timer)
+		elif current_attack > 1: shoot_projectile()
 		attack_timer = 18
-		attacking_direction = 1 if Input.is_action_pressed("move_up") else 2 if\
-			Input.is_action_pressed("move_down") else 0
-		return ST_AIR_ATTACK
-	elif state == ST_DASH and Input.is_action_just_pressed("attack") and not is_on_floor():
+		if current_attack == 0:
+			attacking_direction = 1 if Input.is_action_pressed("move_up") else 2 if\
+				Input.is_action_pressed("move_down") else 0
+			return ST_AIR_ATTACK
+		return state
+	elif state == ST_DASH and did_attack() and not is_on_floor():
+		if current_attack == 1: shoot_flameball(charge_shot_timer)
+		elif current_attack > 1: shoot_projectile()
 		attack_timer = 18
-		attacking_direction = 1 if Input.is_action_pressed("move_up") else 2 if\
-			Input.is_action_pressed("move_down") else 0
-		return ST_AIR_ATTACK
+		if current_attack == 0:
+			attacking_direction = 1 if Input.is_action_pressed("move_up") else 2 if\
+				Input.is_action_pressed("move_down") else 0
+			return ST_AIR_ATTACK
+		return state
 	if state == ST_AIR_ATTACK and attack_timer <= 0: return ST_AIR
 	
 	# SLIDING ON A WALL
@@ -510,9 +628,11 @@ func update_state():
 		else:
 			stop_wallslide_timer = 8
 		
-		if Input.is_action_just_pressed('attack'):
+		if did_attack():
+			if current_attack == 1: shoot_flameball(charge_shot_timer)
+			elif current_attack > 1: shoot_projectile()
 			attack_timer = 18
-			return ST_WALL_ATTACK
+			return ST_WALL_ATTACK if !current_attack else state
 			
 	# ANOTHER WAY TO WALLJUMP
 	if state == ST_AIR and Input.is_action_just_pressed('jump') and (colliding_with_wall_l or colliding_with_wall_r):
@@ -559,11 +679,13 @@ func update_state():
 			return update_state()
 	
 	# ATTACKING
-	if state < 3 and Input.is_action_just_pressed("attack"):
-		dashing = false
+	if state < 3 and did_attack():
+		if current_attack == 0: dashing = false
+		elif current_attack == 1: shoot_flameball(charge_shot_timer)
+		elif current_attack > 1: shoot_projectile()
 		attack_timer = 18
-		attacking_direction = 1 if Input.is_action_pressed("move_up") else 0
-		return ST_ATTACK
+		attacking_direction = 1 if (Input.is_action_pressed("move_up") and current_attack == 0) else 0
+		return ST_ATTACK if current_attack == 0 else state
 	
 	#STOP ATTACK
 	if state == ST_ATTACK and attack_timer <= 0:
@@ -592,17 +714,25 @@ func update_state():
 			_velocity = Vector2.ZERO
 		elif not(colliding_with_ladder or colliding_with_ladder_top) or Input.is_action_just_pressed('jump'):
 			state = ST_AIR
-		if Input.is_action_just_pressed("attack"):
+		if did_attack():
+			if current_attack == 1: shoot_flameball(charge_shot_timer)
+			elif current_attack > 1: shoot_projectile()
 			if dir.x != 0:
 				recurring_x_dir = dir.x
-			attack_timer = 18
+			attack_timer = 18 if !current_attack else 12
 			return ST_LADDER_ATTACK
 	
 	# LADDER ATTACK
 	if state == ST_LADDER_ATTACK:
 		if attack_timer <= 0:
 			_animation.play('Climb')
+			$Sprite.frame = 21
 			return ST_CLIMB
+		elif current_attack and did_attack():
+			if current_attack == 1: shoot_flameball(charge_shot_timer)
+			elif current_attack > 1: shoot_projectile()
+			attack_timer = 18
+			return state
 	
 	### if interaction finished: return ST_IDLE
 	
@@ -793,7 +923,7 @@ func check_for_collisions():
 		if (box.get_collision_layer_bit(0) or box.get_collision_layer_bit(6)) and near_wall[0] and (
 			near_wall[1] and not box.get_collision_layer_bit(8)):
 			colliding_with_enemy = true
-			damage_doing = 32
+			damage_doing = max_health
 
 # Does a transition effect in centre of screen
 func _do_transition():
@@ -893,12 +1023,17 @@ func reload_level():
 	get_tree().change_scene(get_tree().current_scene.filename)
 
 # Spawns dust when sliding down a wall, with slight variance
-func spawn_dust_particle():
+func spawn_dust_particle(for_dash=false):
 	var spawn_scene = load("res://src/effects/WallSlideDust.tscn")
 	var spawn := spawn_scene.instance() as Node2D
 	add_child(spawn)
 	
 	spawn.set_as_toplevel(true)
+	
+	if for_dash:
+		spawn.global_position = self.global_position + Vector2(-30*recurring_x_dir,0)
+		return
+	
 	spawn.global_position = self.global_position + Vector2(-15 if recurring_x_dir > 0 else 15,-50)
 	
 	var rng = RandomNumberGenerator.new()
@@ -1059,3 +1194,69 @@ func corner_correction(pixel_amt):
 				translate(Vector2(-i,0.0))
 				_velocity.x = max(_velocity.x, 0)
 				return
+
+# Determine what counts as "attacking" to affect states in update_state
+func did_attack():
+	if current_attack != 1:
+		return Input.is_action_just_pressed("attack")
+	if Input.is_action_just_pressed("attack"):
+		charge_shot_timer = 0
+		return room_for_projectile() > -1
+	if Input.is_action_pressed("attack"): return false
+	if charge_shot_timer < 45:
+		charge_shot_timer = 0
+		return false
+	return room_for_projectile() > -1
+
+# Helper function to check if there is even room for a flameball to be made.
+func room_for_projectile():
+	var ammo_drop_amt = 4
+	if current_attack == 1:
+		ammo_drop_amt = 1 if charge_shot_timer < 45 else 8 if charge_shot_timer >= 120 else 4
+	if ammo < ammo_drop_amt:
+		charge_shot_timer = 0
+		return -1
+	
+	var index_for_projectile = 0
+	while index_for_projectile < 3:
+		if list_of_projectiles[index_for_projectile] and is_instance_valid(list_of_projectiles[index_for_projectile])\
+		and list_of_projectiles[index_for_projectile].get("active"):
+			index_for_projectile += 1
+		else:
+			break
+	if index_for_projectile >= 3:
+		charge_shot_timer = 0
+		return -1
+	return index_for_projectile
+
+# Creates a flameball object based on the length of the current attack charge.
+# Returns true iff there is enough room for a projectile.
+func shoot_flameball(charge_length):
+	var index_for_projectile = room_for_projectile()
+	var ammo_drop_amt = 1 if charge_length < 45 else 8 if charge_length >= 120 else 4
+	
+	var current_scene = Globals.get_current_scene()
+	if not current_scene: return
+	var flameball_scene = attack_scenes[0 if charge_length < 45 else 1 if charge_length < 120 else 2]
+	var spawn := flameball_scene.instance() as Node2D
+	current_scene.add_child(spawn)
+	spawn.set_as_toplevel(true)
+	
+	# Determines the position of shots based on the current state
+	var shot_position = [54 if state == ST_DASH else 36,
+		(-52 if state in [ST_IDLE, ST_AIR, ST_CLIMB, ST_LADDER_ATTACK] else
+		-48 if state in [ST_WALK, ST_AIR_ATTACK, ST_WALLSLIDE, ST_WALL_ATTACK] else -32)]
+	
+	spawn.global_position = self.position + Vector2(recurring_x_dir*shot_position[0], shot_position[1])
+	spawn.direction = recurring_x_dir > 0
+	spawn.player_attack_type = 1 if (charge_length < 45 and !dashing) else 3 if charge_length >= 120 else 2
+	spawn.dash_flame = true if charge_length < 45 and dashing else false
+	
+	charge_shot_timer = 0
+	list_of_projectiles[index_for_projectile] = spawn
+	
+	ammo -= ammo_drop_amt
+
+# TODO: SHOOT OTHER TYPES OF PROJECTILES
+func shoot_projectile():
+	pass

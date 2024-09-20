@@ -1,4 +1,4 @@
-[gd_scene load_steps=18 format=2]
+[gd_scene load_steps=22 format=2]
 
 [ext_resource path="res://assets/HUD/Meters HUD.png" type="Texture" id=1]
 [ext_resource path="res://assets/HUD/Health.png" type="Texture" id=2]
@@ -17,14 +17,367 @@
 [ext_resource path="res://assets/HUD/RetrySelect.png" type="Texture" id=15]
 [ext_resource path="res://assets/HUD/RetryMenu.gd" type="Script" id=16]
 [ext_resource path="res://assets/HUD/Digits.png" type="Texture" id=17]
+[ext_resource path="res://assets/HUD/Meters HUD weapon.png" type="Texture" id=18]
+[ext_resource path="res://assets/HUD/HUD Weapon Icons.png" type="Texture" id=20]
+[ext_resource path="res://assets/HUD/Ammo2.png" type="Texture" id=21]
+[ext_resource path="res://assets/HUD/Ammo1.png" type="Texture" id=22]
 
 [node name="HUD" type="CanvasLayer"]
 script = ExtResource( 4 )
 
-[node name="Bars" type="TextureRect" parent="."]
+[node name="Bar" type="TextureRect" parent="."]
 margin_right = 40.0
 margin_bottom = 40.0
+rect_scale = Vector2( 2, 2 )
 texture = ExtResource( 1 )
+
+[node name="AmmoBar" type="TextureRect" parent="Bar"]
+margin_left = 5.0
+margin_top = 4.0
+margin_right = 36.0
+margin_bottom = 91.0
+texture = ExtResource( 18 )
+
+[node name="WeaponIcon" type="Sprite" parent="Bar/AmmoBar"]
+position = Vector2( 25, 71 )
+texture = ExtResource( 20 )
+hframes = 3
+
+[node name="Ammo1" type="TextureRect" parent="Bar/AmmoBar"]
+margin_left = 22.0
+margin_top = 64.0
+margin_right = 26.0
+margin_bottom = 65.0
+texture = ExtResource( 21 )
+
+[node name="Ammo2" type="TextureRect" parent="Bar/AmmoBar"]
+margin_left = 22.0
+margin_top = 63.0
+margin_right = 26.0
+margin_bottom = 64.0
+texture = ExtResource( 22 )
+
+[node name="Ammo3" type="TextureRect" parent="Bar/AmmoBar"]
+margin_left = 22.0
+margin_top = 62.0
+margin_right = 26.0
+margin_bottom = 63.0
+texture = ExtResource( 21 )
+
+[node name="Ammo4" type="TextureRect" parent="Bar/AmmoBar"]
+margin_left = 22.0
+margin_top = 61.0
+margin_right = 26.0
+margin_bottom = 62.0
+texture = ExtResource( 22 )
+
+[node name="Ammo5" type="TextureRect" parent="Bar/AmmoBar"]
+margin_left = 22.0
+margin_top = 60.0
+margin_right = 26.0
+margin_bottom = 61.0
+texture = ExtResource( 21 )
+
+[node name="Ammo6" type="TextureRect" parent="Bar/AmmoBar"]
+margin_left = 22.0
+margin_top = 59.0
+margin_right = 26.0
+margin_bottom = 60.0
+texture = ExtResource( 22 )
+
+[node name="Ammo7" type="TextureRect" parent="Bar/AmmoBar"]
+margin_left = 22.0
+margin_top = 58.0
+margin_right = 26.0
+margin_bottom = 59.0
+texture = ExtResource( 21 )
+
+[node name="Ammo8" type="TextureRect" parent="Bar/AmmoBar"]
+margin_left = 22.0
+margin_top = 57.0
+margin_right = 26.0
+margin_bottom = 58.0
+texture = ExtResource( 22 )
+
+[node name="Ammo9" type="TextureRect" parent="Bar/AmmoBar"]
+margin_left = 22.0
+margin_top = 56.0
+margin_right = 26.0
+margin_bottom = 57.0
+texture = ExtResource( 21 )
+
+[node name="Ammo10" type="TextureRect" parent="Bar/AmmoBar"]
+margin_left = 22.0
+margin_top = 55.0
+margin_right = 26.0
+margin_bottom = 56.0
+texture = ExtResource( 22 )
+
+[node name="Ammo11" type="TextureRect" parent="Bar/AmmoBar"]
+margin_left = 22.0
+margin_top = 54.0
+margin_right = 26.0
+margin_bottom = 55.0
+texture = ExtResource( 21 )
+
+[node name="Ammo12" type="TextureRect" parent="Bar/AmmoBar"]
+margin_left = 22.0
+margin_top = 53.0
+margin_right = 26.0
+margin_bottom = 54.0
+texture = ExtResource( 22 )
+
+[node name="Ammo13" type="TextureRect" parent="Bar/AmmoBar"]
+margin_left = 22.0
+margin_top = 52.0
+margin_right = 26.0
+margin_bottom = 53.0
+texture = ExtResource( 21 )
+
+[node name="Ammo14" type="TextureRect" parent="Bar/AmmoBar"]
+margin_left = 22.0
+margin_top = 51.0
+margin_right = 26.0
+margin_bottom = 52.0
+texture = ExtResource( 22 )
+
+[node name="Ammo15" type="TextureRect" parent="Bar/AmmoBar"]
+margin_left = 22.0
+margin_top = 50.0
+margin_right = 26.0
+margin_bottom = 51.0
+texture = ExtResource( 21 )
+
+[node name="Ammo16" type="TextureRect" parent="Bar/AmmoBar"]
+margin_left = 22.0
+margin_top = 49.0
+margin_right = 26.0
+margin_bottom = 50.0
+texture = ExtResource( 22 )
+
+[node name="Ammo17" type="TextureRect" parent="Bar/AmmoBar"]
+margin_left = 22.0
+margin_top = 48.0
+margin_right = 26.0
+margin_bottom = 49.0
+texture = ExtResource( 21 )
+
+[node name="Ammo18" type="TextureRect" parent="Bar/AmmoBar"]
+margin_left = 22.0
+margin_top = 47.0
+margin_right = 26.0
+margin_bottom = 48.0
+texture = ExtResource( 22 )
+
+[node name="Ammo19" type="TextureRect" parent="Bar/AmmoBar"]
+margin_left = 22.0
+margin_top = 46.0
+margin_right = 26.0
+margin_bottom = 47.0
+texture = ExtResource( 21 )
+
+[node name="Ammo20" type="TextureRect" parent="Bar/AmmoBar"]
+margin_left = 22.0
+margin_top = 45.0
+margin_right = 26.0
+margin_bottom = 46.0
+texture = ExtResource( 22 )
+
+[node name="Ammo21" type="TextureRect" parent="Bar/AmmoBar"]
+margin_left = 22.0
+margin_top = 44.0
+margin_right = 26.0
+margin_bottom = 45.0
+texture = ExtResource( 21 )
+
+[node name="Ammo22" type="TextureRect" parent="Bar/AmmoBar"]
+margin_left = 22.0
+margin_top = 43.0
+margin_right = 26.0
+margin_bottom = 44.0
+texture = ExtResource( 22 )
+
+[node name="Ammo23" type="TextureRect" parent="Bar/AmmoBar"]
+margin_left = 22.0
+margin_top = 42.0
+margin_right = 26.0
+margin_bottom = 43.0
+texture = ExtResource( 21 )
+
+[node name="Ammo24" type="TextureRect" parent="Bar/AmmoBar"]
+margin_left = 22.0
+margin_top = 41.0
+margin_right = 26.0
+margin_bottom = 42.0
+texture = ExtResource( 22 )
+
+[node name="Ammo25" type="TextureRect" parent="Bar/AmmoBar"]
+margin_left = 22.0
+margin_top = 40.0
+margin_right = 26.0
+margin_bottom = 41.0
+texture = ExtResource( 21 )
+
+[node name="Ammo26" type="TextureRect" parent="Bar/AmmoBar"]
+margin_left = 22.0
+margin_top = 39.0
+margin_right = 26.0
+margin_bottom = 40.0
+texture = ExtResource( 22 )
+
+[node name="Ammo27" type="TextureRect" parent="Bar/AmmoBar"]
+margin_left = 22.0
+margin_top = 38.0
+margin_right = 26.0
+margin_bottom = 39.0
+texture = ExtResource( 21 )
+
+[node name="Ammo28" type="TextureRect" parent="Bar/AmmoBar"]
+margin_left = 22.0
+margin_top = 37.0
+margin_right = 26.0
+margin_bottom = 38.0
+texture = ExtResource( 22 )
+
+[node name="Ammo29" type="TextureRect" parent="Bar/AmmoBar"]
+margin_left = 22.0
+margin_top = 36.0
+margin_right = 26.0
+margin_bottom = 37.0
+texture = ExtResource( 21 )
+
+[node name="Ammo30" type="TextureRect" parent="Bar/AmmoBar"]
+margin_left = 22.0
+margin_top = 35.0
+margin_right = 26.0
+margin_bottom = 36.0
+texture = ExtResource( 22 )
+
+[node name="Ammo31" type="TextureRect" parent="Bar/AmmoBar"]
+margin_left = 22.0
+margin_top = 34.0
+margin_right = 26.0
+margin_bottom = 35.0
+texture = ExtResource( 21 )
+
+[node name="Ammo32" type="TextureRect" parent="Bar/AmmoBar"]
+margin_left = 22.0
+margin_top = 33.0
+margin_right = 26.0
+margin_bottom = 34.0
+texture = ExtResource( 22 )
+
+[node name="Ammo33" type="TextureRect" parent="Bar/AmmoBar"]
+margin_left = 22.0
+margin_top = 32.0
+margin_right = 26.0
+margin_bottom = 33.0
+texture = ExtResource( 21 )
+
+[node name="Ammo34" type="TextureRect" parent="Bar/AmmoBar"]
+margin_left = 22.0
+margin_top = 31.0
+margin_right = 26.0
+margin_bottom = 32.0
+texture = ExtResource( 22 )
+
+[node name="Ammo35" type="TextureRect" parent="Bar/AmmoBar"]
+margin_left = 22.0
+margin_top = 30.0
+margin_right = 26.0
+margin_bottom = 31.0
+texture = ExtResource( 21 )
+
+[node name="Ammo36" type="TextureRect" parent="Bar/AmmoBar"]
+margin_left = 22.0
+margin_top = 29.0
+margin_right = 26.0
+margin_bottom = 30.0
+texture = ExtResource( 22 )
+
+[node name="Ammo37" type="TextureRect" parent="Bar/AmmoBar"]
+margin_left = 22.0
+margin_top = 28.0
+margin_right = 26.0
+margin_bottom = 29.0
+texture = ExtResource( 21 )
+
+[node name="Ammo38" type="TextureRect" parent="Bar/AmmoBar"]
+margin_left = 22.0
+margin_top = 27.0
+margin_right = 26.0
+margin_bottom = 28.0
+texture = ExtResource( 22 )
+
+[node name="Ammo39" type="TextureRect" parent="Bar/AmmoBar"]
+margin_left = 22.0
+margin_top = 26.0
+margin_right = 26.0
+margin_bottom = 27.0
+texture = ExtResource( 21 )
+
+[node name="Ammo40" type="TextureRect" parent="Bar/AmmoBar"]
+margin_left = 22.0
+margin_top = 25.0
+margin_right = 26.0
+margin_bottom = 26.0
+texture = ExtResource( 22 )
+
+[node name="Ammo41" type="TextureRect" parent="Bar/AmmoBar"]
+margin_left = 22.0
+margin_top = 24.0
+margin_right = 26.0
+margin_bottom = 25.0
+texture = ExtResource( 21 )
+
+[node name="Ammo42" type="TextureRect" parent="Bar/AmmoBar"]
+margin_left = 22.0
+margin_top = 23.0
+margin_right = 26.0
+margin_bottom = 24.0
+texture = ExtResource( 22 )
+
+[node name="Ammo43" type="TextureRect" parent="Bar/AmmoBar"]
+margin_left = 22.0
+margin_top = 22.0
+margin_right = 26.0
+margin_bottom = 23.0
+texture = ExtResource( 21 )
+
+[node name="Ammo44" type="TextureRect" parent="Bar/AmmoBar"]
+margin_left = 22.0
+margin_top = 21.0
+margin_right = 26.0
+margin_bottom = 22.0
+texture = ExtResource( 22 )
+
+[node name="Ammo45" type="TextureRect" parent="Bar/AmmoBar"]
+margin_left = 22.0
+margin_top = 20.0
+margin_right = 26.0
+margin_bottom = 21.0
+texture = ExtResource( 21 )
+
+[node name="Ammo46" type="TextureRect" parent="Bar/AmmoBar"]
+margin_left = 22.0
+margin_top = 19.0
+margin_right = 26.0
+margin_bottom = 20.0
+texture = ExtResource( 22 )
+
+[node name="Ammo47" type="TextureRect" parent="Bar/AmmoBar"]
+margin_left = 22.0
+margin_top = 18.0
+margin_right = 26.0
+margin_bottom = 19.0
+texture = ExtResource( 21 )
+
+[node name="Ammo48" type="TextureRect" parent="Bar/AmmoBar"]
+margin_left = 22.0
+margin_top = 17.0
+margin_right = 26.0
+margin_bottom = 18.0
+texture = ExtResource( 22 )
 
 [node name="VisibleHealth" type="TextureRect" parent="."]
 margin_left = 22.0
@@ -95,9 +448,9 @@ texture = ExtResource( 9 )
 
 [node name="UpButtonLabel" type="Label" parent="PauseMenu/PauseText2"]
 margin_left = 145.0
-margin_top = 233.0
+margin_top = 215.0
 margin_right = 301.0
-margin_bottom = 252.0
+margin_bottom = 234.0
 rect_scale = Vector2( 1.5, 1.5 )
 custom_fonts/font = ExtResource( 13 )
 text = "AZURE azure :3+"
@@ -105,9 +458,9 @@ clip_text = true
 
 [node name="DownButtonLabel" type="Label" parent="PauseMenu/PauseText2"]
 margin_left = 145.0
-margin_top = 275.0
+margin_top = 257.0
 margin_right = 301.0
-margin_bottom = 294.0
+margin_bottom = 276.0
 rect_scale = Vector2( 1.5, 1.5 )
 custom_fonts/font = ExtResource( 13 )
 text = "Easter egg lol"
@@ -115,9 +468,9 @@ clip_text = true
 
 [node name="LeftButtonLabel" type="Label" parent="PauseMenu/PauseText2"]
 margin_left = 145.0
-margin_top = 317.0
+margin_top = 299.0
 margin_right = 301.0
-margin_bottom = 336.0
+margin_bottom = 318.0
 rect_scale = Vector2( 1.5, 1.5 )
 custom_fonts/font = ExtResource( 13 )
 text = "Valerie is very sexy"
@@ -125,9 +478,9 @@ clip_text = true
 
 [node name="RightButtonLabel" type="Label" parent="PauseMenu/PauseText2"]
 margin_left = 145.0
-margin_top = 359.0
+margin_top = 341.0
 margin_right = 301.0
-margin_bottom = 378.0
+margin_bottom = 360.0
 rect_scale = Vector2( 1.5, 1.5 )
 custom_fonts/font = ExtResource( 13 )
 text = "and pretty hehe~"
@@ -135,9 +488,9 @@ clip_text = true
 
 [node name="JumpButtonLabel" type="Label" parent="PauseMenu/PauseText2"]
 margin_left = 526.0
-margin_top = 233.0
+margin_top = 215.0
 margin_right = 682.0
-margin_bottom = 252.0
+margin_bottom = 234.0
 rect_scale = Vector2( 1.5, 1.5 )
 custom_fonts/font = ExtResource( 13 )
 text = "But seriously...thank"
@@ -145,9 +498,9 @@ clip_text = true
 
 [node name="AttackButtonLabel" type="Label" parent="PauseMenu/PauseText2"]
 margin_left = 526.0
-margin_top = 275.0
+margin_top = 257.0
 margin_right = 682.0
-margin_bottom = 294.0
+margin_bottom = 276.0
 rect_scale = Vector2( 1.5, 1.5 )
 custom_fonts/font = ExtResource( 13 )
 text = "you so much for"
@@ -155,9 +508,9 @@ clip_text = true
 
 [node name="DashButtonLabel" type="Label" parent="PauseMenu/PauseText2"]
 margin_left = 526.0
-margin_top = 317.0
+margin_top = 299.0
 margin_right = 682.0
-margin_bottom = 336.0
+margin_bottom = 318.0
 rect_scale = Vector2( 1.5, 1.5 )
 custom_fonts/font = ExtResource( 13 )
 text = "playing my game. It"
@@ -165,12 +518,32 @@ clip_text = true
 
 [node name="PauseButtonLabel" type="Label" parent="PauseMenu/PauseText2"]
 margin_left = 526.0
-margin_top = 359.0
+margin_top = 341.0
 margin_right = 682.0
-margin_bottom = 378.0
+margin_bottom = 360.0
 rect_scale = Vector2( 1.5, 1.5 )
 custom_fonts/font = ExtResource( 13 )
 text = "means so much to me"
+clip_text = true
+
+[node name="ShiftLButtonLabel" type="Label" parent="PauseMenu/PauseText2"]
+margin_left = 145.0
+margin_top = 383.0
+margin_right = 301.0
+margin_bottom = 402.0
+rect_scale = Vector2( 1.5, 1.5 )
+custom_fonts/font = ExtResource( 13 )
+text = "********"
+clip_text = true
+
+[node name="ShiftRButtonLabel" type="Label" parent="PauseMenu/PauseText2"]
+margin_left = 526.0
+margin_top = 383.0
+margin_right = 682.0
+margin_bottom = 402.0
+rect_scale = Vector2( 1.5, 1.5 )
+custom_fonts/font = ExtResource( 13 )
+text = "********"
 clip_text = true
 
 [node name="PauseText3" type="TextureRect" parent="PauseMenu"]

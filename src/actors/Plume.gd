@@ -177,4 +177,4 @@ func _on_Plume_area_entered(area: Area2D) -> void:
 		health -= 2
 		hurt_frame_timer = 12
 	elif area.get_collision_layer_bit(11):
-		health -= 1
+		health -= area.player_attack_type if area.player_attack_type < 4 else 2

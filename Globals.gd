@@ -2,6 +2,7 @@ extends Node
 
 # Constants
 const LEVEL_COUNT := 32
+const DEFAULT_HEALTH := 32
 
 export var game_paused := false
 export var lock_input := false
@@ -17,12 +18,17 @@ var eq_timer := 0
 var eq_intensity := 3
 var earthquake_camera = null
 
+# Unlocked abilities
 export var air_dash_unlocked := false
 export var air_dash_selected := true
 export var armour_unlocked := false
 export var armour_selected := true
 export var ultimate_unlocked := false
 export var ultimate_selected := true
+
+export var attacks_unlocked := [true, false, false, false]
+export var hearts_obtained := [false, false, false, false, false, false, false, false,
+	false, false, false, false, false, false, false, false]
 
 var fullscreen_on := false
 export var pause_menu_on := false
@@ -42,6 +48,10 @@ export var spent_coins = 0
 
 export var current_camera_pos = Vector2.ZERO
 var stored_camera_for_earthquake
+
+# Health and ammo scenes
+var reload_scenes = [preload("res://src/objects/Health.tscn"), preload("res://src/objects/SmallHealth.tscn"),
+	preload("res://src/objects/BigAmmo.tscn"),preload("res://src/objects/SmallAmmo.tscn")]
 
 func _ready() -> void:
 	# warning-ignore:unused_variable
@@ -142,12 +152,14 @@ func spawn_health(pos, drop_rate=1):
 	var drop_var = call_rng(1, 20)
 	if drop_var < (20-6*drop_rate): return
 	
-	var health_scene = load("res://src/objects/Health.tscn" if drop_var >= (21-2*drop_rate) else "res://src/objects/SmallHealth.tscn")
+	var is_health_or_ammo = call_rng(0,1)
+	var health_scene = reload_scenes[(0 if drop_var >= (21-2*drop_rate) else 1)+is_health_or_ammo*2]
 	var spawn := health_scene.instance() as Node2D
 	call_deferred("add_spawn", current_scene, spawn)
 	spawn.global_position = pos
 	spawn.set_velocity(Vector2(0,-200))
 
+# Adds the spawn scene to the given scene
 func add_spawn(current_scene, spawn):
 	current_scene.add_child(spawn)
 
@@ -183,6 +195,7 @@ func spawn_bomba(pos, vel, grav=1200):
 	spawn.velocity = vel
 	spawn.gravity = grav
 
+# Creates a mini-missile at a certain position, with a direction dir
 func spawn_mini_missile(pos, dir):
 	var current_scene = get_current_scene()
 	var bullet_scene = load("res://src/enemyobjects/MiniMissile.tscn")
@@ -220,7 +233,8 @@ func save_controls_data():
 		current_data = {}
 	
 	current_data["controls"] = {}
-	for action in ['move_up', 'move_down', 'move_left', 'move_right', 'jump', 'attack', 'dash', 'pause']:
+	for action in ['move_up', 'move_down', 'move_left', 'move_right', 'toggle_weapons_l',
+		'jump', 'attack', 'dash', 'pause', 'toggle_weapons_r']:
 		current_data['controls'][action] = [InputMap.get_action_list(action)[0].scancode]
 		var joypad_button = save_controls_format(action)
 		if joypad_button != []:
@@ -288,6 +302,9 @@ func load_save_game(save_data, n):
 	
 	current_level = file_data['current_level']
 	
+	attacks_unlocked = int_to_bools(int(file_data['attacks']), 4)
+	hearts_obtained = int_to_bools(int(file_data['hearts']), 16)
+	
 	for i in range(3): coins_collected_in_level[i] = false
 
 # Load data for a new file
@@ -311,6 +328,9 @@ func load_new_game():
 	spent_coins = 0
 	
 	current_level = 1
+	
+	attacks_unlocked = [true, false, false, false]
+	hearts_obtained = int_to_bools(0,16)
 	
 	for i in range(3): coins_collected_in_level[i] = false
 	for i in range(2): goal_reached_in_current_level[i] = false
@@ -352,6 +372,9 @@ func save_game_checks(file_data):
 	if not "costumes" in file_data or not(file_data['costumes'] is Array): return false
 	for costume in file_data['costumes']:
 		if typeof(costume) != TYPE_REAL: return false
+	
+	if not ("attacks" in file_data and typeof(file_data['attacks']) == TYPE_REAL): return false
+	if not ("hearts" in file_data and typeof(file_data['hearts']) == TYPE_REAL): return false
 	
 	print('flags for unlockables done')
 	
@@ -399,6 +422,9 @@ func save_current_game_to_file(n):
 	
 	current_data['music_volume'] = music_volume
 	current_data['sfx_volume'] = sfx_volume
+	
+	current_data['file'+str(n)]['attacks'] = bools_to_int(attacks_unlocked)
+	current_data['file'+str(n)]['hearts'] = bools_to_int(hearts_obtained)
 	
 	var file = File.new()
 	var dir = Directory.new()
@@ -513,3 +539,18 @@ func get_current_camera():
 		if camera is Camera2D and camera.current:
 			return camera
 	return null
+
+# Returns a list of booleans of length "length" based on an integer (bitwise)
+func int_to_bools(integer, length):
+	var temp_bool_list = []
+	for i in range(length):
+		temp_bool_list += [integer % int(pow(2,i+1)) >= int(pow(2,i))]
+	return temp_bool_list
+
+# Returns an integer based on a list of boolean (bitwise)
+func bools_to_int(temp_bool_list):
+	var integer = 0
+	for i in range(temp_bool_list.size() ):
+		if temp_bool_list[i]:
+			integer += int(pow(2,i))
+	return integer

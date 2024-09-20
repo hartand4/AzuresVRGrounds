@@ -32,17 +32,17 @@ func _process(_delta: float) -> void:
 		anim_timer = 119 if state else 80
 		recurring_x_dir = -1 if Globals.find_player().position.x < position.x else 1
 	elif anim_timer == 80 and state == 1:
-		Globals.spawn_mini_missile(position+Vector2(recurring_x_dir*34,-74), recurring_x_dir)
+		Globals.spawn_mini_missile(position+Vector2(recurring_x_dir*34,-72), recurring_x_dir)
 	elif anim_timer == 60 and state == 1:
-		Globals.spawn_mini_missile(position+Vector2(recurring_x_dir*-6,-74), recurring_x_dir)
+		Globals.spawn_mini_missile(position+Vector2(recurring_x_dir*-6,-72), recurring_x_dir)
 		
 	
 	$AnimationPlayer.play("Shoot" if state else "Idle")
-	$Sprite.modulate = Color(2.2,2.2,2.7) if i_frames else Color(1,1,1)
+	$Sprite.modulate = Color(1.7,1.8,2.2) if i_frames else Color(1,1,1)
 	$Sprite.flip_h = recurring_x_dir+1
 	
 	$Sprite.position = Vector2(5,-80) + Vector2(recurring_x_dir*-5, 0)
-	var sprite_height_list = [0, 4, 6, 8, 10, 10,10,10,10, 10, 8]
+	var sprite_height_list = [0, 6, 8, 10, 12, 14,16,16,18, 18, 10]
 	$Collision.position = Vector2(6, -70 + sprite_height_list[$Sprite.frame])
 	$AttackCheckArea/Collision.position = Vector2(6, -70 + sprite_height_list[$Sprite.frame])
 	
@@ -69,8 +69,11 @@ func disable_all():
 
 func _on_AttackCheckArea_area_entered(area: Area2D) -> void:
 	if not (area.get_collision_layer_bit(4) or area.get_collision_layer_bit(11)): return
-	health -= 2 if area.get_collision_layer_bit(4) else 1
-	i_frames = 6 if area.get_collision_layer_bit(4) else 0
+	if area.get_collision_layer_bit(4):
+		health -= 2
+	else:
+		health -= area.player_attack_type if area.player_attack_type < 4 else 2
+	i_frames = 6
 	if health <= 0:
 		no_health()
 
@@ -78,5 +81,6 @@ func no_health():
 	broken = true
 	$Visibility.process_parent = false
 	anim_timer = 2
+	i_frames = 0
 	Globals.spawn_explosion(position + Vector2(0,-48))
 	Globals.spawn_health(position+Vector2(0,-40))

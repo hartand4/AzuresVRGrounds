@@ -5,7 +5,7 @@ var broken := false
 var damage
 
 var debris_pos
-var health_rate := 1
+export var health_rate := 1
 
 var hitbox_obj
 
@@ -47,6 +47,7 @@ func _process(_delta):
 	# If it has a child called "Hitbox", enable its collision
 	if find_node("Hitbox"):
 		$Hitbox/Collision.disabled = false
+	$Sprite.modulate = Color(2.2,1.8,2.3) if i_frames else Color(1,1,1)
 
 # Returns the damage value for player
 func get_damage():
@@ -57,6 +58,7 @@ func reset_values():
 	state = 0
 	anim_timer = 0
 	health = max_health
+	i_frames = 0
 	$Collision.disabled = false
 	$Sprite.visible = true
 	broken = false

@@ -5,6 +5,7 @@ var health := 2
 var original_position := Vector2.ZERO
 var fly_direction := -1
 var state := 0
+var flash_timer = 0
 
 var speed := Vector2(250,0)
 var anim_timer = 0
@@ -41,6 +42,10 @@ func _process(_delta: float) -> void:
 	
 	if anim_timer:
 		anim_timer -= 1
+	
+	if flash_timer:
+		flash_timer -= 1
+	$Sprite.modulate = Color(2.2,2.2,2.7) if flash_timer else Color(1,1,1)
 	
 	match state:
 		0:
@@ -117,4 +122,5 @@ func _on_Rodopack_area_entered(area: Area2D) -> void:
 	elif area.get_collision_layer_bit(9):
 		is_in_water = true
 	elif area.get_collision_layer_bit(11):
-		health -= 1
+		health -= area.player_attack_type if area.player_attack_type < 4 else 2
+		flash_timer = 6

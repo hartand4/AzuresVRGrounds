@@ -14,7 +14,7 @@ var animation_timer := 0
 # Second animation timer that counts down
 var anim_timer := 0
 export var health := 1
-var max_health := 1
+export var max_health := 1
 var i_frames := 0
 
 var is_in_water := false

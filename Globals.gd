@@ -4,10 +4,12 @@ extends Node
 const LEVEL_COUNT := 32
 const DEFAULT_HEALTH := 32
 
+# game_paused outright freezes actors and such.
+# lock_input prevents the player from moving normally
 export var game_paused := false
 export var lock_input := false
-export var timer := 0
 
+export var timer := 0
 export var vswitch_timer := 0
 
 export var music_volume := 1.0
@@ -26,6 +28,7 @@ export var armour_selected := true
 export var ultimate_unlocked := false
 export var ultimate_selected := true
 
+# In order: default slash, flameball, TODO
 export var attacks_unlocked := [true, false, false, false]
 export var hearts_obtained := [false, false, false, false, false, false, false, false,
 	false, false, false, false, false, false, false, false]
@@ -49,9 +52,17 @@ export var spent_coins = 0
 export var current_camera_pos = Vector2.ZERO
 var stored_camera_for_earthquake
 
+# Variable that determines the current textbox data.
+# The boolean denotes whether or not locked input should remain after text close.
+var open_textbox = [null, false]
+var game_script = []
+
+
 # Health and ammo scenes
-var reload_scenes = [preload("res://src/objects/Health.tscn"), preload("res://src/objects/SmallHealth.tscn"),
-	preload("res://src/objects/BigAmmo.tscn"),preload("res://src/objects/SmallAmmo.tscn")]
+var reload_scenes = [preload("res://src/objects/Health.tscn"),
+	preload("res://src/objects/SmallHealth.tscn"),
+	preload("res://src/objects/BigAmmo.tscn"),
+	preload("res://src/objects/SmallAmmo.tscn")]
 
 func _ready() -> void:
 	# warning-ignore:unused_variable
@@ -59,6 +70,11 @@ func _ready() -> void:
 		level_flags += [[false, false]]
 		val_coin_list += [[false, false, false]]
 	current_camera_pos = get_current_camera_pos()
+	
+	var script_file = File.new()
+	script_file.open("res://text/script.dialogue", File.READ)
+	game_script = script_file.get_as_text().split('\n')
+	script_file.close()
 
 # warning-ignore:unused_argument
 func _process(delta: float) -> void:
@@ -74,6 +90,15 @@ func _process(delta: float) -> void:
 		eq_timer -= 1
 		if not eq_timer:
 			recenter_camera()
+	
+	if open_textbox[0]:
+		if is_instance_valid(open_textbox[0]): return
+		open_textbox[0] = null
+		lock_input = open_textbox[1]
+	
+#	if Input.is_action_just_pressed("move_down"):
+#		Globals.create_textbox("[character=faie,0]Don't think that this is the end, Azzy." +
+#		"[speed=1] \\n[speed=24]I will haunt you to the\\n[speed=8]day you[speed=4] die.....")
 
 # Returns the player object
 func find_player():
@@ -88,6 +113,7 @@ func start_transition(pos, type):
 	if curr_scene:
 		curr_scene.find_node('Transition').start_transition(pos, type)
 
+# TODO
 func level_number_to_obj(n):
 	var boss_level_numbers = [7]
 	if n in boss_level_numbers:
@@ -554,3 +580,15 @@ func bools_to_int(temp_bool_list):
 		if temp_bool_list[i]:
 			integer += int(pow(2,i))
 	return integer
+
+# Spawns a textbox object containing the given text
+func create_textbox(text_to_add, instant=false, destroy_instant=false, persist_lock=false):
+	var current_scene = get_current_scene()
+	if not current_scene: return
+	lock_input = true
+	var temp_spawn = load("res://src/effects/Textbox.tscn")
+	var spawn = temp_spawn.instance()
+	spawn.init(text_to_add, instant, destroy_instant)
+	current_scene.add_child(spawn)
+	open_textbox[0] = spawn
+	open_textbox[1] = persist_lock

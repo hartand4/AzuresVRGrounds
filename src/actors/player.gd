@@ -59,7 +59,7 @@ var stunned_bump_timer := 0
 # 0 = sideways, 1 = up, 2 = down
 var attacking_direction := 0
 # 0 = slash, 1 = shots, 2 = lob shots, 3 = ??? TODO
-export var current_attack := 1
+export var current_attack := 0
 # Scenes for the attack projectiles
 var attack_scenes := [preload("res://src/objects/FlameBallS.tscn"),
 	preload("res://src/objects/FlameBallM.tscn"),
@@ -130,6 +130,9 @@ func _physics_process(_delta: float) -> void:
 		Globals.set("game_paused", true)
 		Globals.pause_menu_on = true
 		_velocity = move_and_slide(_velocity, FLOOR_NORMAL, true) if not jump_timer else _velocity
+		return
+	elif state == ST_OFFLOAD:
+		# This offloads the logic onto another script, so we can ignore the physics
 		return
 		
 	# Jump logic
@@ -296,7 +299,7 @@ func _process(_delta):
 	elif is_on_floor(): dashing = false
 	if attack_timer: attack_timer -= 1
 	
-	if current_attack == 1 and Input.is_action_pressed("attack"):
+	if current_attack == 1 and Input.is_action_pressed("attack") and !Globals.lock_input:
 		charge_shot_timer += 1
 		if charge_shot_timer > 200:
 			charge_shot_timer -= 20
@@ -320,12 +323,12 @@ func _process(_delta):
 	
 	check_for_collisions()
 	
-	if Input.is_action_just_pressed("toggle_weapons_l"):
+	if Input.is_action_just_pressed("toggle_weapons_l") and !Globals.lock_input:
 		current_attack = (current_attack + 3) % 4
 		while !Globals.attacks_unlocked[current_attack]:
 			current_attack = (current_attack + 3) % 4
 			if current_attack == 0: break
-	if Input.is_action_just_pressed("toggle_weapons_r"):
+	if Input.is_action_just_pressed("toggle_weapons_r") and !Globals.lock_input:
 		current_attack = (current_attack + 1) % 4
 		while !Globals.attacks_unlocked[current_attack]:
 			current_attack = (current_attack + 1) % 4
@@ -334,10 +337,11 @@ func _process(_delta):
 	if last_state != state:
 		print("state: %s" % state)
 		last_state = state
-	
 
 # Handles various animations of player using state. Also calls change_dash_hitbox to match dash sprite
 func animation_handler():
+	if state == ST_OFFLOAD: return
+	
 	$Sprite.visible = true
 	$Sprite.flip_h = recurring_x_dir + 1
 	$Tail.flip_h = recurring_x_dir + 1
@@ -352,7 +356,7 @@ func animation_handler():
 	$SlashEffects/UltimateFire.flip_h = recurring_x_dir == 1
 	
 	
-	if i_frames and Globals.timer % 8 <= 1:
+	if i_frames % 8 >= 6:
 		$Sprite.visible = false
 		$Tail.visible = false
 		$TailWall.visible = false
@@ -543,8 +547,10 @@ func animation_handler():
 # Updates the player state if game unpaused. Also updates attack_timer and dashing variables,
 # and calls start_walljump()
 func update_state():
-	if Globals.game_paused or Globals.lock_input:
+	if Globals.game_paused:
 		return state
+	elif Globals.lock_input:
+		return 0 if is_on_floor() else state
 	
 	var dir = Vector2(
 		-1.0 if Input.is_action_pressed("move_left") else 1.0 if Input.is_action_pressed("move_right") else 0.0,
@@ -558,7 +564,7 @@ func update_state():
 		state = 0
 		return update_state()
 	# Consider other states, like wallslide taking damage
-	if not (state in [ST_HURT, ST_INTERACT, ST_ULTIMATE]) and colliding_with_enemy and i_frames == 0:
+	if not (state in [ST_HURT, ST_OFFLOAD, ST_ULTIMATE]) and colliding_with_enemy and i_frames == 0:
 		do_hurt_animation(damage_doing)
 		return ST_HURT
 	
@@ -778,7 +784,7 @@ func do_pause_menu():
 	return
 
 # Animates the slash effect and prepares the initial hitboxes accordingly.
-# start -> 0=end, 1=normal, 2=wall
+# start -> 0=end, 1=normal, 2=wall, 3=up, 4=down
 func do_slash_effect(start):
 	match start:
 		0:
@@ -931,9 +937,10 @@ func _do_transition():
 
 # Checks the areas (enemy, ladder, water,...) colliding with the player
 func _on_PlayerHitboxArea_area_entered(area: Area2D) -> void:
+	if state == ST_OFFLOAD: return
 	# Check if the player is colliding with other areas (enemies or damage tiles)
 	if (area.get_collision_layer_bit(2) or area.get_collision_layer_bit(7) or 
-		area.get_collision_layer_bit(5)) and not colliding_with_enemy:
+		area.get_collision_layer_bit(5)) and !colliding_with_enemy:
 		colliding_with_enemy = true
 		# If an enemy...
 		if area.has_method("get_damage"):
@@ -952,6 +959,7 @@ func _on_PlayerHitboxArea_area_entered(area: Area2D) -> void:
 		is_in_water = true
 
 func _on_PlayerHitboxArea_area_exited(area: Area2D) -> void:
+	if state == ST_OFFLOAD: return
 	if area.get_collision_layer_bit(9):
 		is_in_water = false
 		return
@@ -1238,7 +1246,7 @@ func shoot_flameball(charge_length):
 	var current_scene = Globals.get_current_scene()
 	if not current_scene: return
 	var flameball_scene = attack_scenes[0 if charge_length < 45 else 1 if charge_length < 120 else 2]
-	var spawn := flameball_scene.instance() as Node2D
+	var spawn = flameball_scene.instance() as Node2D
 	current_scene.add_child(spawn)
 	spawn.set_as_toplevel(true)
 	

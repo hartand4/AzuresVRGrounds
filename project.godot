@@ -78,6 +78,12 @@ shortcut=false
 
 common/drop_mouse_on_gui_input_disabled=true
 
+[importer_defaults]
+
+texture={
+"flags/filter": false
+}
+
 [input]
 
 move_left={

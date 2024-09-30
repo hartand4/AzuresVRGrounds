@@ -5,16 +5,24 @@ onready var max_health
 onready var ammo
 onready var max_ammo
 
-onready var health_meter := $VisibleHealth
-onready var health_bar := $VisibleHealth/HealthMeter
-
-# warning-ignore:unused_argument
-func _process(delta):
+func _process(_delta):
 	_health = get_parent().health
 	max_health = get_parent().max_health
-	health_meter.set_size(Vector2(20.0, _health*4))
-	health_meter.set_position(Vector2(22,14 + 4*(max_health-_health)))
-	health_bar.set_position(Vector2(health_bar.get_position().x, -4*(max_health-_health)))
+	for i in range(64):
+		$VisibleHealth.find_node("HealthBar"+str(i+1)).visible = _health >= i+1
+	
+	var bar_scale_factor = int(clamp(max_health, 1, 32))
+	
+	$Bar/HealthBarAlong.rect_scale.y = bar_scale_factor * 2 - 1
+	$Bar/HealthBarAlong.rect_position.y = 72-2*bar_scale_factor
+	$Bar/HealthBarTop.rect_position.y = 68-2*bar_scale_factor
+	$Bar/BarMergeRegion.rect_position.y = 71 - 2*bar_scale_factor
+	$Bar/BarMergeRegion.rect_size.y = 12 + 2*bar_scale_factor
+	$Bar/BarMergeRegion/BarMerge.rect_position.y = -51 + 2*bar_scale_factor
+	
+	$Bar/HealthIndicator.visible = max_health > 32
+	$Bar/HealthIndicator.frame = 1 if max_health == 64 else 0
+	$Bar/HealthIndicator.position.y = 72.5 - 2*(max_health-32)
 	
 	ammo = get_parent().ammo
 	max_ammo = get_parent().max_ammo
@@ -22,6 +30,7 @@ func _process(delta):
 	for i in range(48):
 		$Bar/AmmoBar.find_node("Ammo"+str(i+1)).visible = (ammo >= 2*i+1)
 	$Bar/AmmoBar.visible = get_parent().current_attack != 0
+	$Bar/BarMergeRegion.visible = get_parent().current_attack != 0
 	$Bar/AmmoBar/WeaponIcon.frame = max(0, get_parent().current_attack-1)
 	
 	

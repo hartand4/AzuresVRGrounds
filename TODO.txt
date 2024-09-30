@@ -8,18 +8,16 @@ finish tutorial level1
 
 add more tilesets (factory, bricks, underground, mountains, etc...)
 
-finish save files loading, displaying, etc
-
 extras menu on main menu (concept art?)
 
-give characters clothes? Azzy boxers
+give characters clothes
 
-opening cutscene, general cutscene textbox logic, skip too
+opening cutscene
 portraits in the textboxes that flap lips like mmx
 
 val coin list on map screen
 
-map hud when on level (display name, coins, and exits reached)
+map hud when on level (level name)
 
 map tile events
 
@@ -27,12 +25,12 @@ Maybe grapple state for some enemies/bosses
 
 anthro shield enemies, shoot bullets and lob bomba
 
-cosmetic changes in store? sushi as e-tank?
+cosmetic changes in store? sushi as energy?
 MAID OUTFIT for one (high) prize
 
 MANTA RAY ENEMIES/PLATFORMS, maybe as a shmup??
 
-kangaroo as shield enemies?
+kangaroo as shield enemies? skunk gas enemy?
 
 big enemy that throws bouncing projectiles that bounce back when hitting a wall, and only bounce up 5 times (after 4 -> flash)
 
@@ -46,12 +44,7 @@ Sword is called the flare edge, flare temper, or flarix (ex-calibur)
 
 maybe make a day/night theme as the levels go on?
 
-edit save file for list of bought costumes, current costume, current level position
-[type(level, warp, other...), number]
-
 CharNull, segmentation fault
-
-optional challenge setting: 1/2 health mode (on map pause screen?)
 
 boss doors -> for all objects (except the boss), if collision layer is enemy or enemy attack, remove from current scene
 
@@ -60,8 +53,6 @@ Maybe encode in parabolic cipher
 Slots?
 
 Some kind of list of level titles, including area names, for the shop too (level 200)
-
-Add alt weapons -> Buster-like charging shots
 
 NOTE: Lagomo, Hopshot, Turret, Plume, Rodopack are pre-enemy script, check damage values for alt weapons
 Also check objects like breakable walls when alt weapons get added

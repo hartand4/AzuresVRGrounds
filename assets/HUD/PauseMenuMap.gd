@@ -91,7 +91,7 @@ func _process(_delta: float) -> void:
 				menu_type = selection_cursor
 				if menu_type == 4: selection_cursor = 10
 				elif menu_type == 5: selection_cursor = 1
-				elif menu_type == 3: selection_cursor = 5
+				elif menu_type == 3: selection_cursor = 6
 				else: selection_cursor = 0
 				$Cursor1.visible = false
 				if menu_type == 1: file_print()
@@ -157,14 +157,16 @@ func _process(_delta: float) -> void:
 				$PauseText1/YNCursor.position = Vector2(540 + 150*selection_cursor,502)
 		
 		PAUSE_OPTIONS:
-			$Cursor1.set_position(Vector2(416,480))
-			$Cursor1.visible = selection_cursor == 5
-			var unlocked_stuff = [Globals.air_dash_unlocked, Globals.armour_unlocked, Globals.ultimate_unlocked, true, true, true]
-			selection_cursor = mod_wrap(selection_cursor + int(direction_input.y), 6)
+			$Cursor1.set_position(Vector2(416,512))
+			$Cursor1.visible = selection_cursor == 6
+			var unlocked_stuff = [Globals.air_dash_unlocked, Globals.armour_unlocked,
+				Globals.ultimate_unlocked, true, true, true, true]
+			selection_cursor = mod_wrap(selection_cursor + int(direction_input.y), 7)
 			while not unlocked_stuff[selection_cursor]:
-				selection_cursor = mod_wrap(selection_cursor + int(direction_input.y), 6)
-			var options_index = ["AirDashLabel", "ArmourLabel", "UltimateLabel", "MusicLabel", "SFXLabel"]
-			if selection_cursor < 5:
+				selection_cursor = mod_wrap(selection_cursor + int(direction_input.y), 7)
+			var options_index = ["AirDashLabel", "ArmourLabel", "UltimateLabel", "HealthLabel",
+				"MusicLabel", "SFXLabel"]
+			if selection_cursor < 6:
 				$PauseText3.find_node(options_index[selection_cursor]).modulate = Color(1,1,0)
 			
 			# Flip switches
@@ -178,14 +180,19 @@ func _process(_delta: float) -> void:
 				if menu_input == 2 or Globals.ultimate_selected == (direction_input.x < 0):
 					Globals.ultimate_selected = not Globals.ultimate_selected
 			
-			elif selection_cursor == 3 and (direction_input.y == 0 and direction_input.x != 0):
+			elif selection_cursor == 3 and direction_input.y == 0 and direction_input.x != 0:
+				if direction_input.x > 0: Globals.set_health = int(min(Globals.get_max_health(),
+					Globals.set_health + 2)) if Globals.set_health != 1 else 2
+				elif direction_input.x < 0: Globals.set_health = int(max(1,Globals.set_health - 2))
+			
+			elif selection_cursor == 4 and (direction_input.y == 0 and direction_input.x != 0):
 				if direction_input.x > 0: Globals.music_volume = min(1, Globals.music_volume + 0.125)
 				elif direction_input.x < 0: Globals.music_volume = max(0, Globals.music_volume - 0.125)
-			elif selection_cursor == 4 and (direction_input.y == 0 and direction_input.x != 0):
+			elif selection_cursor == 5 and (direction_input.y == 0 and direction_input.x != 0):
 				if direction_input.x > 0: Globals.sfx_volume = min(1, Globals.sfx_volume + 0.125)
 				elif direction_input.x < 0: Globals.sfx_volume = max(0, Globals.sfx_volume - 0.125)
 			
-			if menu_input == 1 or (selection_cursor == 5 and menu_input == 2):
+			if menu_input == 1 or (selection_cursor == 6 and menu_input == 2):
 				selection_cursor = 3
 				menu_type = 0
 				$Cursor1.visible = false
@@ -385,6 +392,7 @@ func options_menu_visuals():
 	$PauseText3/UltimateLabel.text = "ULTIMATE" if Globals.ultimate_unlocked else "?????"
 	$PauseText3/UltimateLabel.modulate = Color(1,1,1) if Globals.ultimate_unlocked else Color(0.5,0.5,0.5)
 	
+	$PauseText3/HealthLabel.modulate = Color(1,1,1)
 	$PauseText3/MusicLabel.modulate = Color(1,1,1)
 	$PauseText3/SFXLabel.modulate = Color(1,1,1)
 	
@@ -402,11 +410,11 @@ func options_menu_visuals():
 	elif not Globals.ultimate_selected and $PauseText3/Switch3.get_position().x > 475:
 		$PauseText3/Switch3.set_position($PauseText3/Switch3.get_position() + Vector2(-4.75,0))
 	
-	# Meter positions:
+	# Meter positions
 	$PauseText3/MusicFill.set_size(Vector2(496*Globals.music_volume,12))
-	$PauseText3/MusicSlider.position = Vector2(496*Globals.music_volume + 251, 372)
+	$PauseText3/MusicSlider.position = Vector2(496*Globals.music_volume + 251, 412)
 	$PauseText3/SFXFill.set_size(Vector2(496*Globals.sfx_volume,12))
-	$PauseText3/SFXSlider.position = Vector2(496*Globals.sfx_volume + 251, 418)
+	$PauseText3/SFXSlider.position = Vector2(496*Globals.sfx_volume + 251, 458)
 	
 	# Switch colours
 	$PauseText3/Switch1.modulate = Color(($PauseText3/Switch1.get_position().x-475)*(-7)/380 + 1,
@@ -418,6 +426,21 @@ func options_menu_visuals():
 	$PauseText3/Switch3.modulate = Color(($PauseText3/Switch3.get_position().x-475)*(-7)/380 + 1,
 		($PauseText3/Switch3.get_position().x-475)*(2)/380 + 1,
 		($PauseText3/Switch3.get_position().x-475)*(-2)/380 + 1)
+	
+	# Health meter
+	# warning-ignore:integer_division
+	$PauseText3/HealthMeter/HealthTens.frame = Globals.set_health / 10
+	$PauseText3/HealthMeter/HealthOnes.frame = Globals.set_health % 10
+	$PauseText3/HealthMeterColor.set_size(Vector2(6*Globals.set_health,20))
+	var modulate_for_health = Color(
+		-0.00484*Globals.set_health + 0.7,
+		0.008267*Globals.set_health+0.25,
+		0.3
+	)
+	$PauseText3/HealthMeterColor.modulate = modulate_for_health
+	
+	$PauseText3/HealthMeter/HealthOnes.modulate = modulate_for_health
+	$PauseText3/HealthMeter/HealthTens.modulate = modulate_for_health
 
 func file_print():
 	for i in range(6):

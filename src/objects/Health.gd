@@ -3,7 +3,7 @@ class_name Health
 
 var _velocity := Vector2.ZERO
 var _giving_health := false
-var _health_to_give = 8
+export var _health_to_give = 8
 var _animation = 'Idle'
 onready var _player = Globals.find_player()
 export var persistent := false
@@ -57,10 +57,20 @@ func set_velocity(vel):
 func player_in_health():
 	_velocity = Vector2.ZERO
 	$HealthSprite.visible = false
-	if _player.health < 32:
+	if _player.health < _player.max_health:
 		Globals.game_paused = true
 		Globals.lock_input = true
 		_giving_health = true
 		return
 	_health_to_give = 0
 	call_deferred('disable_all')
+
+func _on_HealthArea_area_entered(area: Area2D) -> void:
+	if area.get_collision_layer_bit(1):
+		player_in_health()
+	elif area.get_collision_layer_bit(9):
+		is_in_water = true
+
+func _on_HealthArea_area_exited(area: Area2D) -> void:
+	if area.get_collision_layer_bit(9):
+		is_in_water = false

@@ -1,7 +1,7 @@
-[gd_scene load_steps=22 format=2]
+[gd_scene load_steps=27 format=2]
 
-[ext_resource path="res://assets/HUD/Meters HUD.png" type="Texture" id=1]
-[ext_resource path="res://assets/HUD/Health.png" type="Texture" id=2]
+[ext_resource path="res://assets/HUD/HealthMeterTop.png" type="Texture" id=1]
+[ext_resource path="res://assets/HUD/HealthMeterAlong.png" type="Texture" id=2]
 [ext_resource path="res://assets/HUD/PauseMenu.png" type="Texture" id=3]
 [ext_resource path="res://assets/HUD/HUD.gd" type="Script" id=4]
 [ext_resource path="res://assets/Sprites/Objects/ValMedal.png" type="Texture" id=5]
@@ -18,9 +18,14 @@
 [ext_resource path="res://assets/HUD/RetryMenu.gd" type="Script" id=16]
 [ext_resource path="res://assets/HUD/Digits.png" type="Texture" id=17]
 [ext_resource path="res://assets/HUD/Meters HUD weapon.png" type="Texture" id=18]
+[ext_resource path="res://assets/HUD/HealthOne.png" type="Texture" id=19]
 [ext_resource path="res://assets/HUD/HUD Weapon Icons.png" type="Texture" id=20]
 [ext_resource path="res://assets/HUD/Ammo2.png" type="Texture" id=21]
 [ext_resource path="res://assets/HUD/Ammo1.png" type="Texture" id=22]
+[ext_resource path="res://assets/HUD/HealthMeterBottom.png" type="Texture" id=23]
+[ext_resource path="res://assets/HUD/Meters HUD weapon corrective.png" type="Texture" id=24]
+[ext_resource path="res://assets/HUD/HighHealthIndicator.png" type="Texture" id=25]
+[ext_resource path="res://assets/HUD/HealthTwo.png" type="Texture" id=26]
 
 [node name="HUD" type="CanvasLayer"]
 script = ExtResource( 4 )
@@ -29,13 +34,28 @@ script = ExtResource( 4 )
 margin_right = 40.0
 margin_bottom = 40.0
 rect_scale = Vector2( 2, 2 )
+texture = ExtResource( 23 )
+
+[node name="HealthBarTop" type="TextureRect" parent="Bar"]
+margin_left = 6.0
+margin_top = 4.0
+margin_right = 24.0
+margin_bottom = 8.0
 texture = ExtResource( 1 )
 
+[node name="HealthBarAlong" type="TextureRect" parent="Bar"]
+margin_left = 6.0
+margin_top = 8.0
+margin_right = 24.0
+margin_bottom = 9.0
+rect_scale = Vector2( 1, 63 )
+texture = ExtResource( 2 )
+
 [node name="AmmoBar" type="TextureRect" parent="Bar"]
-margin_left = 5.0
-margin_top = 4.0
-margin_right = 36.0
-margin_bottom = 91.0
+margin_left = 4.0
+margin_top = 6.0
+margin_right = 35.0
+margin_bottom = 93.0
 texture = ExtResource( 18 )
 
 [node name="WeaponIcon" type="Sprite" parent="Bar/AmmoBar"]
@@ -379,19 +399,478 @@ margin_right = 26.0
 margin_bottom = 18.0
 texture = ExtResource( 22 )
 
-[node name="VisibleHealth" type="TextureRect" parent="."]
+[node name="BarMergeRegion" type="TextureRect" parent="Bar"]
 margin_left = 22.0
+margin_top = 7.0
+margin_right = 25.0
+margin_bottom = 83.0
+rect_clip_content = true
+stretch_mode = 3
+
+[node name="BarMerge" type="TextureRect" parent="Bar/BarMergeRegion"]
+margin_top = 13.0
+margin_right = 3.0
+margin_bottom = 71.0
+texture = ExtResource( 24 )
+stretch_mode = 3
+
+[node name="HealthIndicator" type="Sprite" parent="Bar"]
+position = Vector2( 5.5, 70.5 )
+texture = ExtResource( 25 )
+hframes = 2
+
+[node name="VisibleHealth" type="TextureRect" parent="."]
+margin_left = 20.0
 margin_top = 16.0
-margin_right = 42.0
+margin_right = 40.0
 margin_bottom = 142.0
 rect_clip_content = true
 
-[node name="HealthMeter" type="TextureRect" parent="VisibleHealth"]
-margin_top = -2.0
-margin_right = 20.0
+[node name="HealthBar1" type="TextureRect" parent="VisibleHealth"]
+margin_top = 124.0
+margin_right = 10.0
 margin_bottom = 126.0
-texture = ExtResource( 2 )
-expand = true
+rect_scale = Vector2( 2, 2 )
+texture = ExtResource( 19 )
+
+[node name="HealthBar2" type="TextureRect" parent="VisibleHealth"]
+margin_top = 120.0
+margin_right = 10.0
+margin_bottom = 122.0
+rect_scale = Vector2( 2, 2 )
+texture = ExtResource( 19 )
+
+[node name="HealthBar3" type="TextureRect" parent="VisibleHealth"]
+margin_top = 116.0
+margin_right = 10.0
+margin_bottom = 118.0
+rect_scale = Vector2( 2, 2 )
+texture = ExtResource( 19 )
+
+[node name="HealthBar4" type="TextureRect" parent="VisibleHealth"]
+margin_top = 112.0
+margin_right = 10.0
+margin_bottom = 114.0
+rect_scale = Vector2( 2, 2 )
+texture = ExtResource( 19 )
+
+[node name="HealthBar5" type="TextureRect" parent="VisibleHealth"]
+margin_top = 108.0
+margin_right = 10.0
+margin_bottom = 110.0
+rect_scale = Vector2( 2, 2 )
+texture = ExtResource( 19 )
+
+[node name="HealthBar6" type="TextureRect" parent="VisibleHealth"]
+margin_top = 104.0
+margin_right = 10.0
+margin_bottom = 106.0
+rect_scale = Vector2( 2, 2 )
+texture = ExtResource( 19 )
+
+[node name="HealthBar7" type="TextureRect" parent="VisibleHealth"]
+margin_top = 100.0
+margin_right = 10.0
+margin_bottom = 102.0
+rect_scale = Vector2( 2, 2 )
+texture = ExtResource( 19 )
+
+[node name="HealthBar8" type="TextureRect" parent="VisibleHealth"]
+margin_top = 96.0
+margin_right = 10.0
+margin_bottom = 98.0
+rect_scale = Vector2( 2, 2 )
+texture = ExtResource( 19 )
+
+[node name="HealthBar9" type="TextureRect" parent="VisibleHealth"]
+margin_top = 92.0
+margin_right = 10.0
+margin_bottom = 94.0
+rect_scale = Vector2( 2, 2 )
+texture = ExtResource( 19 )
+
+[node name="HealthBar10" type="TextureRect" parent="VisibleHealth"]
+margin_top = 88.0
+margin_right = 10.0
+margin_bottom = 90.0
+rect_scale = Vector2( 2, 2 )
+texture = ExtResource( 19 )
+
+[node name="HealthBar11" type="TextureRect" parent="VisibleHealth"]
+margin_top = 84.0
+margin_right = 10.0
+margin_bottom = 86.0
+rect_scale = Vector2( 2, 2 )
+texture = ExtResource( 19 )
+
+[node name="HealthBar12" type="TextureRect" parent="VisibleHealth"]
+margin_top = 80.0
+margin_right = 10.0
+margin_bottom = 82.0
+rect_scale = Vector2( 2, 2 )
+texture = ExtResource( 19 )
+
+[node name="HealthBar13" type="TextureRect" parent="VisibleHealth"]
+margin_top = 76.0
+margin_right = 10.0
+margin_bottom = 78.0
+rect_scale = Vector2( 2, 2 )
+texture = ExtResource( 19 )
+
+[node name="HealthBar14" type="TextureRect" parent="VisibleHealth"]
+margin_top = 72.0
+margin_right = 10.0
+margin_bottom = 74.0
+rect_scale = Vector2( 2, 2 )
+texture = ExtResource( 19 )
+
+[node name="HealthBar15" type="TextureRect" parent="VisibleHealth"]
+margin_top = 68.0
+margin_right = 10.0
+margin_bottom = 70.0
+rect_scale = Vector2( 2, 2 )
+texture = ExtResource( 19 )
+
+[node name="HealthBar16" type="TextureRect" parent="VisibleHealth"]
+margin_top = 64.0
+margin_right = 10.0
+margin_bottom = 66.0
+rect_scale = Vector2( 2, 2 )
+texture = ExtResource( 19 )
+
+[node name="HealthBar17" type="TextureRect" parent="VisibleHealth"]
+margin_top = 60.0
+margin_right = 10.0
+margin_bottom = 62.0
+rect_scale = Vector2( 2, 2 )
+texture = ExtResource( 19 )
+
+[node name="HealthBar18" type="TextureRect" parent="VisibleHealth"]
+margin_top = 56.0
+margin_right = 10.0
+margin_bottom = 58.0
+rect_scale = Vector2( 2, 2 )
+texture = ExtResource( 19 )
+
+[node name="HealthBar19" type="TextureRect" parent="VisibleHealth"]
+margin_top = 52.0
+margin_right = 10.0
+margin_bottom = 54.0
+rect_scale = Vector2( 2, 2 )
+texture = ExtResource( 19 )
+
+[node name="HealthBar20" type="TextureRect" parent="VisibleHealth"]
+margin_top = 48.0
+margin_right = 10.0
+margin_bottom = 50.0
+rect_scale = Vector2( 2, 2 )
+texture = ExtResource( 19 )
+
+[node name="HealthBar21" type="TextureRect" parent="VisibleHealth"]
+margin_top = 44.0
+margin_right = 10.0
+margin_bottom = 46.0
+rect_scale = Vector2( 2, 2 )
+texture = ExtResource( 19 )
+
+[node name="HealthBar22" type="TextureRect" parent="VisibleHealth"]
+margin_top = 40.0
+margin_right = 10.0
+margin_bottom = 42.0
+rect_scale = Vector2( 2, 2 )
+texture = ExtResource( 19 )
+
+[node name="HealthBar23" type="TextureRect" parent="VisibleHealth"]
+margin_top = 36.0
+margin_right = 10.0
+margin_bottom = 38.0
+rect_scale = Vector2( 2, 2 )
+texture = ExtResource( 19 )
+
+[node name="HealthBar24" type="TextureRect" parent="VisibleHealth"]
+margin_top = 32.0
+margin_right = 10.0
+margin_bottom = 34.0
+rect_scale = Vector2( 2, 2 )
+texture = ExtResource( 19 )
+
+[node name="HealthBar25" type="TextureRect" parent="VisibleHealth"]
+margin_top = 28.0
+margin_right = 10.0
+margin_bottom = 30.0
+rect_scale = Vector2( 2, 2 )
+texture = ExtResource( 19 )
+
+[node name="HealthBar26" type="TextureRect" parent="VisibleHealth"]
+margin_top = 24.0
+margin_right = 10.0
+margin_bottom = 26.0
+rect_scale = Vector2( 2, 2 )
+texture = ExtResource( 19 )
+
+[node name="HealthBar27" type="TextureRect" parent="VisibleHealth"]
+margin_top = 20.0
+margin_right = 10.0
+margin_bottom = 22.0
+rect_scale = Vector2( 2, 2 )
+texture = ExtResource( 19 )
+
+[node name="HealthBar28" type="TextureRect" parent="VisibleHealth"]
+margin_top = 16.0
+margin_right = 10.0
+margin_bottom = 18.0
+rect_scale = Vector2( 2, 2 )
+texture = ExtResource( 19 )
+
+[node name="HealthBar29" type="TextureRect" parent="VisibleHealth"]
+margin_top = 12.0
+margin_right = 10.0
+margin_bottom = 14.0
+rect_scale = Vector2( 2, 2 )
+texture = ExtResource( 19 )
+
+[node name="HealthBar30" type="TextureRect" parent="VisibleHealth"]
+margin_top = 8.0
+margin_right = 10.0
+margin_bottom = 10.0
+rect_scale = Vector2( 2, 2 )
+texture = ExtResource( 19 )
+
+[node name="HealthBar31" type="TextureRect" parent="VisibleHealth"]
+margin_top = 4.0
+margin_right = 10.0
+margin_bottom = 6.0
+rect_scale = Vector2( 2, 2 )
+texture = ExtResource( 19 )
+
+[node name="HealthBar32" type="TextureRect" parent="VisibleHealth"]
+margin_right = 10.0
+margin_bottom = 2.0
+rect_scale = Vector2( 2, 2 )
+texture = ExtResource( 19 )
+
+[node name="HealthBar33" type="TextureRect" parent="VisibleHealth"]
+margin_top = 124.0
+margin_right = 10.0
+margin_bottom = 126.0
+rect_scale = Vector2( 2, 2 )
+texture = ExtResource( 26 )
+
+[node name="HealthBar34" type="TextureRect" parent="VisibleHealth"]
+margin_top = 120.0
+margin_right = 10.0
+margin_bottom = 122.0
+rect_scale = Vector2( 2, 2 )
+texture = ExtResource( 26 )
+
+[node name="HealthBar35" type="TextureRect" parent="VisibleHealth"]
+margin_top = 116.0
+margin_right = 10.0
+margin_bottom = 118.0
+rect_scale = Vector2( 2, 2 )
+texture = ExtResource( 26 )
+
+[node name="HealthBar36" type="TextureRect" parent="VisibleHealth"]
+margin_top = 112.0
+margin_right = 10.0
+margin_bottom = 114.0
+rect_scale = Vector2( 2, 2 )
+texture = ExtResource( 26 )
+
+[node name="HealthBar37" type="TextureRect" parent="VisibleHealth"]
+margin_top = 108.0
+margin_right = 10.0
+margin_bottom = 110.0
+rect_scale = Vector2( 2, 2 )
+texture = ExtResource( 26 )
+
+[node name="HealthBar38" type="TextureRect" parent="VisibleHealth"]
+margin_top = 104.0
+margin_right = 10.0
+margin_bottom = 106.0
+rect_scale = Vector2( 2, 2 )
+texture = ExtResource( 26 )
+
+[node name="HealthBar39" type="TextureRect" parent="VisibleHealth"]
+margin_top = 100.0
+margin_right = 10.0
+margin_bottom = 102.0
+rect_scale = Vector2( 2, 2 )
+texture = ExtResource( 26 )
+
+[node name="HealthBar40" type="TextureRect" parent="VisibleHealth"]
+margin_top = 96.0
+margin_right = 10.0
+margin_bottom = 98.0
+rect_scale = Vector2( 2, 2 )
+texture = ExtResource( 26 )
+
+[node name="HealthBar41" type="TextureRect" parent="VisibleHealth"]
+margin_top = 92.0
+margin_right = 10.0
+margin_bottom = 94.0
+rect_scale = Vector2( 2, 2 )
+texture = ExtResource( 26 )
+
+[node name="HealthBar42" type="TextureRect" parent="VisibleHealth"]
+margin_top = 88.0
+margin_right = 10.0
+margin_bottom = 90.0
+rect_scale = Vector2( 2, 2 )
+texture = ExtResource( 26 )
+
+[node name="HealthBar43" type="TextureRect" parent="VisibleHealth"]
+margin_top = 84.0
+margin_right = 10.0
+margin_bottom = 86.0
+rect_scale = Vector2( 2, 2 )
+texture = ExtResource( 26 )
+
+[node name="HealthBar44" type="TextureRect" parent="VisibleHealth"]
+margin_top = 80.0
+margin_right = 10.0
+margin_bottom = 82.0
+rect_scale = Vector2( 2, 2 )
+texture = ExtResource( 26 )
+
+[node name="HealthBar45" type="TextureRect" parent="VisibleHealth"]
+margin_top = 76.0
+margin_right = 10.0
+margin_bottom = 78.0
+rect_scale = Vector2( 2, 2 )
+texture = ExtResource( 26 )
+
+[node name="HealthBar46" type="TextureRect" parent="VisibleHealth"]
+margin_top = 72.0
+margin_right = 10.0
+margin_bottom = 74.0
+rect_scale = Vector2( 2, 2 )
+texture = ExtResource( 26 )
+
+[node name="HealthBar47" type="TextureRect" parent="VisibleHealth"]
+margin_top = 68.0
+margin_right = 10.0
+margin_bottom = 70.0
+rect_scale = Vector2( 2, 2 )
+texture = ExtResource( 26 )
+
+[node name="HealthBar48" type="TextureRect" parent="VisibleHealth"]
+margin_top = 64.0
+margin_right = 10.0
+margin_bottom = 66.0
+rect_scale = Vector2( 2, 2 )
+texture = ExtResource( 26 )
+
+[node name="HealthBar49" type="TextureRect" parent="VisibleHealth"]
+margin_top = 60.0
+margin_right = 10.0
+margin_bottom = 62.0
+rect_scale = Vector2( 2, 2 )
+texture = ExtResource( 26 )
+
+[node name="HealthBar50" type="TextureRect" parent="VisibleHealth"]
+margin_top = 56.0
+margin_right = 10.0
+margin_bottom = 58.0
+rect_scale = Vector2( 2, 2 )
+texture = ExtResource( 26 )
+
+[node name="HealthBar51" type="TextureRect" parent="VisibleHealth"]
+margin_top = 52.0
+margin_right = 10.0
+margin_bottom = 54.0
+rect_scale = Vector2( 2, 2 )
+texture = ExtResource( 26 )
+
+[node name="HealthBar52" type="TextureRect" parent="VisibleHealth"]
+margin_top = 48.0
+margin_right = 10.0
+margin_bottom = 50.0
+rect_scale = Vector2( 2, 2 )
+texture = ExtResource( 26 )
+
+[node name="HealthBar53" type="TextureRect" parent="VisibleHealth"]
+margin_top = 44.0
+margin_right = 10.0
+margin_bottom = 46.0
+rect_scale = Vector2( 2, 2 )
+texture = ExtResource( 26 )
+
+[node name="HealthBar54" type="TextureRect" parent="VisibleHealth"]
+margin_top = 40.0
+margin_right = 10.0
+margin_bottom = 42.0
+rect_scale = Vector2( 2, 2 )
+texture = ExtResource( 26 )
+
+[node name="HealthBar55" type="TextureRect" parent="VisibleHealth"]
+margin_top = 36.0
+margin_right = 10.0
+margin_bottom = 38.0
+rect_scale = Vector2( 2, 2 )
+texture = ExtResource( 26 )
+
+[node name="HealthBar56" type="TextureRect" parent="VisibleHealth"]
+margin_top = 32.0
+margin_right = 10.0
+margin_bottom = 34.0
+rect_scale = Vector2( 2, 2 )
+texture = ExtResource( 26 )
+
+[node name="HealthBar57" type="TextureRect" parent="VisibleHealth"]
+margin_top = 28.0
+margin_right = 10.0
+margin_bottom = 30.0
+rect_scale = Vector2( 2, 2 )
+texture = ExtResource( 26 )
+
+[node name="HealthBar58" type="TextureRect" parent="VisibleHealth"]
+margin_top = 24.0
+margin_right = 10.0
+margin_bottom = 26.0
+rect_scale = Vector2( 2, 2 )
+texture = ExtResource( 26 )
+
+[node name="HealthBar59" type="TextureRect" parent="VisibleHealth"]
+margin_top = 20.0
+margin_right = 10.0
+margin_bottom = 22.0
+rect_scale = Vector2( 2, 2 )
+texture = ExtResource( 26 )
+
+[node name="HealthBar60" type="TextureRect" parent="VisibleHealth"]
+margin_top = 16.0
+margin_right = 10.0
+margin_bottom = 18.0
+rect_scale = Vector2( 2, 2 )
+texture = ExtResource( 26 )
+
+[node name="HealthBar61" type="TextureRect" parent="VisibleHealth"]
+margin_top = 12.0
+margin_right = 10.0
+margin_bottom = 14.0
+rect_scale = Vector2( 2, 2 )
+texture = ExtResource( 26 )
+
+[node name="HealthBar62" type="TextureRect" parent="VisibleHealth"]
+margin_top = 8.0
+margin_right = 10.0
+margin_bottom = 10.0
+rect_scale = Vector2( 2, 2 )
+texture = ExtResource( 26 )
+
+[node name="HealthBar63" type="TextureRect" parent="VisibleHealth"]
+margin_top = 4.0
+margin_right = 10.0
+margin_bottom = 6.0
+rect_scale = Vector2( 2, 2 )
+texture = ExtResource( 26 )
+
+[node name="HealthBar64" type="TextureRect" parent="VisibleHealth"]
+margin_right = 10.0
+margin_bottom = 2.0
+rect_scale = Vector2( 2, 2 )
+texture = ExtResource( 26 )
 
 [node name="PauseMenu" type="TextureRect" parent="."]
 visible = false

@@ -67,7 +67,7 @@ func respawn():
 	broken = false
 
 func in_camera_range(pos):
-	var camera_pos = Globals.get_current_camera_pos()#Globals.find_player().find_node('Camera2D').get_camera_screen_center()
+	var camera_pos = Globals.get_current_camera_pos()
 	return camera_pos.x - 420 - 120 < pos.x and camera_pos.x + 420 + 120 > pos.x and (
 		camera_pos.y - 300 - 120 < pos.y and camera_pos.y + 300 + 120 > pos.y)
 

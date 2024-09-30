@@ -131,7 +131,7 @@ func _process(_delta):
 		$Blackground/Margins/Label.bbcode_text += buffer[0]
 		buffer = buffer.substr(1)
 
-# Adds text to a textbox, with an option for a character name and a facial expression (unused)
+# UNUSED: Adds text to a textbox, with an option for a character name and a facial expression
 func draw_text(text, char_name='', face=0):
 	expression = face
 	$Blackground/Margins/Label.remove_color_override("font_color_shadow")

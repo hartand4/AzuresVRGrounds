@@ -13,7 +13,9 @@ var hitbox_obj
 # 0: Slash
 # 1-3: Small to large shots
 # 4+: Alt weapons?
-var damage_data_chart = [3,1,2,4]
+var damage_data_chart = [3,1,2,4,2,2]
+
+var is_invulnerable = false
 
 # Called when the node enters the scene tree for the first time.
 func _ready():

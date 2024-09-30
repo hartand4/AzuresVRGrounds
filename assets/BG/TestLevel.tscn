@@ -6,7 +6,7 @@
 [ext_resource path="res://assets/BG/TechnoBG2.png" type="Texture" id=4]
 [ext_resource path="res://src/objects/MovingPlatform.tscn" type="PackedScene" id=5]
 [ext_resource path="res://src/objects/MovingPlatformComplex.tscn" type="PackedScene" id=6]
-[ext_resource path="res://src/objects/Health.tscn" type="PackedScene" id=7]
+[ext_resource path="res://src/objects/BigHealth.tscn" type="PackedScene" id=7]
 [ext_resource path="res://src/objects/ValCoin.tscn" type="PackedScene" id=8]
 [ext_resource path="res://src/objects/Spawner.tscn" type="PackedScene" id=9]
 [ext_resource path="res://src/objects/SmallHealth.tscn" type="PackedScene" id=10]
@@ -17,6 +17,7 @@
 [ext_resource path="res://assets/Font/avrf38pt.fnt" type="BitmapFont" id=15]
 [ext_resource path="res://src/objects/BreakableWall.tscn" type="PackedScene" id=16]
 [ext_resource path="res://src/objects/BreakingPlatform.tscn" type="PackedScene" id=17]
+
 
 [sub_resource type="ConvexPolygonShape2D" id=1]
 points = PoolVector2Array( 48, 48, 0, 48, 0, 0, 48, 0 )

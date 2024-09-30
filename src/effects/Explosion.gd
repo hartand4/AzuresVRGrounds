@@ -5,8 +5,7 @@ var animation_timer = 24
 export var has_collision := false
 export var damage := 3
 
-# warning-ignore:unused_argument
-func _process(delta: float) -> void:
+func _process(_delta) -> void:
 	if Globals.game_paused:
 		$AnimationPlayer.stop(false)
 		return

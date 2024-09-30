@@ -1,4 +1,4 @@
-[gd_scene load_steps=24 format=2]
+[gd_scene load_steps=27 format=2]
 
 [ext_resource path="res://assets/HUD/PauseMenuMap.png" type="Texture" id=1]
 [ext_resource path="res://assets/HUD/PauseMenuTextLevelTitle.png" type="Texture" id=2]
@@ -23,10 +23,14 @@
 [ext_resource path="res://assets/HUD/VolumeSlider.png" type="Texture" id=21]
 [ext_resource path="res://assets/HUD/HUD Weapon Icons.png" type="Texture" id=22]
 [ext_resource path="res://assets/HUD/FileWeaponsBorder.png" type="Texture" id=23]
+[ext_resource path="res://assets/HUD/HealthMeterMap.png" type="Texture" id=24]
+[ext_resource path="res://assets/HUD/Heart.png" type="Texture" id=25]
+[ext_resource path="res://assets/HUD/SmallNumbers.png" type="Texture" id=26]
 
 [node name="MapHUD" type="CanvasLayer"]
 
 [node name="PauseMenu" type="TextureRect" parent="."]
+visible = false
 margin_right = 40.0
 margin_bottom = 40.0
 texture = ExtResource( 1 )
@@ -39,6 +43,7 @@ margin_bottom = 40.0
 texture = ExtResource( 5 )
 
 [node name="PauseText1" type="Node2D" parent="PauseMenu"]
+visible = false
 
 [node name="File1" type="Sprite" parent="PauseMenu/PauseText1"]
 position = Vector2( 234, 166 )
@@ -752,27 +757,27 @@ align = 2
 
 [node name="ArmourLabel" type="Label" parent="PauseMenu/PauseText3"]
 margin_left = 240.0
-margin_top = 212.0
+margin_top = 200.0
 margin_right = 375.0
-margin_bottom = 250.0
+margin_bottom = 238.0
 custom_fonts/font = ExtResource( 10 )
 text = "ARMOUR"
 align = 2
 
 [node name="UltimateLabel" type="Label" parent="PauseMenu/PauseText3"]
 margin_left = 219.0
-margin_top = 292.0
+margin_top = 268.0
 margin_right = 375.0
-margin_bottom = 330.0
+margin_bottom = 306.0
 custom_fonts/font = ExtResource( 10 )
 text = "ULTIMATE"
 align = 2
 
 [node name="BackLabel" type="Label" parent="PauseMenu/PauseText3"]
 margin_left = 350.0
-margin_top = 468.0
+margin_top = 500.0
 margin_right = 485.0
-margin_bottom = 506.0
+margin_bottom = 538.0
 custom_fonts/font = ExtResource( 10 )
 text = "Back"
 align = 1
@@ -786,16 +791,16 @@ texture = ExtResource( 9 )
 
 [node name="SwitchRect2" type="TextureRect" parent="PauseMenu/PauseText3"]
 margin_left = 447.0
-margin_top = 200.0
+margin_top = 188.0
 margin_right = 541.0
-margin_bottom = 252.0
+margin_bottom = 240.0
 texture = ExtResource( 9 )
 
 [node name="SwitchRect3" type="TextureRect" parent="PauseMenu/PauseText3"]
 margin_left = 447.0
-margin_top = 280.0
+margin_top = 256.0
 margin_right = 541.0
-margin_bottom = 332.0
+margin_bottom = 308.0
 texture = ExtResource( 9 )
 
 [node name="Switch1" type="Sprite" parent="PauseMenu/PauseText3"]
@@ -803,64 +808,106 @@ position = Vector2( 475, 146 )
 texture = ExtResource( 11 )
 
 [node name="Switch2" type="Sprite" parent="PauseMenu/PauseText3"]
-position = Vector2( 475, 226 )
+position = Vector2( 475, 214 )
 texture = ExtResource( 11 )
 
 [node name="Switch3" type="Sprite" parent="PauseMenu/PauseText3"]
-position = Vector2( 475, 306 )
+position = Vector2( 475, 282 )
 texture = ExtResource( 11 )
 
 [node name="MusicLabel" type="Label" parent="PauseMenu/PauseText3"]
 margin_left = 134.0
-margin_top = 362.0
+margin_top = 402.0
 margin_right = 232.0
-margin_bottom = 381.0
+margin_bottom = 421.0
 custom_fonts/font = ExtResource( 15 )
 text = "Music Volume"
 
 [node name="SFXLabel" type="Label" parent="PauseMenu/PauseText3"]
 margin_left = 144.0
-margin_top = 410.0
+margin_top = 450.0
 margin_right = 242.0
-margin_bottom = 429.0
+margin_bottom = 469.0
 custom_fonts/font = ExtResource( 15 )
 text = "SFX Volume"
 
 [node name="MusicFill" type="ColorRect" parent="PauseMenu/PauseText3"]
 margin_left = 252.0
-margin_top = 366.0
+margin_top = 406.0
 margin_right = 403.0
-margin_bottom = 378.0
+margin_bottom = 418.0
 color = Color( 0.752941, 0.482353, 0.333333, 1 )
 
 [node name="MusicMeter" type="TextureRect" parent="PauseMenu/PauseText3"]
 margin_left = 250.0
-margin_top = 364.0
+margin_top = 404.0
 margin_right = 750.0
-margin_bottom = 380.0
+margin_bottom = 420.0
 texture = ExtResource( 20 )
 
 [node name="SFXFill" type="ColorRect" parent="PauseMenu/PauseText3"]
 margin_left = 252.0
-margin_top = 412.0
+margin_top = 452.0
 margin_right = 392.0
-margin_bottom = 424.0
+margin_bottom = 464.0
 color = Color( 0.752941, 0.482353, 0.333333, 1 )
 
 [node name="SFXMeter" type="TextureRect" parent="PauseMenu/PauseText3"]
 margin_left = 250.0
-margin_top = 410.0
+margin_top = 450.0
 margin_right = 750.0
-margin_bottom = 426.0
+margin_bottom = 466.0
 texture = ExtResource( 20 )
 
 [node name="MusicSlider" type="Sprite" parent="PauseMenu/PauseText3"]
-position = Vector2( 251, 372 )
+position = Vector2( 251, 412 )
 texture = ExtResource( 21 )
 
 [node name="SFXSlider" type="Sprite" parent="PauseMenu/PauseText3"]
-position = Vector2( 395, 418 )
+position = Vector2( 395, 458 )
 texture = ExtResource( 21 )
+
+[node name="HealthLabel" type="Label" parent="PauseMenu/PauseText3"]
+margin_left = 150.0
+margin_top = 330.0
+margin_right = 204.0
+margin_bottom = 349.0
+custom_fonts/font = ExtResource( 10 )
+text = "HEALTH"
+
+[node name="HealthMeterColor" type="ColorRect" parent="PauseMenu/PauseText3"]
+margin_left = 290.0
+margin_top = 328.0
+margin_right = 674.0
+margin_bottom = 348.0
+color = Color( 0.917647, 0.917647, 0.917647, 1 )
+
+[node name="HealthMeter" type="TextureRect" parent="PauseMenu/PauseText3"]
+margin_left = 288.0
+margin_top = 326.0
+margin_right = 482.0
+margin_bottom = 357.0
+rect_scale = Vector2( 2, 2 )
+texture = ExtResource( 24 )
+
+[node name="HealthTens" type="Sprite" parent="PauseMenu/PauseText3/HealthMeter"]
+modulate = Color( 0.709804, 0.266667, 0.266667, 1 )
+position = Vector2( 89, 21 )
+texture = ExtResource( 26 )
+hframes = 10
+
+[node name="HealthOnes" type="Sprite" parent="PauseMenu/PauseText3/HealthMeter"]
+modulate = Color( 0.4, 0.603922, 0.419608, 1 )
+position = Vector2( 96, 21 )
+texture = ExtResource( 26 )
+hframes = 10
+
+[node name="Heart" type="TextureRect" parent="PauseMenu/PauseText3/HealthMeter"]
+margin_left = 100.0
+margin_top = 17.0
+margin_right = 109.0
+margin_bottom = 25.0
+texture = ExtResource( 25 )
 
 [node name="PauseText4" type="TextureRect" parent="PauseMenu"]
 visible = false

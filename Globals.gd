@@ -15,17 +15,19 @@ export var vswitch_timer := 0
 export var music_volume := 1.0
 export var sfx_volume := 1.0
 
+export var set_health := DEFAULT_HEALTH
+
 # Earthquake variables
 var eq_timer := 0
 var eq_intensity := 3
 var earthquake_camera = null
 
 # Unlocked abilities
-export var air_dash_unlocked := false
+export var air_dash_unlocked := true
 export var air_dash_selected := true
-export var armour_unlocked := false
+export var armour_unlocked := true
 export var armour_selected := true
-export var ultimate_unlocked := false
+export var ultimate_unlocked := true
 export var ultimate_selected := true
 
 # In order: default slash, flameball, TODO
@@ -59,7 +61,7 @@ var game_script = []
 
 
 # Health and ammo scenes
-var reload_scenes = [preload("res://src/objects/Health.tscn"),
+var reload_scenes = [preload("res://src/objects/BigHealth.tscn"),
 	preload("res://src/objects/SmallHealth.tscn"),
 	preload("res://src/objects/BigAmmo.tscn"),
 	preload("res://src/objects/SmallAmmo.tscn")]
@@ -96,9 +98,6 @@ func _process(delta: float) -> void:
 		open_textbox[0] = null
 		lock_input = open_textbox[1]
 	
-#	if Input.is_action_just_pressed("move_down"):
-#		Globals.create_textbox("[character=faie,0]Don't think that this is the end, Azzy." +
-#		"[speed=1] \\n[speed=24]I will haunt you to the\\n[speed=8]day you[speed=4] die.....")
 
 # Returns the player object
 func find_player():
@@ -153,7 +152,7 @@ func set_current_camera_pos(vector):
 # Generates a debris object with specified texture at a given position
 func spawn_debris(texture, pos):
 	var current_scene = get_current_scene()
-	var debris_scene = load("res://src/effects/Debris.tscn")
+	var debris_scene = preload("res://src/effects/Debris.tscn")
 	var spawn := debris_scene.instance() as Node2D
 	current_scene.add_child(spawn)
 	spawn.set_as_toplevel(true)
@@ -163,7 +162,7 @@ func spawn_debris(texture, pos):
 # Creates an explosion particle at a specified position
 func spawn_explosion(pos, has_collision=false, damage=3):
 	var current_scene = get_current_scene()
-	var explosion_scene = load("res://src/effects/Explosion.tscn")
+	var explosion_scene = preload("res://src/effects/Explosion.tscn")
 	var spawn := explosion_scene.instance() as Node2D
 	current_scene.call_deferred("add_child", spawn)
 	spawn.set_as_toplevel(true)
@@ -192,7 +191,7 @@ func add_spawn(current_scene, spawn):
 # Creates a GravityBullet object at a certain position, with a given velocity and optional gravity
 func spawn_gravity_bullet(pos, vel, grav=1200):
 	var current_scene = get_current_scene()
-	var grav_bullet_scene = load("res://src/enemyobjects/GravityBullet.tscn")
+	var grav_bullet_scene = preload("res://src/enemyobjects/GravityBullet.tscn")
 	var spawn := grav_bullet_scene.instance() as Node2D
 	current_scene.add_child(spawn)
 	spawn.set_as_toplevel(true)
@@ -203,7 +202,7 @@ func spawn_gravity_bullet(pos, vel, grav=1200):
 # Creates a GravityBullet object at a certain position, with a given velocity
 func spawn_bullet(pos, vel):
 	var current_scene = get_current_scene()
-	var bullet_scene = load("res://src/enemyobjects/Bullet.tscn")
+	var bullet_scene = preload("res://src/enemyobjects/Bullet.tscn")
 	var spawn := bullet_scene.instance() as Node2D
 	current_scene.add_child(spawn)
 	spawn.set_as_toplevel(true)
@@ -213,7 +212,7 @@ func spawn_bullet(pos, vel):
 # Creates a Bomba object at a certain position, with a given velocity and optional gravity
 func spawn_bomba(pos, vel, grav=1200):
 	var current_scene = get_current_scene()
-	var bullet_scene = load("res://src/enemyobjects/Bomba.tscn")
+	var bullet_scene = preload("res://src/enemyobjects/Bomba.tscn")
 	var spawn := bullet_scene.instance() as Node2D
 	current_scene.add_child(spawn)
 	spawn.set_as_toplevel(true)
@@ -224,7 +223,7 @@ func spawn_bomba(pos, vel, grav=1200):
 # Creates a mini-missile at a certain position, with a direction dir
 func spawn_mini_missile(pos, dir):
 	var current_scene = get_current_scene()
-	var bullet_scene = load("res://src/enemyobjects/MiniMissile.tscn")
+	var bullet_scene = preload("res://src/enemyobjects/MiniMissile.tscn")
 	var spawn := bullet_scene.instance() as Node2D
 	current_scene.add_child(spawn)
 	spawn.set_as_toplevel(true)
@@ -330,6 +329,7 @@ func load_save_game(save_data, n):
 	
 	attacks_unlocked = int_to_bools(int(file_data['attacks']), 4)
 	hearts_obtained = int_to_bools(int(file_data['hearts']), 16)
+	set_health = file_data['set_health']
 	
 	for i in range(3): coins_collected_in_level[i] = false
 
@@ -357,6 +357,7 @@ func load_new_game():
 	
 	attacks_unlocked = [true, false, false, false]
 	hearts_obtained = int_to_bools(0,16)
+	set_health = DEFAULT_HEALTH
 	
 	for i in range(3): coins_collected_in_level[i] = false
 	for i in range(2): goal_reached_in_current_level[i] = false
@@ -401,6 +402,7 @@ func save_game_checks(file_data):
 	
 	if not ("attacks" in file_data and typeof(file_data['attacks']) == TYPE_REAL): return false
 	if not ("hearts" in file_data and typeof(file_data['hearts']) == TYPE_REAL): return false
+	if not ("set_health" in file_data and typeof(file_data['set_health']) == TYPE_REAL): return false
 	
 	print('flags for unlockables done')
 	
@@ -426,7 +428,8 @@ func save_current_game_to_file(n):
 	
 	current_data['file'+str(n)] = {'current_level': current_level,'air_dash': [air_dash_unlocked, air_dash_selected], 
 	'armour': [armour_unlocked, armour_selected], 'ultimate': [ultimate_unlocked, ultimate_selected],
-	'current_costume': current_costume, 'costumes': unlocked_in_store, 'spent_coins': spent_coins}
+	'current_costume': current_costume, 'costumes': unlocked_in_store, 'spent_coins': spent_coins,
+	'set_health': set_health}
 	
 	var exit_numbers = ''
 	var val_coin_numbers = ''
@@ -546,6 +549,7 @@ func get_tilemap(layer=1):
 	var tilemap_name = "TileMap" + ("Mask" if layer==2 else "Front" if layer==0 else "")
 	return get_current_scene().find_node(tilemap_name)
 
+# TODO: FINISH THIS
 # Get the function of a tilemap tile based on the current scene
 # 0 = Nothing
 func get_block_type(block_index, layer=1):
@@ -592,3 +596,10 @@ func create_textbox(text_to_add, instant=false, destroy_instant=false, persist_l
 	current_scene.add_child(spawn)
 	open_textbox[0] = spawn
 	open_textbox[1] = persist_lock
+
+# Returns the max player health based on the amount of hearts obtained
+func get_max_health():
+	var max_health_value = DEFAULT_HEALTH
+	for heart in hearts_obtained:
+		max_health_value += 2 if heart else 0
+	return max_health_value

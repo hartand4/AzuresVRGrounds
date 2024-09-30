@@ -128,7 +128,8 @@ func respawn():
 	reset_values()
 
 # Some actors should generally attempt to despawn every frame. Then if so, simply return.
-# If original position not in camera range, consider actor broken and disable it. Check Grasshopper.gd for debugging
+# If original position not in camera range, consider actor broken and disable it.
+# Check Grasshopper.gd for debugging
 func despawn():
 	if in_camera_range(position): return false
 	reset_values()

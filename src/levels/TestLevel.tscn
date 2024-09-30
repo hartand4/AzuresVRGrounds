@@ -1,4 +1,4 @@
-[gd_scene load_steps=101 format=2]
+[gd_scene load_steps=100 format=2]
 
 [ext_resource path="res://assets/BG/Technotileset.png" type="Texture" id=1]
 [ext_resource path="res://src/actors/player.tscn" type="PackedScene" id=2]
@@ -6,7 +6,7 @@
 [ext_resource path="res://assets/BG/TechnoBG2.png" type="Texture" id=4]
 [ext_resource path="res://src/objects/MovingPlatform.tscn" type="PackedScene" id=5]
 [ext_resource path="res://src/objects/MovingPlatformComplex.tscn" type="PackedScene" id=6]
-[ext_resource path="res://src/objects/Health.tscn" type="PackedScene" id=7]
+[ext_resource path="res://src/objects/BigHealth.tscn" type="PackedScene" id=7]
 [ext_resource path="res://src/objects/ValCoin.tscn" type="PackedScene" id=8]
 [ext_resource path="res://src/objects/Spawner.tscn" type="PackedScene" id=9]
 [ext_resource path="res://src/objects/SmallHealth.tscn" type="PackedScene" id=10]
@@ -19,7 +19,6 @@
 [ext_resource path="res://src/objects/BreakableWall.tscn" type="PackedScene" id=17]
 [ext_resource path="res://src/objects/Conveyor.tscn" type="PackedScene" id=18]
 [ext_resource path="res://src/effects/CameraCenterObject.tscn" type="PackedScene" id=19]
-[ext_resource path="res://src/objects/BigAmmo.tscn" type="PackedScene" id=20]
 
 [sub_resource type="ConvexPolygonShape2D" id=1]
 points = PoolVector2Array( 48, 48, 0, 48, 0, 0, 48, 0 )
@@ -1221,7 +1220,7 @@ persistent = true
 
 [node name="Spawner" parent="." instance=ExtResource( 9 )]
 position = Vector2( 144, 1524 )
-spawn_scene = ExtResource( 20 )
+spawn_scene = ExtResource( 7 )
 
 [node name="SmallHealth" parent="." instance=ExtResource( 10 )]
 position = Vector2( 702, 312 )

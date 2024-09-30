@@ -84,9 +84,7 @@ var animation_dict := {ST_WALLJUMP: 'Walljump',ST_ULTIMATE: "Ultimate"}
 var damage_doing := 0
 
 func _ready():
-	max_health = Globals.DEFAULT_HEALTH
-	for heart in Globals.hearts_obtained:
-		max_health += 2 if heart else 0
+	max_health = Globals.set_health
 	health = max_health
 	recurring_x_dir = 1
 	call_deferred("_do_transition")
@@ -310,7 +308,7 @@ func _process(_delta):
 	acceleration_timer = acceleration_timer - 1 if acceleration_timer > 0 else 0
 	
 	# Ultimate_move_check
-	if not ultimate_enabled or state > 5 or health < 32: ultimate_move_timer = [0,0,-1]
+	if not ultimate_enabled or state > 5 or health < max_health: ultimate_move_timer = [0,0,-1]
 	elif ultimate_enabled:
 		do_ultimate_check()
 	$UltimateHitboxArea/CollisionShape2D.disabled = state != ST_ULTIMATE
@@ -858,7 +856,7 @@ func update_slash_hitbox():
 # Called in _process function if health <= 0
 func do_hurt_animation(damage):
 	if armour_enabled:
-		damage = ceil(damage/2)
+		damage = ceil(float(damage)/2)
 	health -= damage
 	if damage > 0:
 		i_frames = 60
@@ -929,7 +927,7 @@ func check_for_collisions():
 		if (box.get_collision_layer_bit(0) or box.get_collision_layer_bit(6)) and near_wall[0] and (
 			near_wall[1] and not box.get_collision_layer_bit(8)):
 			colliding_with_enemy = true
-			damage_doing = max_health
+			damage_doing = max_health * 2
 
 # Does a transition effect in centre of screen
 func _do_transition():

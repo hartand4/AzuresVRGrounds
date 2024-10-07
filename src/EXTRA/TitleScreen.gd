@@ -160,7 +160,7 @@ func _process(_delta: float) -> void:
 				return
 			
 			if (menu_input == 1 and extra_index == 0):
-				$Camera2D.position = Vector2(1260,300)
+				$Camera2D.position = Vector2(1296,312)
 				animation_timer = 75
 			
 			do_file_menu(menu_input, menu_dir)

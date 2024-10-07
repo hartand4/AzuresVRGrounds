@@ -67,6 +67,7 @@ func do_burst():
 	active = false
 
 func check_hittable_obj(area):
+	if area.get_collision_layer_bit(3) and !area.get_collision_layer_bit(10): return false
 	if area.get("health") != null or (area.get_parent() and area.get_parent().get("health") != null): 
 		return true
 	if area.get_collision_layer_bit(10): return true

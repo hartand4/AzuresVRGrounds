@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/ValIdleLow.png-d9b7f5d687bf34e3a991f3e693a44251.stex"
+path="res://.import/AceAlone.png-ccf16d4a9214017b9cd6c9678ab3fc04.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/Sprites/TEST/ValIdleLow.png"
-dest_files=[ "res://.import/ValIdleLow.png-d9b7f5d687bf34e3a991f3e693a44251.stex" ]
+source_file="res://assets/Sprites/Azzy/Outfits/AceAlone.png"
+dest_files=[ "res://.import/AceAlone.png-ccf16d4a9214017b9cd6c9678ab3fc04.stex" ]
 
 [params]
 
@@ -20,7 +20,7 @@ compress/hdr_mode=0
 compress/bptc_ldr=0
 compress/normal_map=0
 flags/repeat=0
-flags/filter=true
+flags/filter=false
 flags/mipmaps=false
 flags/anisotropic=false
 flags/srgb=2

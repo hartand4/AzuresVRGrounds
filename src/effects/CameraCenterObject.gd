@@ -11,6 +11,11 @@ export var limit_bottom = 1000000
 export var limit_left = -1000000
 export var limit_right = 1000000
 
+var previous_camera = null
+
+export var smooth_transition_start = true
+export var smooth_transition_end = true
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	$Camera2D.limit_left = limit_left
@@ -30,7 +35,7 @@ func _process(_delta):
 		exiting_timer += 1
 		if (abs($Camera2D.get_camera_screen_center().x - Globals.find_player().find_node("Camera2D").get_camera_screen_center().x) <= 16 and
 			abs($Camera2D.get_camera_screen_center().y - Globals.find_player().find_node("Camera2D").get_camera_screen_center().y) <= 
-				(32 if exiting_timer > 30 else 16)):
+				(32 if exiting_timer > 30 else 16)) or !smooth_transition_end:
 				Globals.find_player().find_node("Camera2D").current = true
 				$Camera2D.current = false
 				$Camera2D.position = Vector2.ZERO
@@ -93,8 +98,10 @@ func _on_CameraCenterObject_area_entered(area):
 	if exiting:
 		exiting = false
 		return
-	$Camera2D.global_position = Globals.get_current_camera_pos()
-	Globals.find_player().find_node("Camera2D").current = false
+	
+	if smooth_transition_start: $Camera2D.global_position = Globals.get_current_camera_pos()
+	previous_camera = Globals.get_current_camera()
+	#Globals.find_player().find_node("Camera2D").current = false
 	$Camera2D.current=true
 	enabled = true
 	Globals.eq_timer = 0

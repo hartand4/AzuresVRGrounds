@@ -30,6 +30,8 @@ func _ready() -> void:
 	reset_title_screen()
 	
 	Globals.load_new_game()
+	
+	Globals.start_transition(Vector2(0,0), 7)
 
 func _process(_delta: float) -> void:
 	
@@ -91,7 +93,7 @@ func _process(_delta: float) -> void:
 					title_build_upward()
 			else:
 				$TitleObject.set_position(Vector2(0,0))
-				$TitleObject/TitleVisibility.set_size(Vector2(840,600))
+				$TitleObject/TitleVisibility.set_size(Vector2(864,624))
 				$TitleObject/TitleVisibility.set_position(Vector2(0,0))
 				title_screen_menu = 1
 		1:
@@ -112,7 +114,7 @@ func _process(_delta: float) -> void:
 				azzy_jump()
 			elif animation_timer > 1:
 				$PressStart.visible = false
-				$Camera2D.position = Vector2(1260,300)
+				$Camera2D.position = Vector2(1296,312)
 			elif animation_timer == 1:
 				selection_cursor = 0
 				title_screen_menu = 2
@@ -134,7 +136,7 @@ func _process(_delta: float) -> void:
 					is_transitioning = true
 					Globals.load_new_game()
 				elif selection_cursor == 1:
-					$Camera2D.position = Vector2(2100,300)
+					$Camera2D.position = Vector2(2160,312)
 					animation_timer = 75
 					file_print()
 				elif selection_cursor == 2:
@@ -263,22 +265,22 @@ func reset_title_screen():
 	is_editing_controls = false
 	$PressStart.visible = false
 	$TitleObject/TitleVisibility/Title/Azzy.set_position(Vector2(725,172))
-	$Camera2D.position = Vector2(420,300)
+	$Camera2D.position = Vector2(432,312)
 	if title_screen_variant == 0:
 		$TitleObject.set_position(Vector2(0,-500))
 		bounce_nums = 4
 		return
 	if title_screen_variant == 1:
 		$TitleObject.set_position(Vector2.ZERO)
-		$TitleObject/TitleVisibility.set_size(Vector2(0,600))
-		$TitleObject/TitleVisibility.set_position(Vector2(420,0))
-		$TitleObject/TitleVisibility/Title.set_position(Vector2(-420,0))
+		$TitleObject/TitleVisibility.set_size(Vector2(0,624))
+		$TitleObject/TitleVisibility.set_position(Vector2(432,0))
+		$TitleObject/TitleVisibility/Title.set_position(Vector2(-432,0))
 		return
 	if title_screen_variant == 2:
 		$TitleObject.set_position(Vector2.ZERO)
-		$TitleObject/TitleVisibility.set_size(Vector2(840,0))
-		$TitleObject/TitleVisibility.set_position(Vector2(0,600))
-		$TitleObject/TitleVisibility/Title.set_position(Vector2(-600,0))
+		$TitleObject/TitleVisibility.set_size(Vector2(864,0))
+		$TitleObject/TitleVisibility.set_position(Vector2(0,624))
+		$TitleObject/TitleVisibility/Title.set_position(Vector2(-624,0))
 		return
 
 # Makes Azure jump off title screen

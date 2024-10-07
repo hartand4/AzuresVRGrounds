@@ -110,8 +110,8 @@ func unit_direction_vector(dir1, dir2):
 
 func in_camera_range(pos):
 	var camera_pos = Globals.get_current_camera_pos()
-	return camera_pos.x - 420 - 120 < pos.x and camera_pos.x + 420 + 120 > pos.x and (
-		camera_pos.y - 300 - 120 < pos.y and camera_pos.y + 300 + 120 > pos.y)
+	return camera_pos.x - 432 - 120 < pos.x and camera_pos.x + 432 + 120 > pos.x and (
+		camera_pos.y - 312 - 120 < pos.y and camera_pos.y + 312 + 120 > pos.y)
 
 func disable_all():
 	health = max_health

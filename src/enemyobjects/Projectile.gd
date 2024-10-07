@@ -14,8 +14,8 @@ func _process(_delta: float) -> void:
 	if $Collision.disabled and animation_timer == 0: call_deferred("disable_all")
 	if animation_timer: animation_timer -= 1
 	var camera_pos = Globals.get_current_camera_pos()
-	if not (camera_pos.x - 420 - 120 < self.position.x and camera_pos.x +420 + 120 > self.position.x and (
-		camera_pos.y - 300 - 120 < self.position.y and camera_pos.y + 300 + 120 > self.position.y)):
+	if not (camera_pos.x - 432 - 120 < self.position.x and camera_pos.x +432 + 120 > self.position.x and (
+		camera_pos.y - 312 - 120 < self.position.y and camera_pos.y + 312 + 120 > self.position.y)):
 			call_deferred('disable_all')
 
 func get_damage():

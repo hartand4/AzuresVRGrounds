@@ -56,8 +56,8 @@ func _process(_delta: float) -> void:
 
 func respawn():
 	var camera_pos = Globals.get_current_camera_pos()
-	if camera_pos.x - 420 - 120 < position.x and camera_pos.x + 420 + 120 > position.x and (
-		camera_pos.y - 300 - 120 < position.y and camera_pos.y + 300 + 120 > position.y): return
+	if camera_pos.x - 432 - 120 < position.x and camera_pos.x + 432 + 120 > position.x and (
+		camera_pos.y - 312 - 120 < position.y and camera_pos.y + 312 + 120 > position.y): return
 	$Collision.disabled = false
 	$Sprite.visible = true
 	broken = false

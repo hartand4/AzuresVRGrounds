@@ -218,6 +218,7 @@ func _process(_delta) -> void:
 				for ev in map_events[2*i]:
 					do_map_event(ev)
 			if Globals.level_flags[i][1]:
+				$Levels.find_node(level_index_to_scene_name[i]).mark_completed()
 				for ev in map_events[2*i+1]:
 					do_map_event(ev)
 		done_initial_setup = true

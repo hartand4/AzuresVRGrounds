@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/ValIdle.png-fdaf26fedfc6f04d34998d313bcbe2a9.stex"
+path="res://.import/CheckpointSign.png-c6c65201195195861b482614ab98d310.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/Sprites/ValIdle.png"
-dest_files=[ "res://.import/ValIdle.png-fdaf26fedfc6f04d34998d313bcbe2a9.stex" ]
+source_file="res://assets/Sprites/Objects/CheckpointSign.png"
+dest_files=[ "res://.import/CheckpointSign.png-c6c65201195195861b482614ab98d310.stex" ]
 
 [params]
 
@@ -20,7 +20,7 @@ compress/hdr_mode=0
 compress/bptc_ldr=0
 compress/normal_map=0
 flags/repeat=0
-flags/filter=true
+flags/filter=false
 flags/mipmaps=false
 flags/anisotropic=false
 flags/srgb=2

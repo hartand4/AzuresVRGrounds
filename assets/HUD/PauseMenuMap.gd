@@ -431,10 +431,10 @@ func options_menu_visuals():
 	# warning-ignore:integer_division
 	$PauseText3/HealthMeter/HealthTens.frame = Globals.set_health / 10
 	$PauseText3/HealthMeter/HealthOnes.frame = Globals.set_health % 10
-	$PauseText3/HealthMeterColor.set_size(Vector2(6*Globals.set_health,20))
+	$PauseText3/HealthMeterColor.set_size(Vector2(8*Globals.set_health,20))
 	var modulate_for_health = Color(
-		-0.00484*Globals.set_health + 0.7,
-		0.008267*Globals.set_health+0.25,
+		-0.00645*Globals.set_health + 0.7,
+		0.01102*Globals.set_health + 0.25,
 		0.3
 	)
 	$PauseText3/HealthMeterColor.modulate = modulate_for_health

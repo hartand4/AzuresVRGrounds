@@ -1,7 +1,6 @@
-[gd_scene load_steps=86 format=2]
+[gd_scene load_steps=85 format=2]
 
 [ext_resource path="res://src/objects/ValCoin.tscn" type="PackedScene" id=3]
-[ext_resource path="res://src/MapObjects/Transition.tscn" type="PackedScene" id=4]
 [ext_resource path="res://src/actors/player.tscn" type="PackedScene" id=7]
 [ext_resource path="res://src/levels/Spikes.gd" type="Script" id=11]
 [ext_resource path="res://assets/BG/Technotileset.png" type="Texture" id=12]
@@ -1060,17 +1059,17 @@ extents = Vector2( 12, 24 )
 [node name="ParallaxBackground" type="ParallaxBackground" parent="."]
 
 [node name="Colour" type="ParallaxLayer" parent="ParallaxBackground"]
-motion_mirroring = Vector2( 840, 600 )
+motion_mirroring = Vector2( 864, 624 )
 
 [node name="ColorRect" type="ColorRect" parent="ParallaxBackground/Colour"]
-margin_right = 840.0
-margin_bottom = 600.0
+margin_right = 864.0
+margin_bottom = 624.0
 color = Color( 0.0235294, 0.0235294, 0.176471, 1 )
 
 [node name="Islands" type="ParallaxLayer" parent="ParallaxBackground"]
 motion_scale = Vector2( 0.2, 0.05 )
 motion_offset = Vector2( 0, -200 )
-motion_mirroring = Vector2( 1680, 600 )
+motion_mirroring = Vector2( 1728, 624 )
 
 [node name="TextureRect" type="TextureRect" parent="ParallaxBackground/Islands"]
 margin_right = 40.0
@@ -1079,7 +1078,7 @@ texture = ExtResource( 13 )
 
 [node name="Grid" type="ParallaxLayer" parent="ParallaxBackground"]
 motion_scale = Vector2( 0.25, 0.25 )
-motion_mirroring = Vector2( 864, 624 )
+motion_mirroring = Vector2( 912, 672 )
 
 [node name="TextureRect" type="TextureRect" parent="ParallaxBackground/Grid"]
 margin_right = 864.0
@@ -1087,6 +1086,7 @@ margin_bottom = 624.0
 texture = ExtResource( 14 )
 
 [node name="TileMap" type="TileMap" parent="."]
+z_index = -2
 tile_set = SubResource( 3 )
 cell_size = Vector2( 48, 48 )
 collision_mask = 15
@@ -1106,6 +1106,7 @@ format = 1
 
 [node name="TileMapFront" type="TileMap" parent="TileMap"]
 z_index = 2
+z_as_relative = false
 tile_set = SubResource( 99 )
 cell_size = Vector2( 48, 48 )
 format = 1
@@ -1163,6 +1164,3 @@ coin_number = 2
 [node name="ValCoin3" parent="." instance=ExtResource( 3 )]
 position = Vector2( -390, 720 )
 coin_number = 3
-
-[node name="Transition" parent="." instance=ExtResource( 4 )]
-start_black = true

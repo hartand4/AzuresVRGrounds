@@ -20,8 +20,6 @@ var is_warping = false
 var orig_dir = Vector2.ZERO
 var on_ladder = false
 
-onready var transition_layer = get_parent().find_node('Transition')
-
 func _ready() -> void:
 	entering_level = false
 	animation_timer = 40
@@ -153,13 +151,13 @@ func _process(_delta: float) -> void:
 	
 	if (Input.is_action_just_pressed("jump") or Input.is_action_just_pressed("attack")) and not animation_timer:
 		if not on_level.is_warp:
-			transition_layer.start_transition(get_position() - $Camera2D.get_camera_screen_center() + Vector2(420,300), 1)
+			Globals.start_transition(get_position() - $Camera2D.get_camera_screen_center() + Vector2(432,312), 1)
 			animation_timer = 120
 			entering_level = true
 			Globals.goal_reached_in_current_level = [false, false]
 			return
 		else:
-			transition_layer.start_transition(Vector2(420,300), 3)
+			Globals.start_transition(Vector2(432,312), 3)
 			animation_timer = 40
 			is_warping = true
 
@@ -251,16 +249,16 @@ func do_pause_menu():
 
 # Specifies how to start a transition into a level
 func _do_transition():
-	Globals.start_transition(get_position() - $Camera2D.get_camera_screen_center() + Vector2(420,280), 2)
+	Globals.start_transition(get_position() - $Camera2D.get_camera_screen_center() + Vector2(432,292), 2)
 
 # May be good to specify some specific camera locations in the overworld (like the warp island)
 func camera_limit_checks():
 	# Warp Isle
 	if position.x >= 5952 and position.x <= 6792 and position.y <= 240 and position.y >= 0:
-		$Camera2D.limit_left = 5962
-		$Camera2D.limit_right = 6792
-		$Camera2D.limit_top = -100
-		$Camera2D.limit_bottom = 500
+		$Camera2D.limit_left = 5950
+		$Camera2D.limit_right = 6804
+		$Camera2D.limit_top = -112
+		$Camera2D.limit_bottom = 512
 	else:
 		$Camera2D.limit_left = 0
 		$Camera2D.limit_right = 10000000

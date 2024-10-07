@@ -13,11 +13,11 @@ collision_layer = 64
 collision_mask = 2
 
 [node name="Collision" type="CollisionShape2D" parent="."]
-position = Vector2( -464, 0 )
+position = Vector2( -476, 0 )
 shape = SubResource( 76 )
 
 [node name="Collision2" type="CollisionShape2D" parent="."]
-position = Vector2( 464, 0 )
+position = Vector2( 476, 0 )
 shape = SubResource( 76 )
 
 [node name="DeathArea" type="Area2D" parent="."]
@@ -27,5 +27,5 @@ script = ExtResource( 1 )
 damage = 32
 
 [node name="SpikeColl" type="CollisionShape2D" parent="DeathArea"]
-position = Vector2( 0, 484 )
+position = Vector2( 0, 508 )
 shape = SubResource( 77 )

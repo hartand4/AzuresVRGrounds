@@ -2,7 +2,7 @@ extends Node
 
 # Constants
 const LEVEL_COUNT := 32
-const DEFAULT_HEALTH := 32
+const DEFAULT_HEALTH := 16
 
 # game_paused outright freezes actors and such.
 # lock_input prevents the player from moving normally
@@ -23,11 +23,11 @@ var eq_intensity := 3
 var earthquake_camera = null
 
 # Unlocked abilities
-export var air_dash_unlocked := true
+export var air_dash_unlocked := false
 export var air_dash_selected := true
-export var armour_unlocked := true
+export var armour_unlocked := false
 export var armour_selected := true
-export var ultimate_unlocked := true
+export var ultimate_unlocked := false
 export var ultimate_selected := true
 
 # In order: default slash, flameball, TODO
@@ -78,8 +78,7 @@ func _ready() -> void:
 	game_script = script_file.get_as_text().split('\n')
 	script_file.close()
 
-# warning-ignore:unused_argument
-func _process(delta: float) -> void:
+func _process(_delta) -> void:
 	timer += 1
 	if timer == pow(2, 30):
 		timer = 0
@@ -97,7 +96,6 @@ func _process(delta: float) -> void:
 		if is_instance_valid(open_textbox[0]): return
 		open_textbox[0] = null
 		lock_input = open_textbox[1]
-	
 
 # Returns the player object
 func find_player():
@@ -108,9 +106,7 @@ func find_player():
 
 # Begins a transition effect centred at pos, and of transition type 'type'
 func start_transition(pos, type):
-	var curr_scene = get_current_scene()
-	if curr_scene:
-		curr_scene.find_node('Transition').start_transition(pos, type)
+	Transition.start_transition(pos, type)
 
 # TODO
 func level_number_to_obj(n):
@@ -137,7 +133,6 @@ func get_current_scene():
 func get_current_camera_pos():
 	var player = Globals.find_player()
 	if player and player.find_node("Camera2D").current:
-		#print(player.find_node("Camera2D").get_camera_screen_center())
 		return player.find_node("Camera2D").get_camera_screen_center()
 	elif get_current_camera():
 		return get_current_camera().get_camera_screen_center()

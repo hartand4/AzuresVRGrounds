@@ -71,6 +71,7 @@ func _process(delta: float) -> void:
 		rotate_about_mid(transition_layer, PI/30)
 		set_transition_position()
 	
+	# Black borders on top and bottom
 	elif transition_type in [3,4]:
 		var speed = 10
 		if transition_type == 4:
@@ -78,11 +79,12 @@ func _process(delta: float) -> void:
 		border_top.set_position(border_top.get_position() + Vector2(0,speed))
 		border_bottom.set_position(border_bottom.get_position() + Vector2(0,-speed))
 		
-		if transition_type == 3 and border_top.get_position().y >= 300:
+		if transition_type == 3 and border_top.get_position().y >= 312:
 			is_transitioning = false
-		elif transition_type == 4 and border_bottom.get_position().y >= 600:
+		elif transition_type == 4 and border_bottom.get_position().y >= 624:
 			is_transitioning = false
 	
+	# Fade in/out
 	elif transition_type in [5,6]:
 		var speed = 0.02
 		if transition_type == 6: speed *= -1
@@ -100,10 +102,10 @@ func set_transition_position():
 	border_bottom.set_position(Vector2(0, transition_layer.get_position().y + 500 +
 		(transition_layer.get_size()*transition_layer.get_scale()/2).y - 170*transition_layer.get_scale().y))
 	
-	border_top.set_position(Vector2(0, -600 + transition_layer.get_position().y + 500 -
+	border_top.set_position(Vector2(0, -624 + transition_layer.get_position().y + 500 -
 		(transition_layer.get_size()*transition_layer.get_scale()/2).y + 170*transition_layer.get_scale().y))
 	
-	border_left.set_position(Vector2(-840 + transition_layer.get_position().x + 500 -
+	border_left.set_position(Vector2(-864 + transition_layer.get_position().x + 500 -
 		(transition_layer.get_size()*transition_layer.get_scale()/2).x + 170*transition_layer.get_scale().x, 0))
 	
 	border_right.set_position(Vector2(transition_layer.get_position().x + 500 +
@@ -118,11 +120,19 @@ func start_transition(pos, transition_num):
 	if transition_type in [2]:
 		transition_layer.set_scale(Vector2(0,0))
 	elif transition_type in [3]:
-		border_top.set_position(Vector2(0,-600))
-		border_bottom.set_position(Vector2(0,600))
+		border_top.set_position(Vector2(0,-624))
+		border_bottom.set_position(Vector2(0,624))
 	elif transition_type in [4]:
-		border_top.set_position(Vector2(0,-300))
-		border_bottom.set_position(Vector2(0,300))
+		border_top.set_position(Vector2(0,-312))
+		border_bottom.set_position(Vector2(0,312))
 	elif transition_type in [5,6]:
 		border_top.set_position(Vector2.ZERO)
 		if transition_type == 5: border_top.modulate.a = 0
+	elif transition_type in [7]:
+		# No transition, instant visibility
+		transition_layer.set_scale(Vector2(4,4))
+		border_bottom.set_position(Vector2(0,624))
+		border_top.set_position(Vector2(0,-640))
+		border_left.set_position(Vector2(-884,0))
+		border_right.set_position(Vector2(864,0))
+		is_transitioning = false

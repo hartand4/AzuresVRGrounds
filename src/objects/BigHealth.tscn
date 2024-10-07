@@ -1,13 +1,29 @@
-[gd_scene load_steps=6 format=2]
+[gd_scene load_steps=7 format=2]
 
 [ext_resource path="res://src/objects/Health.gd" type="Script" id=1]
-[ext_resource path="res://assets/Sprites/Objects/BigHealth.png" type="Texture" id=2]
+[ext_resource path="res://assets/Sprites/Objects/Borg.png" type="Texture" id=2]
 
 [sub_resource type="RectangleShape2D" id=115]
-extents = Vector2( 18, 12 )
+extents = Vector2( 18, 16 )
 
 [sub_resource type="Animation" id=111]
 resource_name = "Idle"
+length = 0.1
+tracks/0/type = "value"
+tracks/0/path = NodePath(".:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ 0 ]
+}
+
+[sub_resource type="Animation" id=116]
+resource_name = "Idle (copy)"
 length = 0.8
 tracks/0/type = "value"
 tracks/0/path = NodePath(".:frame")
@@ -40,27 +56,29 @@ tracks/0/keys = {
 [node name="BigHealth" type="KinematicBody2D"]
 collision_layer = 8
 script = ExtResource( 1 )
+_health_to_give = 12
 
 [node name="HealthSprite" type="Sprite" parent="."]
-position = Vector2( 0, -12 )
+position = Vector2( 0, -16 )
+scale = Vector2( 2, 2 )
 texture = ExtResource( 2 )
-hframes = 3
 
 [node name="HealthArea" type="Area2D" parent="."]
 collision_layer = 8
 collision_mask = 3
 
 [node name="HealthHitbox2" type="CollisionShape2D" parent="HealthArea"]
-position = Vector2( 0, -12 )
+position = Vector2( 0, -16 )
 shape = SubResource( 115 )
 
 [node name="HealthHitbox" type="CollisionShape2D" parent="."]
-position = Vector2( 0, -12 )
+position = Vector2( 0, -16 )
 shape = SubResource( 115 )
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 root_node = NodePath("../HealthSprite")
 anims/Idle = SubResource( 111 )
+"anims/Idle (copy)" = SubResource( 116 )
 anims/RESET = SubResource( 113 )
 
 [connection signal="area_entered" from="HealthArea" to="." method="_on_HealthArea_area_entered"]

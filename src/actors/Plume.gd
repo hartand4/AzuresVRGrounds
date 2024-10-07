@@ -64,7 +64,7 @@ func _process(_delta: float) -> void:
 				anim_timer = 80
 				
 				akdc[0] = (Globals.find_player().position.y - 48) - self.position.y
-				akdc[1] = PI*0.0015625*8
+				akdc[1] = PI*8*0.001519
 				akdc[2] = self.position.y
 		3:
 			position.y = akdc[0]*sin(akdc[1]*(80-anim_timer)) + akdc[2]
@@ -112,7 +112,7 @@ func animation_handler():
 
 
 func go_to_corner():
-	var target_corner = Globals.get_current_camera_pos() + (Vector2(320, -220) if right_side else Vector2(-320, -220))
+	var target_corner = Globals.get_current_camera_pos() + (Vector2(332, -232) if right_side else Vector2(-332, -232))
 	if (position - target_corner).length_squared() > 400:
 		position += (target_corner - position).normalized()*9
 		#return false
@@ -158,8 +158,8 @@ func disable_all():
 
 func in_camera_range(pos):
 	var camera_pos = Globals.get_current_camera_pos()
-	return camera_pos.x - 420 - 120 < pos.x and camera_pos.x + 420 + 120 > pos.x and (
-		camera_pos.y - 300 - 120 < pos.y and camera_pos.y + 300 + 120 > pos.y)
+	return camera_pos.x - 432 - 120 < pos.x and camera_pos.x + 432 + 120 > pos.x and (
+		camera_pos.y - 312 - 120 < pos.y and camera_pos.y + 312 + 120 > pos.y)
 
 func spawn_homing_sparks():
 	for i in range(4):

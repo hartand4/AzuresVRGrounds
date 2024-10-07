@@ -20,7 +20,7 @@ func _process(_delta: float) -> void:
 	$Sprite.visible = true
 	if Globals.timer % 2 == 0: $Sprite.visible = false
 	
-	if position.y > Globals.find_player().get_position().y + 800:
+	if position.y > Globals.current_camera_pos.y + 800:
 		call_deferred("disable_all")
 
 func disable_all():

@@ -49,6 +49,9 @@ onready var normal_hitbox_transform = [hitbox_collider.get_position(), $PlayerHi
 onready var normal_wallcheck_shape = $WalljumpAreaL/WalljumpBoxL.shape.extents
 onready var normal_wallcheck_transform = [$WalljumpAreaL/WalljumpBoxL.get_position(), $WalljumpAreaR/WalljumpBoxR.get_position()]
 
+var camera_stop_object_list = []
+onready var camera_limits
+
 var ultimate_move_timer = [0,0,-1]
 
 var stunned_shake_counter := 0
@@ -91,7 +94,7 @@ func _ready():
 	change_dash_hitbox(false)
 	normal_exit_reached = false
 	secret_exit_reached = false
-	state = 0
+	state = ST_AIR
 	
 	# Unlocked abilities
 	air_dash_enabled = Globals.air_dash_unlocked and Globals.air_dash_selected
@@ -116,6 +119,10 @@ func _ready():
 	
 	# Possible use for getting stunned
 	sprite_default_location = $Sprite.position
+	
+	# For any camera stop objects
+	camera_limits = [$Camera2D.limit_top, $Camera2D.limit_bottom,
+		$Camera2D.limit_left, $Camera2D.limit_right]
 
 func _physics_process(_delta: float) -> void:
 	var direction := Vector2.ZERO
@@ -265,12 +272,16 @@ func _process(_delta):
 	outfit_animation()
 	
 	if Globals.get("game_paused"):
-		$Tail/AnimationPlayer.playback_speed = 0
+		$Tail/TailAnimation.playback_speed = 0
 		if Globals.pause_menu_on:
 			do_pause_menu()
 		return
 	
-	$Tail/AnimationPlayer.playback_speed = 1
+	$Tail/TailAnimation.playback_speed = 1
+	
+	# Don't trigger idle animation while input is locked
+	if Globals.lock_input and state == ST_IDLE:
+		animation_timer = 0
 	
 	# Checks to kill player: health <= 0 or too far offscreen
 	if health <= 0:
@@ -346,7 +357,7 @@ func animation_handler():
 	$Tail.visible = true
 	$TailWall.visible = false
 	$Sprite/DashHand.visible = false
-	$Tail/AnimationPlayer.play("TailWag")
+	$Tail/TailAnimation.play("TailWag")
 	$Tail.z_as_relative = true
 	$Sprite/HurtEffect.visible = false
 	
@@ -365,7 +376,7 @@ func animation_handler():
 		$Tail.set_position(Vector2(recurring_x_dir*-32,-35))
 	elif state in [ST_DASH, ST_ULTIMATE]:
 		$Tail.z_index = 0
-		$Tail/AnimationPlayer.play("TailStraight")
+		$Tail/TailAnimation.play("TailStraight")
 		if animation_timer > 4:
 			$Tail.set_position(Vector2(recurring_x_dir*-35,-20))
 			
@@ -375,7 +386,7 @@ func animation_handler():
 		$TailWall.visible = true
 		$Tail.visible = false
 		$TailWall.flip_h = recurring_x_dir + 1
-		$Tail/AnimationPlayer.play("TailWall")
+		$Tail/TailAnimation.play("TailWall")
 		$TailWall.set_position(Vector2(recurring_x_dir*3,-5))
 	elif state == ST_WALK:
 		$Tail.set_position(Vector2(recurring_x_dir*-36,-35))
@@ -422,8 +433,22 @@ func animation_handler():
 	match state:
 		ST_IDLE:
 			if current_attack == 0 or attack_timer <= 0 or last_state != 0:
-				_animation.play("Idle")
 				if current_attack != 0: attack_timer = 0
+				if _animation.current_animation == "Idle" and animation_timer > 0 and\
+					animation_timer % 600 == 0:
+					print("why?")
+					var idle_variation = Globals.call_rng(1,2)
+					_animation.play("IdleVar"+str(idle_variation))
+				elif _animation.current_animation == "IdleVar1":
+					if animation_timer % 600 == 594:
+						_animation.play("Idle")
+						animation_timer = 0
+				elif _animation.current_animation == "IdleVar2":
+					if animation_timer % 600 == 306:
+						_animation.play("Idle")
+						animation_timer = 0
+				else:
+					_animation.play("Idle")
 			else:
 				_animation.play("Shoot")
 				if Input.is_action_just_pressed("attack"):
@@ -931,7 +956,7 @@ func check_for_collisions():
 
 # Does a transition effect in centre of screen
 func _do_transition():
-	Globals.start_transition(Vector2(420, 300), 2)
+	Globals.start_transition(Vector2(432, 312), 2)
 
 # Checks the areas (enemy, ladder, water,...) colliding with the player
 func _on_PlayerHitboxArea_area_entered(area: Area2D) -> void:
@@ -1050,7 +1075,10 @@ func spawn_dust_particle(for_dash=false):
 func victory_handler():
 	if animation_timer < 80: return
 	elif animation_timer == 80:
-		Globals.start_transition(get_position() - $Camera2D.get_camera_screen_center() + Vector2(420,260), 1)
+		if $Camera2D.current:
+			Globals.start_transition(get_position() - $Camera2D.get_camera_screen_center() + Vector2(432,272), 1)
+		else:
+			Globals.start_transition(get_position() - Globals.get_current_camera_pos() + Vector2(432,272), 1)
 		Globals.goal_reached_in_current_level[0] = normal_exit_reached
 		Globals.goal_reached_in_current_level[1] = secret_exit_reached
 		for i in range(3):
@@ -1266,3 +1294,27 @@ func shoot_flameball(charge_length):
 # TODO: SHOOT OTHER TYPES OF PROJECTILES
 func shoot_projectile():
 	pass
+
+# Function for CameraStopObjects, updates camera bounds based on all their limits
+func camera_stop_object_update(camera_stop_obj=null, mode=0):
+	if mode==2:
+		camera_stop_object_list += [camera_stop_obj]
+	elif mode==1:
+		for i in range(camera_stop_object_list.size()):
+			if camera_stop_object_list[i] == camera_stop_obj:
+				camera_stop_object_list.remove(i)
+				break
+	$Camera2D.limit_top = camera_limits[0]
+	$Camera2D.limit_bottom = camera_limits[1]
+	$Camera2D.limit_left = camera_limits[2]
+	$Camera2D.limit_right = camera_limits[3]
+	for item in camera_stop_object_list:
+		if item.is_persistent:
+			if item.is_top_limit:
+				$Camera2D.limit_top = max($Camera2D.limit_top, item.global_position.y)
+			if item.is_bottom_limit:
+				$Camera2D.limit_bottom = min($Camera2D.limit_bottom, item.global_position.y)
+			if item.is_left_limit:
+				$Camera2D.limit_left = max($Camera2D.limit_left, item.global_position.x)
+			if item.is_right_limit:
+				$Camera2D.limit_right = min($Camera2D.limit_right, item.global_position.x)

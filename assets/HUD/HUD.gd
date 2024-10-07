@@ -5,6 +5,8 @@ onready var max_health
 onready var ammo
 onready var max_ammo
 
+export var extend_health_animation_timer := 0
+
 func _process(_delta):
 	_health = get_parent().health
 	max_health = get_parent().max_health
@@ -16,9 +18,6 @@ func _process(_delta):
 	$Bar/HealthBarAlong.rect_scale.y = bar_scale_factor * 2 - 1
 	$Bar/HealthBarAlong.rect_position.y = 72-2*bar_scale_factor
 	$Bar/HealthBarTop.rect_position.y = 68-2*bar_scale_factor
-	$Bar/BarMergeRegion.rect_position.y = 71 - 2*bar_scale_factor
-	$Bar/BarMergeRegion.rect_size.y = 12 + 2*bar_scale_factor
-	$Bar/BarMergeRegion/BarMerge.rect_position.y = -51 + 2*bar_scale_factor
 	
 	$Bar/HealthIndicator.visible = max_health > 32
 	$Bar/HealthIndicator.frame = 1 if max_health == 64 else 0
@@ -30,7 +29,7 @@ func _process(_delta):
 	for i in range(48):
 		$Bar/AmmoBar.find_node("Ammo"+str(i+1)).visible = (ammo >= 2*i+1)
 	$Bar/AmmoBar.visible = get_parent().current_attack != 0
-	$Bar/BarMergeRegion.visible = get_parent().current_attack != 0
+	$Bar/AmmoBar.frame = 0 if max_health >= 26 else 26-max_health
 	$Bar/AmmoBar/WeaponIcon.frame = max(0, get_parent().current_attack-1)
 	
 	
@@ -52,3 +51,22 @@ func _process(_delta):
 	
 	if Globals.retry_menu_on: $RetryMenu.visible = true
 	else: $RetryMenu.visible = false
+	
+	if extend_health_animation_timer > 0:
+		Globals.game_paused = true
+		print(Globals.get_max_health())
+		if Globals.set_health >= Globals.get_max_health() - 2:
+			extend_health()
+		extend_health_animation_timer -= 1
+		if extend_health_animation_timer == 0:
+			Globals.game_paused = false
+			$Bar.modulate = Color(1, 1, 1)
+
+func extend_health():
+	if extend_health_animation_timer >= 12: return
+	if extend_health_animation_timer % 4 == 0:
+		get_parent().max_health += 1
+		get_parent().health += 1
+		Globals.set_health += 1
+		# TODO: Play sound
+	$Bar.modulate = Color(1.5, 1.5, 1.5) if extend_health_animation_timer % 4 < 3 else Color(1,1,1)

@@ -448,7 +448,8 @@ func file_print():
 		var file_data = Globals.view_save_game(Globals.load_save_data(), i+1)
 		
 		if typeof(file_data) == TYPE_NIL or (typeof(file_data) == TYPE_INT and file_data == -1):
-			for node in ['MainIcons','Sprite','Sprite2','Sprite3','CoinAmount','ExitAmount']:
+			for node in ['MainIcons','Sprite','Sprite2','Sprite3','CoinAmount','ExitAmount',
+				'Weapon1', 'Weapon2', 'Weapon3', 'HealthNumber']:
 				file_display.find_node(node).visible = false
 			file_display.find_node('EmptyText').visible = true
 		
@@ -468,7 +469,7 @@ func file_print():
 		
 		else:
 			file_display.find_node('EmptyText').visible = false
-			for node in ['MainIcons','CoinAmount','ExitAmount']:
+			for node in ['MainIcons','CoinAmount','ExitAmount','HealthNumber']:
 				file_display.find_node(node).visible = true
 			file_display.find_node('Sprite').visible = file_data.air_dash[0]
 			file_display.find_node('Sprite2').visible = file_data.armour[0]

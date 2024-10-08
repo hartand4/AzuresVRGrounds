@@ -1335,7 +1335,7 @@ shape = SubResource( 109 )
 one_way_collision = true
 
 [node name="Player" parent="." instance=ExtResource( 7 )]
-position = Vector2( 215, 1066 )
+position = Vector2( 221, 1163 )
 collision_mask = 64
 camera_limit_max = Vector2( 1e+07, 1440 )
 

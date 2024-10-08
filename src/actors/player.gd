@@ -123,10 +123,14 @@ func _ready():
 	# For any camera stop objects
 	camera_limits = [$Camera2D.limit_top, $Camera2D.limit_bottom,
 		$Camera2D.limit_left, $Camera2D.limit_right]
+	
+	scale.y = -1 if is_upside_down else 1
 
 func _physics_process(_delta: float) -> void:
 	var direction := Vector2.ZERO
 	var is_jumping := false
+	
+	var floor_normal = -FLOOR_NORMAL if is_upside_down else FLOOR_NORMAL
 	
 	if Globals.get("game_paused"):
 		return
@@ -134,7 +138,7 @@ func _physics_process(_delta: float) -> void:
 		not Globals.retry_menu_on) and not state in [ST_VICTORY]:
 		Globals.set("game_paused", true)
 		Globals.pause_menu_on = true
-		_velocity = move_and_slide(_velocity, FLOOR_NORMAL, true) if not jump_timer else _velocity
+		_velocity = move_and_slide(_velocity, floor_normal, true) if not jump_timer else _velocity
 		return
 	elif state == ST_OFFLOAD:
 		# This offloads the logic onto another script, so we can ignore the physics
@@ -149,11 +153,12 @@ func _physics_process(_delta: float) -> void:
 			if Input.is_action_just_pressed("jump"):
 				jump_timer = 30
 				if coyote_timer > 0:
-					_velocity.y = -pow(30,4)/2150
+					_velocity.y = pow(30,4)/2150 * (-1 if !is_upside_down else 1)
 					coyote_timer = 0
 			else:
 				jump_timer = 0
-		is_jumping = Input.is_action_pressed("jump") and jump_timer > 0 and _velocity.y < 0
+		is_jumping = Input.is_action_pressed("jump") and jump_timer > 0 and\
+			((_velocity.y < 0 and !is_upside_down) or (_velocity.y > 0 and is_upside_down))
 		if not Input.is_action_pressed("jump"):
 			jump_timer = 0
 		
@@ -190,7 +195,8 @@ func _physics_process(_delta: float) -> void:
 			jump_timer -= 1
 		elif Input.is_action_just_pressed("jump"):
 			jump_timer = 30
-		is_jumping = Input.is_action_pressed("jump") and jump_timer > 0 and _velocity.y < 0
+		is_jumping = Input.is_action_pressed("jump") and jump_timer > 0 and\
+			((_velocity.y < 0 and !is_upside_down) or (_velocity.y > 0 and is_upside_down))
 		direction = get_direction_normal()
 		direction.x = recurring_x_dir
 		
@@ -205,7 +211,7 @@ func _physics_process(_delta: float) -> void:
 	_velocity = calculate_move_direction(_velocity, speed, direction, is_jumping)
 	
 	if state in [ST_WALLSLIDE, ST_WALL_ATTACK]:
-		_velocity.y = min(_velocity.y, 250.0)
+		_velocity.y = min(_velocity.y, 250.0) if !is_upside_down else max(_velocity.y, -250.0)
 		if direction.x * recurring_x_dir > 0:
 			_velocity.x = 0.0
 	elif state == ST_WALLJUMP:
@@ -217,7 +223,7 @@ func _physics_process(_delta: float) -> void:
 		elif Input.is_action_pressed("move_down"):
 			self.position.y += 4
 		# warning-ignore:return_value_discarded
-		move_and_slide(_velocity, FLOOR_NORMAL, true)
+		move_and_slide(_velocity, floor_normal, true)
 		return
 	elif state == ST_DASH:
 		if not is_on_floor() and air_dash_enabled:
@@ -235,10 +241,10 @@ func _physics_process(_delta: float) -> void:
 		_velocity.x *= factor
 	
 	if not is_jumping:
-		_velocity = move_and_slide_with_snap(_velocity, snap, FLOOR_NORMAL, true)
+		_velocity = move_and_slide_with_snap(_velocity, snap, floor_normal, true)
 	else:
 		#corner_correction(6)
-		_velocity = move_and_slide(_velocity, FLOOR_NORMAL, true)
+		_velocity = move_and_slide(_velocity, floor_normal, true)
 
 func get_direction_normal() -> Vector2:
 	if Globals.lock_input: return Vector2.DOWN
@@ -251,10 +257,11 @@ func calculate_move_direction(linear_velocity: Vector2, speed: Vector2, directio
 	var out_vel := linear_velocity
 	var speed_x_factor := 0.1 if (state == ST_IDLE or acceleration_timer > 3) else 0.3 if acceleration_timer > 0 else 1.0
 	out_vel.x = speed.x * direction.x * speed_x_factor
-	out_vel.y += gravity / 60.0 * (3.0 if is_in_water and _velocity.y < 0 and
-		jump_timer == 0 else 1.0)#*get_physics_process_delta_time()
+	out_vel.y += gravity / 60.0 * (3.0 if is_in_water and\
+		((_velocity.y < 0 and !is_upside_down) or (_velocity.y > 0 and is_upside_down)) and
+		jump_timer == 0 else 1.0) * (-1 if is_upside_down else 1)#*get_physics_process_delta_time()
 	if direction.y == -1.0:
-		out_vel.y = 500.0 * direction.y - linear_velocity.y
+		out_vel.y = (500.0 * direction.y)*(-1 if is_upside_down else 1) - linear_velocity.y
 		
 		# Account for slope jump boost
 		if out_vel.x != 0:
@@ -262,7 +269,7 @@ func calculate_move_direction(linear_velocity: Vector2, speed: Vector2, directio
 			if cos(floor_angle)*recurring_x_dir > 0 and factor != 0: factor=1/factor
 			out_vel.y *= (factor+2)/3
 	if is_jumping:
-		out_vel.y -= 1*pow(jump_timer,4)/4600 #First few frames matter more
+		out_vel.y -= 1*pow(jump_timer,4)/4600*(-1 if is_upside_down else 1) #First few frames matter more
 	return out_vel
 
 func _process(_delta):
@@ -290,9 +297,12 @@ func _process(_delta):
 		if animation_timer < 40: return
 		Globals.retry_menu_on = true
 		Globals.lock_input = false
-	elif position.y > $Camera2D.get_camera_screen_center().y + 600 and $Camera2D.current:
+	elif (position.y > $Camera2D.get_camera_screen_center().y + 600 and
+			$Camera2D.current and !is_upside_down) or\
+		(position.y < $Camera2D.get_camera_screen_center().y - 600 and
+			$Camera2D.current and is_upside_down):
 		animation_timer = 0
-		do_hurt_animation(max_health)
+		do_hurt_animation(max_health*2)
 		$Camera2D.current = false
 	
 	# Bound the health and ammo
@@ -346,6 +356,7 @@ func _process(_delta):
 	if last_state != state:
 		print("state: %s" % state)
 		last_state = state
+	
 
 # Handles various animations of player using state. Also calls change_dash_hitbox to match dash sprite
 func animation_handler():
@@ -360,6 +371,8 @@ func animation_handler():
 	$Tail/TailAnimation.play("TailWag")
 	$Tail.z_as_relative = true
 	$Sprite/HurtEffect.visible = false
+	
+	scale.y = -1 if is_upside_down else 1
 	
 	$SlashEffects/UltimateFire.visible = state == ST_ULTIMATE and animation_timer > 4 and animation_timer < 42
 	$SlashEffects/UltimateFire.flip_h = recurring_x_dir == 1
@@ -475,7 +488,7 @@ func animation_handler():
 		ST_AIR:
 			if current_attack and attack_timer:
 				_animation.play('Jump + Shoot')
-			elif _velocity.y < 0:
+			elif ((_velocity.y < 0 and !is_upside_down) or (_velocity.y > 0 and is_upside_down)):
 				_animation.play('Jump')
 			else:
 				_animation.play('Fall')
@@ -615,8 +628,8 @@ func update_state():
 		elif current_attack > 1: shoot_projectile()
 		attack_timer = 18
 		if current_attack == 0:
-			attacking_direction = 1 if Input.is_action_pressed("move_up") else 2 if\
-				Input.is_action_pressed("move_down") else 0
+			attacking_direction = 1 if Input.is_action_pressed("move_up" if !is_upside_down else "move_down")\
+				else 2 if Input.is_action_pressed("move_down" if !is_upside_down else "move_up") else 0
 			return ST_AIR_ATTACK
 		return state
 	elif state == ST_DASH and did_attack() and not is_on_floor():
@@ -624,20 +637,21 @@ func update_state():
 		elif current_attack > 1: shoot_projectile()
 		attack_timer = 18
 		if current_attack == 0:
-			attacking_direction = 1 if Input.is_action_pressed("move_up") else 2 if\
-				Input.is_action_pressed("move_down") else 0
+			attacking_direction = 1 if Input.is_action_pressed("move_up" if !is_upside_down else "move_down")\
+				else 2 if Input.is_action_pressed("move_down" if !is_upside_down else "move_up") else 0
 			return ST_AIR_ATTACK
 		return state
 	if state == ST_AIR_ATTACK and attack_timer <= 0: return ST_AIR
 	
 	# SLIDING ON A WALL
-	if state in [ST_AIR, ST_AIR_ATTACK] and is_on_wall() and _velocity.y > 0:
+	if state in [ST_AIR, ST_AIR_ATTACK] and is_on_wall() and\
+		((_velocity.y > 0 and !is_upside_down) or (_velocity.y < 0 and is_upside_down)):
 		if (colliding_with_wall_l and dir.x < 0) or (colliding_with_wall_r and dir.x > 0):
 			stop_wallslide_timer = 8
 			recurring_x_dir = 1 if dir.x < 0 else -1
 			dash_timer = 0
 			dashing = false
-			_velocity.y = -100.0
+			_velocity.y = 100.0 * (-1 if !is_upside_down else 1)
 			return ST_WALLSLIDE
 		
 	# CONTINUE SLIDING ON WALL, OR WALLJUMP WHILE SLIDING
@@ -671,7 +685,7 @@ func update_state():
 	# WALLJUMP LAG
 	if state == ST_WALLJUMP and stop_wallslide_timer == 0:
 		walljump_momentum_timer = 4
-		_velocity.y = -500
+		_velocity.y = 500 * (-1 if !is_upside_down else 1)
 		jump_timer = 29
 		return ST_AIR
 	
@@ -713,7 +727,8 @@ func update_state():
 		elif current_attack == 1: shoot_flameball(charge_shot_timer)
 		elif current_attack > 1: shoot_projectile()
 		attack_timer = 18
-		attacking_direction = 1 if (Input.is_action_pressed("move_up") and current_attack == 0) else 0
+		attacking_direction = 1 if (Input.is_action_pressed("move_up" if !is_upside_down else "move_down")
+			and current_attack == 0) else 0
 		return ST_ATTACK if current_attack == 0 else state
 	
 	#STOP ATTACK
@@ -891,8 +906,8 @@ func do_hurt_animation(damage):
 	animation_timer = 0
 	
 	_animation.play("Hurt")
-	_velocity = Vector2(recurring_x_dir * -500.0,-500)
-	_velocity = move_and_slide(_velocity, FLOOR_NORMAL)
+	_velocity = Vector2(recurring_x_dir * -500.0,500* (-1 if !is_upside_down else 1) )
+	_velocity = move_and_slide(_velocity, FLOOR_NORMAL if !is_upside_down else -FLOOR_NORMAL)
 	if health <= 0:
 		
 		# Just for bookkeeping
@@ -1057,6 +1072,7 @@ func reload_level():
 func spawn_dust_particle(for_dash=false):
 	var spawn_scene = load("res://src/effects/WallSlideDust.tscn")
 	var spawn := spawn_scene.instance() as Node2D
+	spawn.is_upside_down = is_upside_down
 	add_child(spawn)
 	
 	spawn.set_as_toplevel(true)
@@ -1065,7 +1081,8 @@ func spawn_dust_particle(for_dash=false):
 		spawn.global_position = self.global_position + Vector2(-30*recurring_x_dir,0)
 		return
 	
-	spawn.global_position = self.global_position + Vector2(-15 if recurring_x_dir > 0 else 15,-50)
+	spawn.global_position = self.global_position + Vector2(-15 if recurring_x_dir > 0 else 15,
+		50*(-1 if !is_upside_down else 1))
 	
 	var rng = RandomNumberGenerator.new()
 	rng.randomize()
@@ -1076,9 +1093,11 @@ func victory_handler():
 	if animation_timer < 80: return
 	elif animation_timer == 80:
 		if $Camera2D.current:
-			Globals.start_transition(get_position() - $Camera2D.get_camera_screen_center() + Vector2(432,272), 1)
+			Globals.start_transition(get_position() - $Camera2D.get_camera_screen_center() +
+				Vector2(432,272 if !is_upside_down else 352), 1)
 		else:
-			Globals.start_transition(get_position() - Globals.get_current_camera_pos() + Vector2(432,272), 1)
+			Globals.start_transition(get_position() - Globals.get_current_camera_pos() + 
+				Vector2(432,272 if !is_upside_down else 352), 1)
 		Globals.goal_reached_in_current_level[0] = normal_exit_reached
 		Globals.goal_reached_in_current_level[1] = secret_exit_reached
 		for i in range(3):
@@ -1100,7 +1119,8 @@ func do_ultimate_check():
 		return
 	match ultimate_move_timer[0]:
 		0:
-			if Input.is_action_just_pressed('move_down'): ultimate_move_timer = [1,ULTIMATE_TIMER,-1]
+			if Input.is_action_just_pressed('move_down' if !is_upside_down else 'move_up'):
+				ultimate_move_timer = [1,ULTIMATE_TIMER,-1]
 		1:
 			if Input.is_action_just_pressed("move_left"):
 				ultimate_move_timer[0] = 2
@@ -1108,9 +1128,10 @@ func do_ultimate_check():
 			elif Input.is_action_just_pressed("move_right"):
 				ultimate_move_timer[0] = 2
 				ultimate_move_timer[2] = 1
-			elif Input.is_action_just_pressed("move_down"): ultimate_move_timer[1] = ULTIMATE_TIMER
+			elif Input.is_action_just_pressed('move_down' if !is_upside_down else 'move_up'):
+				ultimate_move_timer[1] = ULTIMATE_TIMER
 			else:
-				for action in ['move_up', 'jump', 'attack', 'dash', 'pause']:
+				for action in ['move_up' if !is_upside_down else 'move_down', 'jump', 'attack', 'dash', 'pause']:
 					if Input.is_action_just_pressed(action): ultimate_move_timer = [0,0,-1]
 		2:
 			if Input.is_action_just_pressed('move_left'):
@@ -1119,7 +1140,7 @@ func do_ultimate_check():
 			if Input.is_action_just_pressed('move_right'):
 				if ultimate_move_timer[2] == -1: ultimate_move_timer[0] = 3
 				elif ultimate_move_timer[2] == 1: ultimate_move_timer[0] = 0
-			elif Input.is_action_just_pressed("move_down"):
+			elif Input.is_action_just_pressed('move_down' if !is_upside_down else 'move_up'):
 				ultimate_move_timer = [1,ULTIMATE_TIMER,-1]
 			else:
 				for action in ['jump', 'attack', 'dash', 'pause']:
@@ -1175,7 +1196,7 @@ func set_checkpoint(num, pos):
 func add_position(add_pos):
 	# warning-ignore:return_value_discarded
 	position += add_pos
-	move_and_slide(Vector2.ZERO, FLOOR_NORMAL, true)
+	move_and_slide(Vector2.ZERO, FLOOR_NORMAL if !is_upside_down else -FLOOR_NORMAL, true)
 	#move_and_slide(add_pos, FLOOR_NORMAL, true)
 
 # Activates player stun state, including the needed stun inputs.
@@ -1213,7 +1234,7 @@ func _on_AttackHitboxArea_area_entered(area):
 	or area.get_collision_layer_bit(0):
 		return
 	#print(area)
-	_velocity.y = -800.0
+	_velocity.y = 800.0 * (-1 if !is_upside_down else 1)
 
 # Corner correction juts you left/right when jumping into a corner (unused)
 func corner_correction(pixel_amt):

@@ -96,6 +96,7 @@ func _process(_delta) -> void:
 		if is_instance_valid(open_textbox[0]): return
 		open_textbox[0] = null
 		lock_input = open_textbox[1]
+	
 
 # Returns the player object
 func find_player():

@@ -6,11 +6,11 @@ var used := false
 var going_through = false
 var going_through_timer = 300
 
-export var y_limits = [-2000,600]
-export var gate_to_the_right = true
+export var x_limits = [-600,600]
+export var gate_to_the_bottom = true
 var player
 
-export var center_height = 0
+export var center_x = 0
 export var player_camera_after = true
 
 export var use_new_limits = [false, false, false, false]
@@ -20,27 +20,25 @@ var player_previous_state = 0
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	if Globals.checkpoint_data[0] > 0 and (Globals.checkpoint_data[4].x >= position.x == gate_to_the_right):
+	if Globals.checkpoint_data[0] > 0 and (Globals.checkpoint_data[4].y >= position.y == gate_to_the_bottom):
 		used = true
-	if gate_to_the_right:
-		$PlayerCheckArea/CollisionRight.disabled = true
+	if gate_to_the_bottom:
+		$PlayerCheckArea/CollisionBottom.disabled = true
 	else:
-		$PlayerCheckArea/CollisionLeft.disabled = true
-	if gate_to_the_right == used:
-		$CameraStopObject.is_left_limit = true
+		$PlayerCheckArea/CollisionTop.disabled = true
+	if gate_to_the_bottom == used:
+		$CameraStopObject.is_top_limit = true
 	else:
-		$CameraStopObject.is_right_limit = true
-	#$TopBorder.position.y = center_height - 648
-	#$BottomBorder.position.y = center_height + 648
+		$CameraStopObject.is_bottom_limit = true
 	
-	$Collision.position.x = 24 if gate_to_the_right else -24
+	$Collision.position.y = 24 if gate_to_the_bottom else -24
 
 
 # warning-ignore:unused_argument
 func _process(delta: float) -> void:
 	if !player:
 		player = Globals.find_player()
-	if player.position.y - position.y < y_limits[0] or player.position.y - position.y > y_limits[1]:
+	if player.position.x - position.x < x_limits[0] or player.position.x - position.x > x_limits[1]:
 		if $CameraStopObject.is_persistent: $CameraStopObject.stop_update()
 	else:
 		if !$CameraStopObject.is_persistent: $CameraStopObject.start_update()
@@ -50,6 +48,7 @@ func _process(delta: float) -> void:
 		going_through_timer -= 1
 		if going_through_timer == 0:
 			Globals.lock_input = false
+			Globals.game_paused = false
 			player.find_node("PlayerHitboxArea").find_node("PlayerHitbox").disabled = false
 			player.state = 3
 			used = true
@@ -69,10 +68,7 @@ func check_for_player():
 			player_overlapping = true
 			break
 	if !player_overlapping: return
-	if (player.position.y > position.y + 74 or player.position.y < position.y + 10)\
-		and !player.is_upside_down: return
-	elif (player.position.y < position.y - 74 or player.position.y > position.y - 10)\
-		and player.is_upside_down: return
+	if (player.position.x > position.x + 90 or player.position.x < position.x - 90): return
 	going_through = true
 	Globals.game_paused = true
 	player.find_node("PlayerHitboxArea").find_node("PlayerHitbox").disabled = true
@@ -96,33 +92,28 @@ func animation_doing():
 		$CameraStopObject.stop_update()
 		
 	elif going_through_timer > start_time - 84:
-		$Camera.position.y += 4 if $Camera.position.y < center_height else\
-			-4 if $Camera.position.y > center_height else 0
-		if abs($Camera.position.y - center_height) < 4:
-			$Camera.position.y  = center_height
+		$Camera.position.x += 4 if $Camera.position.x < center_x else\
+			-4 if $Camera.position.x > center_x else 0
+		if abs($Camera.position.x - center_x) < 4:
+			$Camera.position.x  = center_x
 		
 	elif going_through_timer <= start_time - 84 and going_through_timer > 85:
-		player.position.x += 1.2 if gate_to_the_right else -1.2
+		player.position.y += 2.3*(1.0 if gate_to_the_bottom else -1.0)
 		
-		player.get_node("AnimationPlayer").playback_speed = 1
-		if player_previous_state == 1:
-			player.get_node("AnimationPlayer").play("Run")
-			player.get_node("Tail/TailAnimation").playback_speed = 1
+		player.get_node("Tail/TailAnimation").playback_speed = 1
 		
-		$Camera.position.x += (1 if gate_to_the_right else -1)*8
+		$Camera.position.y += (1 if gate_to_the_bottom else -1)*8
 		
-		if (gate_to_the_right and $Camera.position.x == 432) or (
-			!gate_to_the_right and $Camera.position.x == -432):
+		if (gate_to_the_bottom and $Camera.position.y == 312) or (
+			!gate_to_the_bottom and $Camera.position.y == -312):
 			going_through_timer = 86
 			
-			$CameraStopObject.is_left_limit = true if gate_to_the_right else false
-			$CameraStopObject.is_right_limit = false if gate_to_the_right else true
+			$CameraStopObject.is_top_limit = true if gate_to_the_bottom else false
+			$CameraStopObject.is_bottom_limit = false if gate_to_the_bottom else true
 			$CameraStopObject.start_update()
+			print(player.find_node("Camera2D").limit_bottom)
 		
 	elif going_through_timer == 85:
-		Globals.game_paused = false
-		Globals.lock_input = true
-		player.state = 3
 		$AnimationPlayer.play("Close")
 		
 		var player_cam = player.find_node("Camera2D")
@@ -139,8 +130,11 @@ func animation_doing():
 	elif going_through_timer < 85 and player_camera_after:
 		var player_cam = player.find_node("Camera2D")
 		player_cam.current = true
-		$Camera.position.y += 32 if $Camera.get_camera_position().y < player_cam.get_camera_screen_center().y else\
-			-32 if $Camera.get_camera_position().y > player_cam.get_camera_screen_center().y else 0
+		$Camera.position.y += 22 if $Camera.get_camera_position().y < player_cam.get_camera_screen_center().y - 22 else\
+			-22 if $Camera.get_camera_position().y > player_cam.get_camera_screen_center().y + 22 else 0
+		$Camera.position.x += 22 if $Camera.get_camera_position().x < player_cam.get_camera_screen_center().y - 22 else\
+			-22 if $Camera.get_camera_position().y > player_cam.get_camera_screen_center().y + 22 else 0
 		$Camera.current = true
-		if abs($Camera.get_camera_position().y - player_cam.get_camera_screen_center().y) < 32:
+		if (abs($Camera.get_camera_screen_center().x - player_cam.get_camera_screen_center().x) <= 22 and
+			abs($Camera.get_camera_screen_center().y - player_cam.get_camera_screen_center().y) <= 22):
 			player_cam.current = true

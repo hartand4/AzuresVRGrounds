@@ -30,7 +30,7 @@ var clearing_text = false
 
 var is_waiting = false
 
-var create_timer = 80
+var create_timer = 67#80
 var destroy_timer = 0
 var destroy_instantly = false
 
@@ -41,7 +41,7 @@ func init(text, instant=false, destroy_instant=false):
 	else:
 		$Blackground.rect_size.y = 6
 		$Blackground.rect_position.y = 213
-		$Blackground.rect_position.x = 420
+		$Blackground.rect_position.x = 432
 		$Blackground.rect_size.x = 0
 		$Blackground/Portrait.visible = false
 	
@@ -233,30 +233,30 @@ func create_textbox_slow():
 		$Blackground.rect_size.y = 6
 		$Blackground.rect_position.y = 213
 	else:
-		$Blackground.rect_size.x += 12
-		$Blackground.rect_position.x -= 6
+		$Blackground.rect_size.x += 16
+		$Blackground.rect_position.x -= 8
 
 # Destroys the textbox
 func destroy_textbox(instant):
 	if instant:
 		queue_free()
-	destroy_timer = 80
+	destroy_timer = 67
 
 # Does the destroy animation
 func destroy_animation():
 	# 28 frames of this
-	if destroy_timer > 52:
+	if destroy_timer > 39:
 		$Blackground.rect_size.y -= 12
 		$Blackground.rect_position.y += 6
 		$Blackground/Margins.rect_position.y -= 6
 		$Blackground/Portrait.position.y -= 6
-	elif destroy_timer == 52:
+	elif destroy_timer == 39:
 		$Blackground.rect_size.y = 6
 		$Blackground.rect_position.y = 213
 		$Blackground/Margins.visible = false
 		$Blackground/Portrait.visible = false
 	else:
-		$Blackground.rect_size.x -= 12
-		$Blackground.rect_position.x += 6
-		$Blackground/Margins.rect_position.x -= 6
-		$Blackground/Portrait.position.x -= 6
+		$Blackground.rect_size.x -= 16
+		$Blackground.rect_position.x += 8
+		$Blackground/Margins.rect_position.x -= 8
+		$Blackground/Portrait.position.x -= 8

@@ -2,9 +2,9 @@ extends KinematicBody2D
 
 export var starting_dir := Vector2.RIGHT
 export var track_length := 7
-export var period := 360
 export var flip := true
 export var vertical := false
+export var period := 360
 
 var _pos := 0.0
 var _timer := 0
@@ -15,12 +15,10 @@ func _ready() -> void:
 		$CollisionShape2D.rotation = PI/2
 
 
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-# warning-ignore:unused_argument
-func _physics_process(delta: float) -> void:
+func _physics_process(_delta) -> void:
 	if Globals.game_paused: return
 	if flip:
-# warning-ignore:integer_division
+		# warning-ignore:integer_division
 		var dir := starting_dir if _timer < period/2 else -starting_dir
 		$Arrow.rotation = closest_right_angle(dir)
 	_timer += 1

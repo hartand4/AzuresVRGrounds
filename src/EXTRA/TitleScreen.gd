@@ -92,7 +92,7 @@ func _process(_delta: float) -> void:
 				elif title_screen_variant == 2:
 					title_build_upward()
 			else:
-				$TitleObject.set_position(Vector2(0,0))
+				$TitleObject.set_position(Vector2(12,24))
 				$TitleObject/TitleVisibility.set_size(Vector2(864,624))
 				$TitleObject/TitleVisibility.set_position(Vector2(0,0))
 				title_screen_menu = 1
@@ -206,7 +206,7 @@ func title_bounce():
 	if not bounce_nums:
 		$TitleObject.set_position(Vector2(0,0))
 		return
-	if $TitleObject.get_position().y >= 0 and title_velocity > 0 and bounce_nums:
+	if $TitleObject.get_position().y >= 24 and title_velocity > 0 and bounce_nums:
 		title_velocity = -9*bounce_nums
 		bounce_nums -= 1
 	if bounce_nums:
@@ -267,17 +267,17 @@ func reset_title_screen():
 	$TitleObject/TitleVisibility/Title/Azzy.set_position(Vector2(725,172))
 	$Camera2D.position = Vector2(432,312)
 	if title_screen_variant == 0:
-		$TitleObject.set_position(Vector2(0,-500))
+		$TitleObject.set_position(Vector2(12,-500))
 		bounce_nums = 4
 		return
 	if title_screen_variant == 1:
-		$TitleObject.set_position(Vector2.ZERO)
+		$TitleObject.set_position(Vector2(12,24))
 		$TitleObject/TitleVisibility.set_size(Vector2(0,624))
 		$TitleObject/TitleVisibility.set_position(Vector2(432,0))
 		$TitleObject/TitleVisibility/Title.set_position(Vector2(-432,0))
 		return
 	if title_screen_variant == 2:
-		$TitleObject.set_position(Vector2.ZERO)
+		$TitleObject.set_position(Vector2(12,24))
 		$TitleObject/TitleVisibility.set_size(Vector2(864,0))
 		$TitleObject/TitleVisibility.set_position(Vector2(0,624))
 		$TitleObject/TitleVisibility/Title.set_position(Vector2(-624,0))
@@ -539,7 +539,8 @@ func file_print():
 		var file_data = Globals.view_save_game(Globals.load_save_data(), i+1)
 		
 		if typeof(file_data) == TYPE_NIL or (typeof(file_data) == TYPE_INT and file_data == -1):
-			for node in ['MainIcons','Sprite','Sprite2','Sprite3','CoinAmount','ExitAmount']:
+			for node in ['MainIcons','Sprite','Sprite2','Sprite3','CoinAmount','ExitAmount',
+				'Weapon1', 'Weapon2', 'Weapon3', 'HealthNumber']:
 				file_display.find_node(node).visible = false
 			file_display.find_node('EmptyText').visible = true
 		
@@ -559,7 +560,7 @@ func file_print():
 		
 		else:
 			file_display.find_node('EmptyText').visible = false
-			for node in ['MainIcons','CoinAmount','ExitAmount']:
+			for node in ['MainIcons','CoinAmount','ExitAmount','HealthNumber']:
 				file_display.find_node(node).visible = true
 			file_display.find_node('Sprite').visible = file_data.air_dash[0]
 			file_display.find_node('Sprite2').visible = file_data.armour[0]

@@ -27,5 +27,7 @@ func do_dash():
 	$AnimationPlayer.play("DashDust")
 	animation_timer = 12
 	flip_h = get_parent().recurring_x_dir > 0
-	pos = get_parent().get_position() + Vector2(-30 if flip_h else 30,-25)
+	
+	pos = get_parent().get_position() + Vector2(-30 if flip_h else 30,
+		25 if get_parent().is_upside_down else -25)
 	

@@ -1,15 +1,13 @@
-extends KinematicBody2D
+extends Actor
 
 export var secret_exit := false
-export var obey_gravity := true
-var _velocity := Vector2.ZERO
-var is_in_water := false
 
 func _ready() -> void:
 	$OrbSprite.visible = true
 	$OrbCollider.disabled = false
 	$OrbArea/OrbHitbox.disabled = false
 	$AnimationPlayer.play("Hue Changing" if not secret_exit else "Hue Changing S")
+	_velocity = Vector2.ZERO
 
 
 func _process(_delta: float) -> void:
@@ -17,10 +15,9 @@ func _process(_delta: float) -> void:
 		$AnimationPlayer.stop(false)
 		return
 	$AnimationPlayer.play("Hue Changing" if not secret_exit else "Hue Changing S")
-	if obey_gravity:
-		_velocity.y += 20.0*(0.4 if is_in_water else 1.0)
-		_velocity.y = min(_velocity.y, 1200.0*(0.6 if is_in_water else 1.0))
+	if obeys_actor_gravity:
 		_velocity = move_and_slide(_velocity, Vector2.UP, true)
+	$OrbSprite.flip_v = is_upside_down
 
 func disable_all():
 	$OrbSprite.visible = false

@@ -46,8 +46,6 @@ maybe make a day/night theme as the levels go on?
 
 CharNull, segmentation fault
 
-boss doors -> for all objects (except the boss), if collision layer is enemy or enemy attack, remove from current scene
-
 Maybe encode in parabolic cipher
 
 Slots?

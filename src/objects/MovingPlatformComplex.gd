@@ -42,13 +42,14 @@ func _physics_process(delta: float) -> void:
 	
 	if _returning:
 		_returning -= 1
-		$CollisionShape2D.disabled = true
-		$ActivationArea/ActivationCollision.disabled = true
-		$Arrow.visible = false
-		$Sprite.visible = false
-		if not _returning:
-			position = original_pos
-			$CollisionShape2D.disabled = false
+		if not smooth_return:
+			$CollisionShape2D.disabled = true
+			$ActivationArea/ActivationCollision.disabled = true
+			$Arrow.visible = false
+			$Sprite.visible = false
+			if not _returning:
+				position = original_pos
+				$CollisionShape2D.disabled = false
 		return
 	
 	if on_walk != _activated:
@@ -94,7 +95,7 @@ func _physics_process(delta: float) -> void:
 		_total_dist_moved = 0.0
 		if _current_point == 0:
 			if not on_walk:
-				$CollisionShape2D.disabled = true
+				$CollisionShape2D.disabled = !smooth_return
 				_returning = 2
 			elif not smooth_return:
 				_blinking_phase = true

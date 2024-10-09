@@ -52,5 +52,9 @@ Slots?
 
 Some kind of list of level titles, including area names, for the shop too (level 200)
 
+alt weapon type collision and damage data chart -> lob shots and a platform thing?
+
+Gerblaze script + fireballs
+
 NOTE: Lagomo, Hopshot, Turret, Plume, Rodopack are pre-enemy script, check damage values for alt weapons
 Also check objects like breakable walls when alt weapons get added

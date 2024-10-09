@@ -9,6 +9,9 @@ export var health_rate := 1
 
 var hitbox_obj
 
+var max_i_frames = 6
+var normal_death_behaviour = true
+
 # Damage data values:
 # 0: Slash
 # 1-3: Small to large shots
@@ -37,8 +40,10 @@ func _process(_delta):
 	elif health <= 0:
 		broken = true
 		call_deferred("disable_all")
-		Globals.spawn_explosion(position + debris_pos)
-		Globals.spawn_health(position, health_rate)
+		if normal_death_behaviour:
+			Globals.spawn_explosion(position + debris_pos)
+			Globals.spawn_health(position, health_rate)
+		death_handler()
 		return
 	elif despawn():
 		return
@@ -96,3 +101,6 @@ func disable_all():
 	# If it has a child called "Hitbox", disable its collision
 	if find_node("Hitbox"):
 		$Hitbox/Collision.disabled = true
+
+func death_handler():
+	pass

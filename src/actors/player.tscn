@@ -102,7 +102,8 @@ extents = Vector2( 11.5, 41.5332 )
 
 [sub_resource type="Animation" id=32]
 resource_name = "Air Slash"
-length = 0.3
+length = 0.266667
+loop = true
 step = 0.0166667
 tracks/0/type = "value"
 tracks/0/path = NodePath("Sprite:frame")
@@ -111,7 +112,7 @@ tracks/0/loop_wrap = true
 tracks/0/imported = false
 tracks/0/enabled = true
 tracks/0/keys = {
-"times": PoolRealArray( 0, 0.05, 0.166667 ),
+"times": PoolRealArray( 0, 0.0333333, 0.1 ),
 "transitions": PoolRealArray( 1, 1, 1 ),
 "update": 1,
 "values": [ 28, 29, 30 ]
@@ -123,7 +124,7 @@ tracks/1/loop_wrap = true
 tracks/1/imported = false
 tracks/1/enabled = true
 tracks/1/keys = {
-"times": PoolRealArray( 0, 0.0500001, 0.166667, 0.233333 ),
+"times": PoolRealArray( 0, 0.0333333, 0.1, 0.2 ),
 "transitions": PoolRealArray( 1, 1, 1, 1 ),
 "update": 1,
 "values": [ 3, 0, 1, 2 ]
@@ -131,7 +132,7 @@ tracks/1/keys = {
 
 [sub_resource type="Animation" id=52]
 resource_name = "Air Slash Down"
-length = 0.3
+length = 0.266667
 step = 0.0166667
 tracks/0/type = "value"
 tracks/0/path = NodePath("Sprite:frame")
@@ -140,7 +141,7 @@ tracks/0/loop_wrap = true
 tracks/0/imported = false
 tracks/0/enabled = true
 tracks/0/keys = {
-"times": PoolRealArray( 0, 0.1 ),
+"times": PoolRealArray( 0, 0.05 ),
 "transitions": PoolRealArray( 1, 1 ),
 "update": 1,
 "values": [ 48, 49 ]
@@ -152,7 +153,7 @@ tracks/1/loop_wrap = true
 tracks/1/imported = false
 tracks/1/enabled = true
 tracks/1/keys = {
-"times": PoolRealArray( 0, 0.1, 0.2 ),
+"times": PoolRealArray( 0, 0.05, 0.2 ),
 "transitions": PoolRealArray( 1, 1, 1 ),
 "update": 1,
 "values": [ 2, 0, 1 ]
@@ -160,7 +161,7 @@ tracks/1/keys = {
 
 [sub_resource type="Animation" id=51]
 resource_name = "Air Slash Up"
-length = 0.3
+length = 0.266667
 step = 0.0166667
 tracks/0/type = "value"
 tracks/0/path = NodePath("Sprite:frame")
@@ -169,7 +170,7 @@ tracks/0/loop_wrap = true
 tracks/0/imported = false
 tracks/0/enabled = true
 tracks/0/keys = {
-"times": PoolRealArray( 0, 0.1 ),
+"times": PoolRealArray( 0, 0.05 ),
 "transitions": PoolRealArray( 1, 1 ),
 "update": 1,
 "values": [ 46, 47 ]
@@ -181,7 +182,7 @@ tracks/1/loop_wrap = true
 tracks/1/imported = false
 tracks/1/enabled = true
 tracks/1/keys = {
-"times": PoolRealArray( 0, 0.1, 0.2 ),
+"times": PoolRealArray( 0, 0.05, 0.2 ),
 "transitions": PoolRealArray( 1, 1, 1 ),
 "update": 1,
 "values": [ 2, 0, 1 ]
@@ -286,7 +287,7 @@ tracks/0/keys = {
 
 [sub_resource type="Animation" id=29]
 resource_name = "Ground Slash"
-length = 0.300001
+length = 0.266667
 step = 0.0166667
 tracks/0/type = "value"
 tracks/0/path = NodePath("Sprite:frame")
@@ -295,10 +296,10 @@ tracks/0/loop_wrap = true
 tracks/0/imported = false
 tracks/0/enabled = true
 tracks/0/keys = {
-"times": PoolRealArray( 0, 0.05, 0.166667 ),
-"transitions": PoolRealArray( 1, 1, 1 ),
+"times": PoolRealArray( 0, 0.05, 0.1, 0.116667, 0.266667 ),
+"transitions": PoolRealArray( 1, 1, 1, 1, 1 ),
 "update": 1,
-"values": [ 25, 26, 27 ]
+"values": [ 25, 26, 26, 27, 27 ]
 }
 tracks/1/type = "value"
 tracks/1/path = NodePath("SlashEffects/SlashEffect:frame")
@@ -307,15 +308,15 @@ tracks/1/loop_wrap = true
 tracks/1/imported = false
 tracks/1/enabled = true
 tracks/1/keys = {
-"times": PoolRealArray( 0, 0.0500001, 0.166667, 0.233334 ),
-"transitions": PoolRealArray( 1, 1, 1, 1 ),
+"times": PoolRealArray( 0, 0.05, 0.1, 0.116667, 0.183333, 0.2, 0.266667 ),
+"transitions": PoolRealArray( 1, 1, 1, 1, 1, 1, 1 ),
 "update": 1,
-"values": [ 3, 0, 1, 2 ]
+"values": [ 3, 0, 0, 1, 1, 2, 2 ]
 }
 
 [sub_resource type="Animation" id=53]
 resource_name = "Ground Slash Up"
-length = 0.3
+length = 0.266667
 step = 0.0166667
 tracks/0/type = "value"
 tracks/0/path = NodePath("Sprite:frame")
@@ -324,10 +325,10 @@ tracks/0/loop_wrap = true
 tracks/0/imported = false
 tracks/0/enabled = true
 tracks/0/keys = {
-"times": PoolRealArray( 0, 0.1 ),
-"transitions": PoolRealArray( 1, 1 ),
+"times": PoolRealArray( 0, 0.05, 0.266667 ),
+"transitions": PoolRealArray( 1, 1, 1 ),
 "update": 1,
-"values": [ 44, 45 ]
+"values": [ 44, 45, 45 ]
 }
 tracks/1/type = "value"
 tracks/1/path = NodePath("SlashEffects/SlashEffectUp:frame")
@@ -336,10 +337,10 @@ tracks/1/loop_wrap = true
 tracks/1/imported = false
 tracks/1/enabled = true
 tracks/1/keys = {
-"times": PoolRealArray( 0, 0.1, 0.2 ),
-"transitions": PoolRealArray( 1, 1, 1 ),
+"times": PoolRealArray( 0, 0.05, 0.183333, 0.2, 0.266667 ),
+"transitions": PoolRealArray( 1, 1, 1, 1, 1 ),
 "update": 1,
-"values": [ 2, 0, 1 ]
+"values": [ 2, 0, 0, 1, 1 ]
 }
 
 [sub_resource type="Animation" id=13]
@@ -456,7 +457,7 @@ tracks/0/keys = {
 
 [sub_resource type="Animation" id=35]
 resource_name = "Ladder Slash"
-length = 0.3
+length = 0.266667
 step = 0.0166667
 tracks/0/type = "value"
 tracks/0/path = NodePath("Sprite:frame")
@@ -465,7 +466,7 @@ tracks/0/loop_wrap = true
 tracks/0/imported = false
 tracks/0/enabled = true
 tracks/0/keys = {
-"times": PoolRealArray( 0, 0.1 ),
+"times": PoolRealArray( 0, 0.05 ),
 "transitions": PoolRealArray( 1, 1 ),
 "update": 1,
 "values": [ 34, 33 ]
@@ -477,7 +478,7 @@ tracks/1/loop_wrap = true
 tracks/1/imported = false
 tracks/1/enabled = true
 tracks/1/keys = {
-"times": PoolRealArray( 0, 0.1, 0.2 ),
+"times": PoolRealArray( 0, 0.05, 0.2 ),
 "transitions": PoolRealArray( 1, 1, 1 ),
 "update": 1,
 "values": [ 2, 0, 1 ]
@@ -590,6 +591,7 @@ tracks/0/keys = {
 resource_name = "Run + Shoot"
 length = 0.8
 loop = true
+step = 0.05
 tracks/0/type = "value"
 tracks/0/path = NodePath("Sprite:frame")
 tracks/0/interp = 1
@@ -597,10 +599,10 @@ tracks/0/loop_wrap = true
 tracks/0/imported = false
 tracks/0/enabled = true
 tracks/0/keys = {
-"times": PoolRealArray( 0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7 ),
-"transitions": PoolRealArray( 1, 1, 1, 1, 1, 1, 1, 1 ),
+"times": PoolRealArray( 0, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55, 0.6, 0.65, 0.7, 0.75 ),
+"transitions": PoolRealArray( 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 ),
 "update": 1,
-"values": [ 56, 52, 53, 52, 56, 54, 55, 54 ]
+"values": [ 56, 56, 52, 52, 53, 53, 52, 52, 56, 56, 54, 54, 55, 55, 54, 54 ]
 }
 
 [sub_resource type="Animation" id=55]
@@ -703,7 +705,7 @@ tracks/0/keys = {
 
 [sub_resource type="Animation" id=33]
 resource_name = "Wall Slash"
-length = 0.3
+length = 0.266667
 step = 0.0166667
 tracks/0/type = "value"
 tracks/0/path = NodePath("Sprite:frame")
@@ -712,7 +714,7 @@ tracks/0/loop_wrap = true
 tracks/0/imported = false
 tracks/0/enabled = true
 tracks/0/keys = {
-"times": PoolRealArray( 0, 0.1 ),
+"times": PoolRealArray( 0, 0.05 ),
 "transitions": PoolRealArray( 1, 1 ),
 "update": 1,
 "values": [ 31, 32 ]
@@ -724,7 +726,7 @@ tracks/1/loop_wrap = true
 tracks/1/imported = false
 tracks/1/enabled = true
 tracks/1/keys = {
-"times": PoolRealArray( 0, 0.1, 0.2 ),
+"times": PoolRealArray( 0, 0.05, 0.2 ),
 "transitions": PoolRealArray( 1, 1, 1 ),
 "update": 1,
 "values": [ 2, 0, 1 ]
@@ -946,7 +948,6 @@ shape = SubResource( 21 )
 [node name="SlashEffects" type="Node2D" parent="."]
 
 [node name="SlashEffect" type="Sprite" parent="SlashEffects"]
-visible = false
 position = Vector2( 0, -48 )
 texture = ExtResource( 1 )
 vframes = 4
@@ -966,7 +967,6 @@ texture = ExtResource( 10 )
 vframes = 2
 
 [node name="SlashEffectUp" type="Sprite" parent="SlashEffects"]
-visible = false
 position = Vector2( 4, -110 )
 scale = Vector2( 2, 2 )
 texture = ExtResource( 13 )
@@ -974,7 +974,6 @@ hframes = 3
 frame = 1
 
 [node name="SlashEffectDown" type="Sprite" parent="SlashEffects"]
-visible = false
 position = Vector2( -6, 8 )
 scale = Vector2( 2, 2 )
 texture = ExtResource( 12 )

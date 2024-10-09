@@ -17,7 +17,7 @@ func _on_Hitbox_area_entered(area):
 	if not (area.get_collision_layer_bit(4) or area.get_collision_layer_bit(11)): return
 	if get_parent().get("is_invulnerable") and get_parent().is_invulnerable: return
 	if get_parent().get("health"):
-		if get_parent().get("i_frames"): get_parent().i_frames = 6
+		if get_parent().get("i_frames"): get_parent().i_frames = get_parent().max_i_frames
 		if not get_parent().get("damage_data_chart"):
 			get_parent().health -= 2 if area.get_collision_layer_bit(4) else 2
 			return

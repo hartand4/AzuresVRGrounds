@@ -61,7 +61,7 @@ var stunned_bump_timer := 0
 
 # 0 = sideways, 1 = up, 2 = down
 var attacking_direction := 0
-# 0 = slash, 1 = shots, 2 = lob shots, 3 = ??? TODO
+# 0 = slash, 1 = shots, 2 = lob shots, 3 = platform? TODO
 export var current_attack := 0
 # Scenes for the attack projectiles
 var attack_scenes := [preload("res://src/objects/FlameBallS.tscn"),
@@ -493,9 +493,14 @@ func animation_handler():
 			else:
 				_animation.play('Fall')
 		ST_ATTACK:
-			_animation.play('Ground Slash' if attacking_direction == 0 else 'Ground Slash Up')
-			_animation.seek((18-attack_timer)/60.0)
+			if _animation.current_animation in ["Air Slash", "Air Slash Up"]:
+				var temp_anim_pos = _animation.current_animation_position
+				_animation.play('Ground Slash' if attacking_direction == 0 else 'Ground Slash Up')
+				_animation.seek(temp_anim_pos)
+			else:
+				_animation.play('Ground Slash' if attacking_direction == 0 else 'Ground Slash Up')
 			if $Sprite.frame == 47: $Sprite.frame -= 2
+			
 			if animation_timer == 6:
 				do_slash_effect(1 if attacking_direction == 0 else 3)
 			update_slash_hitbox()
@@ -626,7 +631,7 @@ func update_state():
 	if state == ST_AIR and did_attack():
 		if current_attack == 1: shoot_flameball(charge_shot_timer)
 		elif current_attack > 1: shoot_projectile()
-		attack_timer = 18
+		attack_timer = 16
 		if current_attack == 0:
 			attacking_direction = 1 if Input.is_action_pressed("move_up" if !is_upside_down else "move_down")\
 				else 2 if Input.is_action_pressed("move_down" if !is_upside_down else "move_up") else 0
@@ -635,7 +640,7 @@ func update_state():
 	elif state == ST_DASH and did_attack() and not is_on_floor():
 		if current_attack == 1: shoot_flameball(charge_shot_timer)
 		elif current_attack > 1: shoot_projectile()
-		attack_timer = 18
+		attack_timer = 16
 		if current_attack == 0:
 			attacking_direction = 1 if Input.is_action_pressed("move_up" if !is_upside_down else "move_down")\
 				else 2 if Input.is_action_pressed("move_down" if !is_upside_down else "move_up") else 0
@@ -674,7 +679,7 @@ func update_state():
 		if did_attack():
 			if current_attack == 1: shoot_flameball(charge_shot_timer)
 			elif current_attack > 1: shoot_projectile()
-			attack_timer = 18
+			attack_timer = 16
 			return ST_WALL_ATTACK if !current_attack else state
 			
 	# ANOTHER WAY TO WALLJUMP
@@ -726,9 +731,10 @@ func update_state():
 		if current_attack == 0: dashing = false
 		elif current_attack == 1: shoot_flameball(charge_shot_timer)
 		elif current_attack > 1: shoot_projectile()
-		attack_timer = 18
 		attacking_direction = 1 if (Input.is_action_pressed("move_up" if !is_upside_down else "move_down")
 			and current_attack == 0) else 0
+		attack_timer = 16
+			
 		return ST_ATTACK if current_attack == 0 else state
 	
 	#STOP ATTACK
@@ -763,7 +769,7 @@ func update_state():
 			elif current_attack > 1: shoot_projectile()
 			if dir.x != 0:
 				recurring_x_dir = dir.x
-			attack_timer = 18 if !current_attack else 12
+			attack_timer = 16 if !current_attack else 12
 			return ST_LADDER_ATTACK
 	
 	# LADDER ATTACK
@@ -775,7 +781,7 @@ func update_state():
 		elif current_attack and did_attack():
 			if current_attack == 1: shoot_flameball(charge_shot_timer)
 			elif current_attack > 1: shoot_projectile()
-			attack_timer = 18
+			attack_timer = 16
 			return state
 	
 	### if interaction finished: return ST_IDLE

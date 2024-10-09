@@ -111,7 +111,6 @@ func animation_doing():
 			$CameraStopObject.is_top_limit = true if gate_to_the_bottom else false
 			$CameraStopObject.is_bottom_limit = false if gate_to_the_bottom else true
 			$CameraStopObject.start_update()
-			print(player.find_node("Camera2D").limit_bottom)
 		
 	elif going_through_timer == 85:
 		$AnimationPlayer.play("Close")

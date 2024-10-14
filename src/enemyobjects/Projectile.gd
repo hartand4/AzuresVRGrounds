@@ -12,6 +12,8 @@ func _ready() -> void:
 func _process(_delta: float) -> void:
 	if Globals.game_paused: return
 	if $Collision.disabled and animation_timer == 0: call_deferred("disable_all")
+	if Globals.prevent_enemy_spawn: call_deferred("disable_all")
+	
 	if animation_timer: animation_timer -= 1
 	var camera_pos = Globals.get_current_camera_pos()
 	if not (camera_pos.x - 432 - 120 < self.position.x and camera_pos.x +432 + 120 > self.position.x and (

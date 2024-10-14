@@ -35,6 +35,10 @@ func _process(_delta: float) -> void:
 	elif broken:
 		respawn()
 		return
+	elif Globals.prevent_enemy_spawn:
+		$Collision.disabled = true
+		$Sprite.visible = false
+		return
 	
 	if flash_timer:
 		flash_timer -= 1

@@ -27,6 +27,9 @@ var original_pos := Vector2.ZERO
 onready var _animation := $AnimationPlayer
 onready var _player = Globals.find_player()
 
+export var prevent_despawn = false
+export var prevent_respawn = false
+
 # Player state constants:
 const ST_IDLE := 0
 const ST_WALK := 1

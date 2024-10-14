@@ -83,7 +83,7 @@ func animation_handler():
 				Globals.spawn_gravity_bullet(position+Vector2(0,-36), Vector2(200,-400))
 
 func despawn():
-	if in_camera_range(position): return
+	if in_camera_range(position) and !Globals.prevent_enemy_spawn: return
 	.despawn()
 	if not in_camera_range(original_pos):
 		anim_timer = 20

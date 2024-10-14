@@ -19,6 +19,7 @@ var normal_death_behaviour = true
 var damage_data_chart = [3,1,2,4,2,2]
 
 var is_invulnerable = false
+var was_hit = false
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -55,6 +56,10 @@ func _process(_delta):
 	if find_node("Hitbox"):
 		$Hitbox/Collision.disabled = false
 	$Sprite.modulate = Color(2.2,1.8,2.3) if i_frames else Color(1,1,1)
+	
+	if was_hit:
+		hit_handler()
+		was_hit = false
 
 # Returns the damage value for player
 func get_damage():
@@ -75,12 +80,13 @@ func reset_values():
 
 # Only reset the enemy if camera is away from the enemy's original position
 func respawn():
-	if in_camera_range(original_pos): return
+	if in_camera_range(original_pos) or prevent_respawn: return
 	reset_values()
 
 # Despawn if enemy is far from camera (break if original position is in view)
 func despawn():
-	if in_camera_range(position): return false
+	if in_camera_range(position) and !Globals.prevent_enemy_spawn: return false
+	if prevent_despawn: return false
 	call_deferred("disable_all")
 	if in_camera_range(original_pos):
 		broken = true
@@ -103,4 +109,7 @@ func disable_all():
 		$Hitbox/Collision.disabled = true
 
 func death_handler():
+	pass
+
+func hit_handler():
 	pass

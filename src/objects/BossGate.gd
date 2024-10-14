@@ -17,6 +17,7 @@ export var use_new_limits = [false, false, false, false]
 export var new_camera_limits = [0,0,0,0]
 
 var player_previous_state = 0
+export var destroy_enemies = true
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -87,6 +88,7 @@ func check_for_player():
 	curr_cam.current = false
 	$Camera.current=true
 	Globals.eq_timer = 0
+	Globals.prevent_enemy_spawn = destroy_enemies
 
 func animation_doing():
 	var start_time = 299

@@ -17,6 +17,10 @@ func _process(_delta: float) -> void:
 		$AnimationPlayer.stop(false)
 		return
 	
+	if Globals.prevent_enemy_spawn:
+		call_deferred("disable_all")
+		return
+	
 	if broken:
 		if anim_timer == 1:
 			call_deferred("disable_all")

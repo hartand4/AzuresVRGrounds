@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/ValSheet.png-5800a3f2885e0c54c94b9971724addec.stex"
+path="res://.import/BowR.png-73eabfb528015d8bfbfd6d9e1f0b98d1.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/Sprites/Val/ValSheet.png"
-dest_files=[ "res://.import/ValSheet.png-5800a3f2885e0c54c94b9971724addec.stex" ]
+source_file="res://assets/Sprites/Characters/Faie/BowR.png"
+dest_files=[ "res://.import/BowR.png-73eabfb528015d8bfbfd6d9e1f0b98d1.stex" ]
 
 [params]
 
@@ -20,7 +20,7 @@ compress/hdr_mode=0
 compress/bptc_ldr=0
 compress/normal_map=0
 flags/repeat=0
-flags/filter=true
+flags/filter=false
 flags/mipmaps=false
 flags/anisotropic=false
 flags/srgb=2

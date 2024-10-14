@@ -15,6 +15,7 @@ func _on_Hitbox_area_entered(area):
 		get_parent().is_in_water = true
 		return
 	if not (area.get_collision_layer_bit(4) or area.get_collision_layer_bit(11)): return
+	get_parent().was_hit = true
 	if get_parent().get("is_invulnerable") and get_parent().is_invulnerable: return
 	if get_parent().get("health"):
 		if get_parent().get("i_frames"): get_parent().i_frames = get_parent().max_i_frames

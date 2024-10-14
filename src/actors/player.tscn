@@ -574,6 +574,7 @@ tracks/6/keys = {
 [sub_resource type="Animation" id=5]
 resource_name = "Run"
 length = 0.8
+loop = true
 tracks/0/type = "value"
 tracks/0/path = NodePath("Sprite:frame")
 tracks/0/interp = 1
@@ -835,7 +836,7 @@ moving_platform_apply_velocity_on_leave = 1
 script = ExtResource( 2 )
 
 [node name="Tail" type="Sprite" parent="."]
-position = Vector2( 34, -37 )
+position = Vector2( 33, -37 )
 scale = Vector2( 2, 2 )
 texture = ExtResource( 8 )
 hframes = 3
@@ -948,13 +949,13 @@ shape = SubResource( 21 )
 [node name="SlashEffects" type="Node2D" parent="."]
 
 [node name="SlashEffect" type="Sprite" parent="SlashEffects"]
+visible = false
 position = Vector2( 0, -48 )
 texture = ExtResource( 1 )
 vframes = 4
 frame = 3
 
 [node name="SlashEffectAlt" type="Sprite" parent="SlashEffects"]
-visible = false
 position = Vector2( -61, -48 )
 texture = ExtResource( 5 )
 vframes = 3
@@ -967,6 +968,7 @@ texture = ExtResource( 10 )
 vframes = 2
 
 [node name="SlashEffectUp" type="Sprite" parent="SlashEffects"]
+visible = false
 position = Vector2( 4, -110 )
 scale = Vector2( 2, 2 )
 texture = ExtResource( 13 )
@@ -974,6 +976,7 @@ hframes = 3
 frame = 1
 
 [node name="SlashEffectDown" type="Sprite" parent="SlashEffects"]
+visible = false
 position = Vector2( -6, 8 )
 scale = Vector2( 2, 2 )
 texture = ExtResource( 12 )

@@ -40,7 +40,10 @@ export var pause_menu_on := false
 export var retry_menu_on := false
 export var current_level := 1
 export var coins_collected_in_level := [false, false, false]
-export var checkpoint_data := [0, false, false, false, Vector2.ZERO]
+
+# Checkpoint values: checkpoint number, val coins collected 1-3, position to spawn,
+# prevent enemies from spawning?
+export var checkpoint_data := [0, false, false, false, Vector2.ZERO, false]
 
 # [normal exit reached?, secret exit reached?]
 export var goal_reached_in_current_level = [false, false]
@@ -58,6 +61,9 @@ var stored_camera_for_earthquake
 # The boolean denotes whether or not locked input should remain after text close.
 var open_textbox = [null, false]
 var game_script = []
+
+# Used for boss gates and specific scenarios, despawns enemies
+var prevent_enemy_spawn = false
 
 
 # Health and ammo scenes
@@ -599,3 +605,9 @@ func get_max_health():
 	for heart in hearts_obtained:
 		max_health_value += 2 if heart else 0
 	return max_health_value
+
+# Checks if object is in range of camera based on its position (copy from actor.gd)
+func in_camera_range(pos):
+	var camera_pos = get_current_camera_pos()
+	return camera_pos.x - 432 - 120 < pos.x and camera_pos.x + 432 + 120 > pos.x and (
+		camera_pos.y - 312 - 120 < pos.y and camera_pos.y + 312 + 120 > pos.y)

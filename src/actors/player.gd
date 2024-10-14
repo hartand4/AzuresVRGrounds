@@ -107,11 +107,13 @@ func _ready():
 	$Camera2D.limit_right = camera_limit_max.x
 	$Camera2D.limit_bottom = camera_limit_max.y
 	
+	Globals.prevent_enemy_spawn = false
 	# Respawn at checkpoint location if passed one
 	if Globals.checkpoint_data[0]:
 		position = Globals.checkpoint_data[4]
 		for i in range(3):
 			collected_coins[i] = Globals.checkpoint_data[i+1]
+			Globals.prevent_enemy_spawn = Globals.checkpoint_data[5]
 	
 	# Cute outfit.jpeg
 	var outfit_list = ['Shorts', 'Casual', 'Ace', 'Maid']
@@ -356,7 +358,7 @@ func _process(_delta):
 	if last_state != state:
 		print("state: %s" % state)
 		last_state = state
-	
+
 
 # Handles various animations of player using state. Also calls change_dash_hitbox to match dash sprite
 func animation_handler():
@@ -386,15 +388,15 @@ func animation_handler():
 	# Tail Animation
 	if state in [ST_CLIMB, ST_LADDER_ATTACK]:
 		$Tail.z_index = 1
-		$Tail.set_position(Vector2(recurring_x_dir*-32,-35))
+		$Tail.set_position(Vector2(recurring_x_dir*-33,-35))
 	elif state in [ST_DASH, ST_ULTIMATE]:
 		$Tail.z_index = 0
 		$Tail/TailAnimation.play("TailStraight")
 		if animation_timer > 4:
-			$Tail.set_position(Vector2(recurring_x_dir*-35,-20))
+			$Tail.set_position(Vector2(recurring_x_dir*-35,-21))
 			
 		else:
-			$Tail.set_position(Vector2(recurring_x_dir*-45,-30))
+			$Tail.set_position(Vector2(recurring_x_dir*-45,-31))
 	elif state == ST_WALLSLIDE or state == ST_WALL_ATTACK:
 		$TailWall.visible = true
 		$Tail.visible = false
@@ -402,10 +404,10 @@ func animation_handler():
 		$Tail/TailAnimation.play("TailWall")
 		$TailWall.set_position(Vector2(recurring_x_dir*3,-5))
 	elif state == ST_WALK:
-		$Tail.set_position(Vector2(recurring_x_dir*-36,-35))
+		$Tail.set_position(Vector2(recurring_x_dir*-37,-35))
 	else:
 		$Tail.z_index = 0
-		$Tail.set_position(Vector2(recurring_x_dir*-28,-35))
+		$Tail.set_position(Vector2(recurring_x_dir*-29,-35))
 	
 	# Add hand for dash + shoot sprite
 	if $Sprite.frame == 59:
@@ -449,7 +451,6 @@ func animation_handler():
 				if current_attack != 0: attack_timer = 0
 				if _animation.current_animation == "Idle" and animation_timer > 0 and\
 					animation_timer % 600 == 0:
-					print("why?")
 					var idle_variation = Globals.call_rng(1,2)
 					_animation.play("IdleVar"+str(idle_variation))
 				elif _animation.current_animation == "IdleVar1":
@@ -520,19 +521,22 @@ func animation_handler():
 			update_slash_hitbox()
 		ST_WALL_ATTACK:
 			_animation.play('Wall Slash')
-			if animation_timer == 6:
+			if animation_timer == 5:
 				do_slash_effect(2)
+			elif attack_timer == 1:
+				do_slash_effect(0)
 			update_slash_hitbox()
 		ST_LADDER_ATTACK:
 			if !current_attack:
 				_animation.play('Ladder Slash')
-				if animation_timer == 6:
+				if animation_timer == 5:
 					do_slash_effect(2)
+				elif attack_timer == 1:
+					do_slash_effect(0)
 				update_slash_hitbox()
 			else:
 				_animation.stop()
 				$Sprite.frame = 61
-				#_animation.play("Ladder Shoot")
 		ST_CLIMB:
 			if Input.is_action_pressed("move_up"):
 				_animation.play('Climb')
@@ -744,14 +748,17 @@ func update_state():
 		return update_state()
 	
 	#CLIMB LADDER
-	if (state < 6 and colliding_with_ladder and dir.y < 0) or (
+	if (state < 6 and colliding_with_ladder and\
+			((dir.y < 0 and !is_upside_down) or (dir.y > 0 and is_upside_down)) ) or (
 		state < 3 and colliding_with_ladder and dir.y != 0):
 		dashing = false
 		self.position.x = nearest_block(self.position.x)
 		_animation.play('Climb')
+		$Sprite.frame = 21
 		return ST_CLIMB
 		
-	if state < 3 and colliding_with_ladder_top and dir.y > 0:
+	if state < 3 and colliding_with_ladder_top and \
+		((dir.y > 0 and !is_upside_down) or (dir.y < 0 and is_upside_down)):
 		self.position = Vector2(nearest_block(self.position.x), self.position.y+48)
 		_animation.play('Climb')
 		$Sprite.frame = 21
@@ -1180,9 +1187,9 @@ func check_ultimate_hitbox_enemies():
 		elif not area.get("i_frames") == null:
 			area.set_i_frames(0)
 		if not area.get_parent().get("health") == null:
-			area.get_parent().health -= 1
+			area.get_parent().health -= 2
 		elif not area.get("health") == null:
-			area.health -= 1
+			area.health -= 2
 
 # Sets the variable jump_timer to n. Likely for bouncy objects to use.
 func set_jump_timer(n):
@@ -1196,6 +1203,7 @@ func set_checkpoint(num, pos):
 	Globals.checkpoint_data[2] = collected_coins[1]
 	Globals.checkpoint_data[3] = collected_coins[2]
 	Globals.checkpoint_data[4] = pos
+	Globals.checkpoint_data[5] = Globals.prevent_enemy_spawn
 	print(Globals.checkpoint_data)
 
 # Safely adds a vector to your current position, then slides to correct. Used for conveyors.
@@ -1236,10 +1244,10 @@ func get_floor_tile_type():
 
 # Bounces player if object was struck with a down slash.
 func _on_AttackHitboxArea_area_entered(area):
-	if not (attacking_direction == 2 and state == ST_AIR_ATTACK) or area.get_collision_layer_bit(3)\
-	or area.get_collision_layer_bit(0):
-		return
-	#print(area)
+	if not (attacking_direction == 2 and state == ST_AIR_ATTACK): return
+	if area.get_collision_layer_bit(3) and not area.get_collision_layer_bit(10): return
+	if area.get_collision_layer_bit(5) and not area.get_collision_layer_bit(10): return
+	if area.get_collision_layer_bit(0) and not area.get_collision_layer_bit(10): return
 	_velocity.y = 800.0 * (-1 if !is_upside_down else 1)
 
 # Corner correction juts you left/right when jumping into a corner (unused)
@@ -1273,7 +1281,7 @@ func did_attack():
 func room_for_projectile():
 	var ammo_drop_amt = 4
 	if current_attack == 1:
-		ammo_drop_amt = 1 if charge_shot_timer < 45 else 8 if charge_shot_timer >= 120 else 4
+		ammo_drop_amt = 2 if charge_shot_timer < 45 else 8 if charge_shot_timer >= 120 else 4
 	if ammo < ammo_drop_amt:
 		charge_shot_timer = 0
 		return -1
@@ -1294,7 +1302,7 @@ func room_for_projectile():
 # Returns true iff there is enough room for a projectile.
 func shoot_flameball(charge_length):
 	var index_for_projectile = room_for_projectile()
-	var ammo_drop_amt = 1 if charge_length < 45 else 8 if charge_length >= 120 else 4
+	var ammo_drop_amt = 2 if charge_length < 45 else 8 if charge_length >= 120 else 4
 	
 	var current_scene = Globals.get_current_scene()
 	if not current_scene: return

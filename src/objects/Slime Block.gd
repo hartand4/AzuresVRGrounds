@@ -16,7 +16,7 @@ func _process(_delta: float) -> void:
 		return
 	
 	for area in $TopCheck.get_overlapping_areas():
-		if area.get_collision_layer_bit(1) or area.get_collision_layer_bit(2) or area.get_collision_layer_bit(3):
+		if (area.get_collision_layer_bit(1) and area.get_parent().is_on_floor()) or area.get_collision_layer_bit(2) or area.get_collision_layer_bit(3):
 			do_bounce_up(area)
 	for area in $BottomCheck.get_overlapping_areas():
 		if area.get_collision_layer_bit(1) or area.get_collision_layer_bit(2) or area.get_collision_layer_bit(3):
@@ -40,7 +40,8 @@ func do_bounce_up(area):
 		area.get_parent().set_jump_timer(0)
 		area.get_parent().dashing = Input.is_action_pressed("dash")
 		curr_vel = area.get_parent().get_velocity()
-		area.get_parent().set_velocity(Vector2(curr_vel.x, start_bounce()*(1.6 if Input.is_action_pressed("jump") else 1)))
+		area.get_parent().set_velocity(Vector2(curr_vel.x, start_bounce()*(1.6 if Input.is_action_pressed("jump") else 1.0)))
+		area.get_parent().set_state(3)
 	elif area.has_method("set_velocity") and area.has_method("get_velocity"):
 		curr_vel = area.get_velocity()
 		area.set_velocity(Vector2(curr_vel.x, start_bounce()))

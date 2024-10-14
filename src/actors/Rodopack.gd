@@ -80,7 +80,7 @@ func respawn():
 	broken = false
 
 func despawn():
-	if in_camera_range(self.position): return false
+	if in_camera_range(self.position) and !Globals.prevent_enemy_spawn: return false
 	call_deferred("disable_all")
 	if in_camera_range(original_position):
 		broken = true

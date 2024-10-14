@@ -9,7 +9,7 @@ func _process(_delta) -> void:
 	if Globals.game_paused:
 		$AnimationPlayer.stop(false)
 		return
-	if animation_timer <= 0:
+	if animation_timer <= 0 or Globals.prevent_enemy_spawn:
 		call_deferred("disable_all")
 	$AnimationPlayer.play("Explode")
 	animation_timer -= 1

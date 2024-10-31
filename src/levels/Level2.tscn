@@ -1145,7 +1145,7 @@ shape = SubResource( 109 )
 one_way_collision = true
 
 [node name="Player" parent="." instance=ExtResource( 7 )]
-position = Vector2( 1032, 1064 )
+position = Vector2( 1024, 1064 )
 collision_mask = 64
 
 [node name="ValCoin" parent="." instance=ExtResource( 3 )]
@@ -1172,7 +1172,7 @@ position = Vector2( 728, 664 )
 obeys_actor_gravity = false
 
 [node name="Faie" parent="." instance=ExtResource( 4 )]
-position = Vector2( 1656, 1056 )
+position = Vector2( 1560, 1064 )
 active = true
 
 [node name="CameraStopObject" parent="." instance=ExtResource( 2 )]
@@ -1186,7 +1186,7 @@ is_right_limit = true
 is_persistent = true
 
 [node name="CameraStopObject3" parent="." instance=ExtResource( 2 )]
-position = Vector2( 864, 792 )
+position = Vector2( 864, 848 )
 is_left_limit = true
 is_persistent = true
 

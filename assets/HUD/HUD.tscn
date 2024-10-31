@@ -58,7 +58,7 @@ hframes = 13
 vframes = 2
 
 [node name="WeaponIcon" type="Sprite" parent="Bar/AmmoBar"]
-position = Vector2( 1, 25.5 )
+position = Vector2( 1, 25 )
 texture = ExtResource( 20 )
 hframes = 3
 

@@ -1,0 +1,35 @@
+[remap]
+
+importer="texture"
+type="StreamTexture"
+path="res://.import/df84jiu-b4c3946b-e7b8-43bb-ba17-294d0107ef23.png-c1ae3473c244b4de860b929fbd07c254.stex"
+metadata={
+"vram_texture": false
+}
+
+[deps]
+
+source_file="res://assets/cameos/Elan/df84jiu-b4c3946b-e7b8-43bb-ba17-294d0107ef23.png"
+dest_files=[ "res://.import/df84jiu-b4c3946b-e7b8-43bb-ba17-294d0107ef23.png-c1ae3473c244b4de860b929fbd07c254.stex" ]
+
+[params]
+
+compress/mode=0
+compress/lossy_quality=0.7
+compress/hdr_mode=0
+compress/bptc_ldr=0
+compress/normal_map=0
+flags/repeat=0
+flags/filter=false
+flags/mipmaps=false
+flags/anisotropic=false
+flags/srgb=2
+process/fix_alpha_border=true
+process/premult_alpha=false
+process/HDR_as_SRGB=false
+process/invert_color=false
+process/normal_map_invert_y=false
+stream=false
+size_limit=0
+detect_3d=true
+svg/scale=1.0

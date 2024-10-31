@@ -6,7 +6,7 @@ robo-anamoth to fit factory scenes (or maybe moth area variants??)
 
 finish tutorial level1
 
-add more tilesets (factory, bricks, underground, mountains, etc...)
+add more tilesets (factory, bricks, underground autumn, mountains, etc...)
 
 extras menu on main menu (concept art?)
 

@@ -36,3 +36,4 @@ func closest_right_angle(dir):
 	if dir.y > -dir.x:
 		return PI/2
 	return PI
+

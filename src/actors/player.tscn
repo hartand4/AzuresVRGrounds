@@ -902,6 +902,8 @@ limit_left = 0
 limit_top = 0
 limit_bottom = 10000
 drag_margin_v_enabled = true
+drag_margin_left = 0.05
+drag_margin_right = 0.05
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 "anims/Air Slash" = SubResource( 32 )

@@ -21,7 +21,7 @@ var damage_data_chart = [3,1,2,4,2,2]
 var is_invulnerable = false
 var was_hit = false
 
-# Called when the node enters the scene tree for the first time.
+
 func _ready():
 	original_pos = position
 

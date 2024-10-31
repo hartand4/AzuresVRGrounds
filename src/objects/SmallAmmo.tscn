@@ -40,7 +40,7 @@ tracks/0/keys = {
 [node name="SmallAmmo" type="KinematicBody2D"]
 collision_layer = 8
 script = ExtResource( 2 )
-ammo_to_give = 6
+ammo_to_give = 8
 
 [node name="Sprite" type="Sprite" parent="."]
 position = Vector2( 0, -8 )

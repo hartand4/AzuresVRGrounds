@@ -1,9 +1,9 @@
 extends Area2D
-
+tool
 export var collected := false
-export var coin_number := 1
+export var coin_number := 1 setget _change_sprite
 var _anim_timer := 0
-var _anim_index := 0
+var _anim_index := 1
 
 
 func _ready() -> void:
@@ -42,3 +42,7 @@ func _on_ValMedal_area_entered(area: Area2D) -> void:
 		Globals.find_player().collected_coins[coin_number-1] = true
 		_anim_timer = 60
 		call_deferred('disable_hitbox')
+
+func _change_sprite(new_val):
+	_anim_index = new_val
+	coin_number = new_val

@@ -61,12 +61,14 @@ var stunned_bump_timer := 0
 
 # 0 = sideways, 1 = up, 2 = down
 var attacking_direction := 0
-# 0 = slash, 1 = shots, 2 = lob shots, 3 = platform? TODO
+# 0 = slash, 1 = shots, 2 = lob shots, 3 = spark
 export var current_attack := 0
 # Scenes for the attack projectiles
 var attack_scenes := [preload("res://src/objects/FlameBallS.tscn"),
 	preload("res://src/objects/FlameBallM.tscn"),
-	preload("res://src/objects/FlameBallL.tscn")]
+	preload("res://src/objects/FlameBallL.tscn"),
+	preload("res://src/objects/IceClash.tscn"),
+	preload("res://src/objects/SparkBlast.tscn")]
 
 export var ammo := 96
 export var max_ammo := 96
@@ -349,11 +351,13 @@ func _process(_delta):
 		while !Globals.attacks_unlocked[current_attack]:
 			current_attack = (current_attack + 3) % 4
 			if current_attack == 0: break
+		if current_attack != 1: charge_shot_timer = 0
 	if Input.is_action_just_pressed("toggle_weapons_r") and !Globals.lock_input:
 		current_attack = (current_attack + 1) % 4
 		while !Globals.attacks_unlocked[current_attack]:
 			current_attack = (current_attack + 1) % 4
 			if current_attack == 0: break
+		if current_attack != 1: charge_shot_timer = 0
 	
 	if last_state != state:
 		print("state: %s" % state)
@@ -1267,7 +1271,12 @@ func corner_correction(pixel_amt):
 # Determine what counts as "attacking" to affect states in update_state
 func did_attack():
 	if current_attack != 1:
-		return Input.is_action_just_pressed("attack")
+		if current_attack == 0:
+			return Input.is_action_just_pressed("attack")
+		elif Input.is_action_just_pressed("attack") and room_for_projectile() > -1:
+			animation_timer = 0
+			return true
+		else: return false
 	if Input.is_action_just_pressed("attack"):
 		charge_shot_timer = 0
 		return room_for_projectile() > -1
@@ -1282,6 +1291,10 @@ func room_for_projectile():
 	var ammo_drop_amt = 4
 	if current_attack == 1:
 		ammo_drop_amt = 2 if charge_shot_timer < 45 else 8 if charge_shot_timer >= 120 else 4
+	elif current_attack == 2:
+		ammo_drop_amt = 4
+	elif current_attack == 3:
+		ammo_drop_amt = 6
 	if ammo < ammo_drop_amt:
 		charge_shot_timer = 0
 		return -1
@@ -1296,7 +1309,19 @@ func room_for_projectile():
 	if index_for_projectile >= 3:
 		charge_shot_timer = 0
 		return -1
+	
+	if current_attack == 3 and !room_for_spark():
+		return -1
+	
 	return index_for_projectile
+
+
+func room_for_spark():
+	for index in range(3):
+		if list_of_projectiles[index] and is_instance_valid(list_of_projectiles[index])\
+		and list_of_projectiles[index].get("player_attack_type") == 5:
+			return false
+	return true
 
 # Creates a flameball object based on the length of the current attack charge.
 # Returns true iff there is enough room for a projectile.
@@ -1328,7 +1353,35 @@ func shoot_flameball(charge_length):
 
 # TODO: SHOOT OTHER TYPES OF PROJECTILES
 func shoot_projectile():
-	pass
+	var index_for_projectile = room_for_projectile()
+	var ammo_drop_amt = 4 if current_attack == 2 else 8
+	
+	var current_scene = Globals.get_current_scene()
+	if not current_scene: return
+	var projectile_scene = attack_scenes[3 if current_attack == 2 else 4]
+	var spawn = projectile_scene.instance() as Node2D
+	current_scene.add_child(spawn)
+	spawn.set_as_toplevel(true)
+	
+	# Determines the position of shots based on the current state
+	var shot_position = [54 if state == ST_DASH else 36,
+		(-52 if state in [ST_IDLE, ST_AIR, ST_CLIMB, ST_LADDER_ATTACK] else
+		-48 if state in [ST_WALK, ST_AIR_ATTACK, ST_WALLSLIDE, ST_WALL_ATTACK] else -32)]
+	
+	spawn.global_position = self.position + Vector2(recurring_x_dir*shot_position[0], shot_position[1])
+	
+	if current_attack == 2:
+		spawn.velocity = Vector2.RIGHT.rotated(-PI/24 if Input.is_action_pressed("move_down") else
+			-5*PI/12 if Input.is_action_pressed("move_up") else -PI/4)*800.0
+		spawn.velocity.x *= recurring_x_dir
+	
+	elif current_attack == 3:
+		spawn.direction = recurring_x_dir > 0
+	
+	charge_shot_timer = 0
+	list_of_projectiles[index_for_projectile] = spawn
+	
+	ammo -= ammo_drop_amt
 
 # Function for CameraStopObjects, updates camera bounds based on all their limits
 func camera_stop_object_update(camera_stop_obj=null, mode=0):

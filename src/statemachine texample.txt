@@ -1,0 +1,21 @@
+func _ready():
+    add_state(...)
+    call_deferred("set_state", <default state name>)
+
+func _state_logic():
+    parent.<do physics thing>
+
+    if state == <...>: ...
+
+
+func _get_transition():
+    match state:
+        states.<...>:
+            if <...>: return states.<...>
+    return null
+
+func _enter_state(new_state, old_state):
+    match new_state:
+        <...>:
+            parent.animation.play(...)
+            <other logic for getting into this state>

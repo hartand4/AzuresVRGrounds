@@ -1,0 +1,35 @@
+Name			| feet	|      cm	| px	| done one?
+========================|=======|===============|=======|============
+Aevyn			|	|		|	|YES
+Dogce			| 5'8	|    172.72	|41	|YES
+Doodler			| 5'6	|    167.64	|40	|YES
+Elan			| 3'6	|    107	|25.5	|YES
+Farvator		| 5'6	|    167.64	|40	|YES
+Firesheart		| 5'10	|    177.8	|42.3	|YES
+Herya			| 5'6	|    170	|40.4	|YES
+Hinata			|	|		|	|YES
+Jakkie			| 5'4	|    163	|38.8	|YES
+Keryel			| 5'4	|    163	|38.8	|YES
+Ketsu			|	|		|43	|YES
+Lexy			| -'-	|    --		|45	|YES
+Luca			| 5'5	|    165.1	|39.3	|YES
+Lucy			| 6'3	|    190.5	|45.3	|YES
+Flapjacks/Milk		| 4'0	|		|28.9	|YES
+Nory			| 4'9	|    145	|34.5	|YES
+Oxyoxyoxyox		| -'-	|    --		|42	|YES
+Paliken			| 5'5	|    170	|40.4	|YES
+Ralzy			| 5'3	|    160	|38.1	|YES
+Reptilian		|	|		|	|YES
+Rex			| 5'9	|    176.6	|42	|YES
+Ryuma/Vijeeter		| 6'0	|    182.88	|43.5	|YES
+Slugcatte		| 5'10	|    180	|42.8	|YES
+Thuli			| 3'0	|91.44 not picky|21.7	|YES
+Vanni			|	|		|	|YES
+Woebeeme		|5'3/5'6|  160/167.64	|40/41	|YES/YES
+Ykoba			|	|		|	|YES
+Zephy			| 5'2	|    157.48	|37.5	|YES
+
+
+Azzy is 6'1 or 185cm -> 44px tall => 4.2 cm/px
+
+center text with no portrait

@@ -1,6 +1,6 @@
 extends StaticBody2D
 
-
+tool
 export var length := 1
 export var move_right := false
 var direction := -1
@@ -57,3 +57,5 @@ func _process(_delta: float) -> void:
 
 func set_block_type(anim_str):
 	block_animation = anim_str
+
+

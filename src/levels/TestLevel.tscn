@@ -1181,7 +1181,7 @@ shape = SubResource( 109 )
 one_way_collision = true
 
 [node name="Player" parent="." instance=ExtResource( 2 )]
-position = Vector2( 2560, 808 )
+position = Vector2( 1440, 1504 )
 collision_mask = 64
 
 [node name="MovingPlatform" parent="." instance=ExtResource( 5 )]
@@ -1195,12 +1195,12 @@ track_length = 2
 period = 120
 
 [node name="MovingPlatformComplex" parent="." instance=ExtResource( 6 )]
-position = Vector2( 1032, 1272 )
+position = Vector2( 1032, 1320 )
 points = [ Vector2( 0, 5 ), Vector2( 6, 0 ), Vector2( 0, -4 ) ]
 on_walk = true
 
 [node name="MovingPlatform2" parent="." instance=ExtResource( 5 )]
-position = Vector2( 784, 1368 )
+position = Vector2( 792, 1368 )
 starting_dir = Vector2( 0, -1 )
 track_length = 4
 vertical = true

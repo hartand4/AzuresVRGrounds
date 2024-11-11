@@ -89,7 +89,7 @@ func _physics_process(delta: float) -> void:
 	
 	_pos = _speed*unit_direction_vector_single(points[_current_point])
 	_total_dist_moved += _pos.length()
-	self.position += _pos*48
+	position += _pos*48
 	if _total_dist_moved >= points[_current_point].length():
 		_current_point = (_current_point + 1) % points.size()
 		_total_dist_moved = 0.0

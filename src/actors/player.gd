@@ -248,7 +248,7 @@ func _physics_process(_delta: float) -> void:
 		if cos(floor_angle)*recurring_x_dir > 0 and factor != 0: factor=1/factor
 		_velocity.x *= factor
 	
-	if not is_jumping:
+	if not state in [ST_AIR, ST_AIR_ATTACK]:
 		_velocity = move_and_slide_with_snap(_velocity, snap, floor_normal, true)
 	else:
 		#corner_correction(6)
@@ -269,13 +269,13 @@ func calculate_move_direction(linear_velocity: Vector2, speed: Vector2, directio
 		((_velocity.y < 0 and !is_upside_down) or (_velocity.y > 0 and is_upside_down)) and
 		jump_timer == 0 else 1.0) * (-1 if is_upside_down else 1)#*get_physics_process_delta_time()
 	if direction.y == -1.0:
-		out_vel.y = (500.0 * direction.y)*(-1 if is_upside_down else 1) - linear_velocity.y
+		out_vel.y = (500.0 * direction.y)*(-1 if is_upside_down else 1) - 50
 		
 		# Account for slope jump boost
 		if out_vel.x != 0:
 			var factor = abs(sin(floor_angle))
-			if cos(floor_angle)*recurring_x_dir > 0 and factor != 0: factor=1/factor
-			out_vel.y *= (factor+2)/3
+			if cos(floor_angle)*recurring_x_dir > 0 and factor != 0: factor=1/sqrt(factor)
+			out_vel.y *= pow( (factor+2)/3 , 15)
 	if is_jumping:
 		out_vel.y -= 1*pow(jump_timer,4)/4600*(-1 if is_upside_down else 1) #First few frames matter more
 	return out_vel

@@ -31,5 +31,3 @@ Zephy			| 5'2	|    157.48	|37.5	|YES
 
 
 Azzy is 6'1 or 185cm -> 44px tall => 4.2 cm/px
-
-center text with no portrait

@@ -119,7 +119,11 @@ func _ready():
 	
 	# Cute outfit.jpeg
 	var outfit_list = ['Shorts', 'Casual', 'Ace', 'Maid']
-	$Sprite/Outfit.texture = load("res://assets/Sprites/Azzy/Outfits/" + outfit_list[Globals.current_costume] + ".png")
+	$Sprite/Outfit.texture = load("res://assets/Sprites/Azzy/" + ("Fem/" if Globals.current_costume >= 100 else "") +
+		"Outfits/" + outfit_list[Globals.current_costume % 100] + ".png")
+	
+	if Globals.current_costume >= 100:
+		$Sprite.texture = load("res://assets/Sprites/Azzy/Fem/AzzySheet.png")
 	
 	# Possible use for getting stunned
 	sprite_default_location = $Sprite.position
@@ -362,6 +366,11 @@ func _process(_delta):
 	if last_state != state:
 		print("state: %s" % state)
 		last_state = state
+	
+#	if Input.is_action_just_pressed("move_down") and !Globals.open_textbox[0]:
+#		Globals.create_textbox("[character=]One time, Azure was lonely.\\c[character=azure,1]I'm lonely I guess.\\c"+
+#			"[character=]Then Faie appeared I guess.\\c[character=faie,0]Hi I'm here I guess.\\c"+
+#			"[character=]And all was right or whatever.")
 
 
 # Handles various animations of player using state. Also calls change_dash_hitbox to match dash sprite
@@ -586,9 +595,10 @@ func animation_handler():
 			else:
 				var temp_seek = [_animation.current_animation, 0.0]
 				if temp_seek[0] != '': temp_seek[1] = _animation.current_animation_position
-				_animation.play('Run + Shoot' if attack_timer else "Run")
+				_animation.play('Run + Shoot' if attack_timer else
+					"Run" if acceleration_timer <= 0 else "Step Forward")
 				if temp_seek[0] != _animation.current_animation and temp_seek[0] != '':
-					_animation.seek(temp_seek[1])
+					if acceleration_timer <= 0: _animation.seek(temp_seek[1])
 		ST_HURT:
 			$Sprite/HurtEffect.flip_h = recurring_x_dir > 0
 			$Sprite/HurtEffect.visible = animation_timer % 10 >= 5 and animation_timer % 10 <= 8

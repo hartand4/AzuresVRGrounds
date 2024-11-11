@@ -39,7 +39,7 @@ func do_spark():
 	$AnimationPlayer.play("Blast")
 	$Collision.disabled = true
 	$Spark1/Collision.disabled = false
-	
+	$Sprite.modulate = Color(1.5,1.5,1.5)
 	sparking = true
 
 func check_hittable_obj(area):

@@ -389,6 +389,8 @@ func animation_handler():
 	
 	if i_frames % 8 >= 6:
 		$Sprite.modulate = Color(2.2,1.8,2.3)
+		$Tail.modulate = Color(2.2,1.8,2.3)
+		$TailWall.modulate = Color(2.2,1.8,2.3)
 	
 	match state:
 		ST_IDLE:
@@ -830,4 +832,5 @@ func _on_Hitbox_area_entered(area):
 		return
 	if area.get_collision_layer_bit(11):
 		health -= damage_data_chart[area.player_attack_type]
+		i_frames = max_i_frames
 		return

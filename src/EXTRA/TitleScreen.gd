@@ -106,6 +106,7 @@ func _process(_delta: float) -> void:
 				if menu_input == 2 or menu_input == 3:
 					animation_timer = 120
 					azzy_velocity = -25
+					$TitleObject/TitleVisibility.rect_clip_content = false
 			elif animation_timer > 60:
 				$TitleObject/TitleVisibility/Title/Azzy/TailAnimation.play("TailWag")
 				$PressStart.visible = Globals.timer % 15 < 8

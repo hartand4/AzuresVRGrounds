@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/Casuals.png-8ec731db748d3afc9796239dd7cae88a.stex"
+path="res://.import/AzzySheet.png-36aa9d6ca8ec54f9f36dbeecd1063afb.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/Sprites/Azzy/Outfits/Casuals.png"
-dest_files=[ "res://.import/Casuals.png-8ec731db748d3afc9796239dd7cae88a.stex" ]
+source_file="res://assets/Sprites/Azzy/Fem/AzzySheet.png"
+dest_files=[ "res://.import/AzzySheet.png-36aa9d6ca8ec54f9f36dbeecd1063afb.stex" ]
 
 [params]
 
@@ -20,7 +20,7 @@ compress/hdr_mode=0
 compress/bptc_ldr=0
 compress/normal_map=0
 flags/repeat=0
-flags/filter=true
+flags/filter=false
 flags/mipmaps=false
 flags/anisotropic=false
 flags/srgb=2

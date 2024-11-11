@@ -17,6 +17,7 @@ rect_clip_content = true
 color = Color( 0, 0, 0, 1 )
 
 [node name="Portrait" type="Sprite" parent="Blackground"]
+visible = false
 position = Vector2( 72, 156 )
 scale = Vector2( 2, 2 )
 texture = ExtResource( 2 )

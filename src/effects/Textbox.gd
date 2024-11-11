@@ -61,8 +61,7 @@ func _process(_delta):
 	if create_timer > 0:
 		create_textbox_slow()
 		create_timer = max(0, create_timer-1)
-		if create_timer == 0:
-			$Blackground/Portrait.visible = true
+		#if create_timer == 0: $Blackground/Portrait.visible = true
 		return
 	elif destroy_timer > 0:
 		$Blackground/TextboxNextButton.visible = false
@@ -203,6 +202,9 @@ func check_special_tags():
 			$Blackground/Margins/Label.bbcode_text += '[color=#ffffff]'
 			$Blackground/Margins/Label.remove_color_override("font_color_shadow")
 			$Blackground/Margins/Label.add_color_override("font_color_shadow", Color("444444"))
+			
+			$Blackground/Portrait.visible = false
+			$Blackground/Margins/Label.rect_position.x = 77
 		else:
 			var temp_character_substr = temp_substr.substr(0, temp_substr.find(','))
 			character = CHARACTER_DICT[temp_character_substr.to_lower()]
@@ -211,6 +213,9 @@ func check_special_tags():
 			buffer = ('[instant][color=%s]--%s--[/instant]\\n' % [COLORS[character],\
 				temp_character_substr.to_upper()]) + buffer
 			expression = int(temp_substr.substr(temp_substr.find(',')+1))
+			
+			$Blackground/Portrait.visible = true
+			$Blackground/Margins/Label.rect_position.x = 144
 		
 		check_special_tags()
 		return

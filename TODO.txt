@@ -2,6 +2,8 @@ TODO:
 
 Bee/bird bomba
 
+WeaponL + WeaponR + start game = female immediately
+
 robo-anamoth to fit factory scenes (or maybe moth area variants??)
 
 finish tutorial level1

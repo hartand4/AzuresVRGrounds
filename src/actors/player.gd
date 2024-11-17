@@ -810,6 +810,7 @@ func update_state():
 	# BEGIN ON FLOOR
 	if state == 3 and is_on_floor():
 		state = 0
+		dashing = false
 		return update_state()
 	
 	# IF LANDED BEFORE AIR ATTACK DONE, CONTINUE ATTACK

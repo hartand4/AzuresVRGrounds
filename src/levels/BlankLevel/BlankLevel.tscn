@@ -1,4 +1,4 @@
-[gd_scene load_steps=85 format=2]
+[gd_scene load_steps=86 format=2]
 
 [ext_resource path="res://src/objects/ValCoin.tscn" type="PackedScene" id=3]
 [ext_resource path="res://src/actors/player.tscn" type="PackedScene" id=7]
@@ -875,6 +875,92 @@ points = PoolVector2Array( 48, 48, 0, 48, 0, 0, 48, 0 )
 } ]
 14/z_index = 0
 
+[sub_resource type="TileSet" id=111]
+13/name = "Ramps"
+13/texture = ExtResource( 12 )
+13/tex_offset = Vector2( 0, 0 )
+13/modulate = Color( 1, 1, 1, 1 )
+13/region = Rect2( 336, 0, 144, 288 )
+13/tile_mode = 2
+13/autotile/icon_coordinate = Vector2( 0, 0 )
+13/autotile/tile_size = Vector2( 48, 48 )
+13/autotile/spacing = 0
+13/autotile/occluder_map = [  ]
+13/autotile/navpoly_map = [  ]
+13/autotile/priority_map = [  ]
+13/autotile/z_index_map = [  ]
+13/occluder_offset = Vector2( 0, 0 )
+13/navigation_offset = Vector2( 0, 0 )
+13/shape_offset = Vector2( 0, 0 )
+13/shape_transform = Transform2D( 1, 0, 0, 1, 0, 0 )
+13/shape_one_way = false
+13/shape_one_way_margin = 0.0
+13/shapes = [  ]
+13/z_index = 0
+14/name = "Singles"
+14/texture = ExtResource( 12 )
+14/tex_offset = Vector2( 0, 0 )
+14/modulate = Color( 1, 1, 1, 1 )
+14/region = Rect2( 0, 0, 240, 240 )
+14/tile_mode = 2
+14/autotile/icon_coordinate = Vector2( 0, 0 )
+14/autotile/tile_size = Vector2( 48, 48 )
+14/autotile/spacing = 0
+14/autotile/occluder_map = [  ]
+14/autotile/navpoly_map = [  ]
+14/autotile/priority_map = [  ]
+14/autotile/z_index_map = [  ]
+14/occluder_offset = Vector2( 0, 0 )
+14/navigation_offset = Vector2( 0, 0 )
+14/shape_offset = Vector2( 0, 0 )
+14/shape_transform = Transform2D( 1, 0, 0, 1, 0, 0 )
+14/shape_one_way = false
+14/shape_one_way_margin = 0.0
+14/shapes = [  ]
+14/z_index = 0
+15/name = "NoJump"
+15/texture = ExtResource( 12 )
+15/tex_offset = Vector2( 0, 0 )
+15/modulate = Color( 1, 1, 1, 1 )
+15/region = Rect2( 240, 0, 96, 144 )
+15/tile_mode = 2
+15/autotile/icon_coordinate = Vector2( 0, 0 )
+15/autotile/tile_size = Vector2( 48, 48 )
+15/autotile/spacing = 0
+15/autotile/occluder_map = [  ]
+15/autotile/navpoly_map = [  ]
+15/autotile/priority_map = [  ]
+15/autotile/z_index_map = [  ]
+15/occluder_offset = Vector2( 0, 0 )
+15/navigation_offset = Vector2( 0, 0 )
+15/shape_offset = Vector2( 0, 0 )
+15/shape_transform = Transform2D( 1, 0, 0, 1, 0, 0 )
+15/shape_one_way = false
+15/shape_one_way_margin = 0.0
+15/shapes = [  ]
+15/z_index = 0
+16/name = "Corners"
+16/texture = ExtResource( 12 )
+16/tex_offset = Vector2( 0, 0 )
+16/modulate = Color( 1, 1, 1, 1 )
+16/region = Rect2( 0, 240, 192, 144 )
+16/tile_mode = 2
+16/autotile/icon_coordinate = Vector2( 0, 0 )
+16/autotile/tile_size = Vector2( 48, 48 )
+16/autotile/spacing = 0
+16/autotile/occluder_map = [  ]
+16/autotile/navpoly_map = [  ]
+16/autotile/priority_map = [  ]
+16/autotile/z_index_map = [  ]
+16/occluder_offset = Vector2( 0, 0 )
+16/navigation_offset = Vector2( 0, 0 )
+16/shape_offset = Vector2( 0, 0 )
+16/shape_transform = Transform2D( 1, 0, 0, 1, 0, 0 )
+16/shape_one_way = false
+16/shape_one_way_margin = 0.0
+16/shapes = [  ]
+16/z_index = 0
+
 [sub_resource type="TileSet" id=99]
 3/name = "Technotileset.png 14"
 3/texture = ExtResource( 12 )
@@ -1100,9 +1186,10 @@ collision_mask = 14
 format = 1
 
 [node name="TileMapMask" type="TileMap" parent="TileMap"]
-tile_set = SubResource( 99 )
+tile_set = SubResource( 111 )
 cell_size = Vector2( 48, 48 )
 format = 1
+tile_data = PoolIntArray( 2031714, 14, 65537, 2031715, 14, 65537, 2097250, 14, 131073, 2097251, 14, 131076, 2162786, 14, 131073, 2162787, 14, 131074, 2228322, 14, 131073, 2228323, 14, 131074, 2293858, 14, 131073, 2293859, 14, 131074, 2359394, 14, 131073, 2359395, 14, 131074, 2424930, 14, 196609, 2424931, 14, 196610, 2490467, 14, 65538 )
 
 [node name="TileMapFront" type="TileMap" parent="TileMap"]
 z_index = 2

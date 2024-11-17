@@ -16,6 +16,7 @@ func _ready():
 	$Sprite.texture = preload("res://assets/Sprites/Objects/SudoBlockNoJump.png")
 	set_collision_layer_bit(0, false)
 	set_collision_layer_bit(6, true)
+	$Sprite.visible = false
 
 func _process(_delta):
 	if Globals.game_paused:
@@ -25,7 +26,8 @@ func _process(_delta):
 	timer = (timer+1) % 240
 	
 	if ((start_interval+lasts) % 8)*30 == timer:
-		$Sprite.visible = false
+		#$Sprite.visible = false
+		$AnimationPlayer.play("Disappear")
 		call_deferred("toggle_solid", false)
 		active = false
 	elif (start_interval%8)*30 == timer:

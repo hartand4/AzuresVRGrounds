@@ -350,7 +350,9 @@ func load_new_game():
 		flag_str += '0'
 	level_flags = str_to_level_flags(flag_str)
 	val_coin_list = str_to_val_coins(flag_str)
-	current_costume = 0
+	current_costume = 100 if (
+		Input.is_action_pressed("toggle_weapons_l") and Input.is_action_pressed("toggle_weapons_r")
+		) else 0
 	
 	unlocked_in_store = []
 	spent_coins = 0

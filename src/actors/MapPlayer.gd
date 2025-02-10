@@ -20,6 +20,8 @@ var is_warping = false
 var orig_dir = Vector2.ZERO
 var on_ladder = false
 
+var ignore_pause = true
+
 func _ready() -> void:
 	entering_level = false
 	animation_timer = 40
@@ -93,7 +95,8 @@ func _process(_delta: float) -> void:
 		$AnimationPlayer.stop(false)
 		return
 	elif Input.is_action_just_pressed("pause") and not Globals.lock_input and not entering_level and not is_warping:
-		Globals.game_paused = true
+		#Globals.game_paused = true
+		Globals.pause_nodes()
 		Globals.pause_menu_on = true
 		return
 	
@@ -147,7 +150,8 @@ func _process(_delta: float) -> void:
 	
 	if not is_moving:
 		if Input.is_action_just_pressed("pause"):
-			Globals.game_paused = true
+			#Globals.game_paused = true
+			Globals.pause_nodes()
 	
 	if (Input.is_action_just_pressed("jump") or Input.is_action_just_pressed("attack")) and not animation_timer:
 		if not on_level.is_warp:

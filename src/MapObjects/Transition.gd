@@ -13,6 +13,8 @@ var transition_type = 0
 
 export var start_black = false
 
+var ignore_pause = true
+
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	if start_black:

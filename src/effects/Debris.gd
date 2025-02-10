@@ -19,8 +19,9 @@ func _process(_delta: float) -> void:
 	_velocity.y += 20
 	$Sprite.visible = true
 	if Globals.timer % 2 == 0: $Sprite.visible = false
+	print(Globals.timer)
 	
-	if position.y > Globals.current_camera_pos.y + 800:
+	if !Globals.in_camera_range(position):
 		call_deferred("disable_all")
 
 func disable_all():

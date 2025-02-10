@@ -4,6 +4,7 @@ var title = ''
 onready var player
 var player_hide = false
 
+var ignore_pause = true
 
 func _ready():
 	$Card.visible = false

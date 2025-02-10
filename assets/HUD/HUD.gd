@@ -7,6 +7,8 @@ onready var max_ammo
 
 export var extend_health_animation_timer := 0
 
+var ignore_pause = true
+
 func _process(_delta):
 	_health = get_parent().health
 	max_health = get_parent().max_health
@@ -53,13 +55,15 @@ func _process(_delta):
 	else: $RetryMenu.visible = false
 	
 	if extend_health_animation_timer > 0:
-		Globals.game_paused = true
+		#Globals.game_paused = true
+		Globals.pause_nodes()
 		print(Globals.get_max_health())
 		if Globals.set_health >= Globals.get_max_health() - 2:
 			extend_health()
 		extend_health_animation_timer -= 1
 		if extend_health_animation_timer == 0:
-			Globals.game_paused = false
+			#Globals.game_paused = false
+			Globals.pause_nodes(true)
 			$Bar.modulate = Color(1, 1, 1)
 
 func extend_health():

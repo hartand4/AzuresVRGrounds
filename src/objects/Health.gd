@@ -12,6 +12,7 @@ var persist_timer := 420
 var is_in_water := false
 var _gravity := 2000.0
 
+var ignore_pause = true
 
 func _process(_delta: float) -> void:
 	if (Globals.get("game_paused") and not _giving_health) or _health_to_give == 0:
@@ -24,7 +25,8 @@ func _process(_delta: float) -> void:
 			if not _health_to_give or _player.health == _player.max_health:
 				_health_to_give = 0
 				Globals.lock_input = false
-				Globals.game_paused = false
+				#Globals.game_paused = false
+				Globals.pause_nodes(true)
 				_giving_health = false
 				call_deferred('disable_all')
 		return
@@ -58,7 +60,8 @@ func player_in_health():
 	_velocity = Vector2.ZERO
 	$HealthSprite.visible = false
 	if _player.health < _player.max_health:
-		Globals.game_paused = true
+		#Globals.game_paused = true
+		Globals.pause_nodes()
 		Globals.lock_input = true
 		_giving_health = true
 		return

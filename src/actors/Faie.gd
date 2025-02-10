@@ -31,6 +31,8 @@ var is_charging = false
 var is_jumping = false
 export var active = false
 
+var ignore_pause = true
+
 var floor_angle = PI/2
 onready var normal_hitbox_shape = $Hitbox/Collision.shape.extents
 onready var normal_hitbox_transform = [$Hitbox/Collision.get_position(), $Collision.get_position()]

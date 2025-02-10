@@ -16,6 +16,8 @@ var input_delay = 1
 var is_transitioning = false
 var is_editing_control = false
 
+var ignore_pause = true
+
 func _ready() -> void:
 	$Cursor1.set_position(Vector2(250, 152 + 84*selection_cursor))
 
@@ -42,7 +44,8 @@ func _process(_delta: float) -> void:
 		return
 	elif is_transitioning and not input_delay:
 		Globals.pause_menu_on = false
-		Globals.game_paused = false
+		#Globals.game_paused = false
+		Globals.pause_nodes(true)
 		if menu_type == 5:
 			# warning-ignore:return_value_discarded
 			get_tree().change_scene("res://src/EXTRA/TitleScreen.tscn")
@@ -66,7 +69,8 @@ func _process(_delta: float) -> void:
 	
 	if menu_input == 3:
 		Globals.pause_menu_on = false
-		Globals.game_paused = false
+		#Globals.game_paused = false
+		Globals.pause_nodes(true)
 		extra_index = 0
 		return
 	
@@ -85,7 +89,8 @@ func _process(_delta: float) -> void:
 			
 			if selection_cursor == 0 and menu_input == 2:
 				Globals.pause_menu_on = false
-				Globals.game_paused = false
+				#Globals.game_paused = false
+				Globals.pause_nodes(true)
 				return
 			elif menu_input == 2:
 				menu_type = selection_cursor

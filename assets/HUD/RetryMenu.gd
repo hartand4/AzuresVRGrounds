@@ -5,6 +5,8 @@ var selection_cursor := false
 var input_delay = 1
 var is_transitioning = false
 
+var ignore_pause = true
+
 func _ready() -> void:
 	$RetryCursor.set_position(Vector2(163, 82))
 
@@ -26,7 +28,8 @@ func _process(delta: float) -> void:
 		return
 	elif is_transitioning and not input_delay:
 		Globals.retry_menu_on = false
-		Globals.game_paused = false
+		#Globals.game_paused = false
+		Globals.pause_nodes(true)
 		if selection_cursor:
 			# warning-ignore:return_value_discarded
 			get_tree().change_scene("res://src/levels/LevelMap.tscn")

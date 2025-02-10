@@ -19,6 +19,8 @@ export var new_camera_limits = [0,0,0,0]
 var player_previous_state = 0
 export var destroy_enemies = true
 
+var ignore_pause = true
+
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	if Globals.checkpoint_data[0] > 0 and (Globals.checkpoint_data[4].y >= position.y == gate_to_the_bottom):
@@ -49,7 +51,8 @@ func _process(delta: float) -> void:
 		going_through_timer -= 1
 		if going_through_timer == 0:
 			Globals.lock_input = false
-			Globals.game_paused = false
+			#Globals.game_paused = false
+			Globals.pause_nodes(true)
 			player.find_node("PlayerHitboxArea").find_node("PlayerHitbox").disabled = false
 			player.state = 3
 			used = true
@@ -71,7 +74,8 @@ func check_for_player():
 	if !player_overlapping: return
 	if (player.position.x > position.x + 90 or player.position.x < position.x - 90): return
 	going_through = true
-	Globals.game_paused = true
+	#Globals.game_paused = true
+	Globals.pause_nodes()
 	player.find_node("PlayerHitboxArea").find_node("PlayerHitbox").disabled = true
 	player_previous_state = player.state
 	player.state = 7

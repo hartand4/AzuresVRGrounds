@@ -19,6 +19,8 @@ export var new_camera_limits = [0,0,0,0]
 var player_previous_state = 0
 export var destroy_enemies = true
 
+var ignore_pause = true
+
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	if Globals.checkpoint_data[0] > 0 and (Globals.checkpoint_data[4].x >= position.x == gate_to_the_right):
@@ -75,7 +77,8 @@ func check_for_player():
 	elif (player.position.y < position.y - 74 or player.position.y > position.y - 10)\
 		and player.is_upside_down: return
 	going_through = true
-	Globals.game_paused = true
+	#Globals.game_paused = true
+	Globals.pause_nodes()
 	player.find_node("PlayerHitboxArea").find_node("PlayerHitbox").disabled = true
 	player_previous_state = player.state
 	player.state = 7

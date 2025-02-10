@@ -35,6 +35,8 @@ export var collected_coins := [false, false, false]
 export var normal_exit_reached = false
 export var secret_exit_reached = false
 
+var ignore_pause = true
+
 # Hitboxes
 onready var hitbox_collider = $PlayerHitboxArea/PlayerHitbox
 onready var hitbox := $PlayerHitboxArea
@@ -144,7 +146,8 @@ func _physics_process(_delta: float) -> void:
 		return
 	elif Input.is_action_just_pressed("pause") and not Globals.lock_input and (
 		not Globals.retry_menu_on) and not state in [ST_VICTORY]:
-		Globals.set("game_paused", true)
+		#Globals.set("game_paused", true)
+		Globals.pause_nodes()
 		Globals.pause_menu_on = true
 		_velocity = move_and_slide(_velocity, floor_normal, true) if not jump_timer else _velocity
 		return

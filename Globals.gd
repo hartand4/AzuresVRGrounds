@@ -613,3 +613,13 @@ func in_camera_range(pos):
 	var camera_pos = get_current_camera_pos()
 	return camera_pos.x - 432 - 120 < pos.x and camera_pos.x + 432 + 120 > pos.x and (
 		camera_pos.y - 312 - 120 < pos.y and camera_pos.y + 312 + 120 > pos.y)
+
+func pause_nodes(unpause = false):
+	game_paused = !unpause
+	for object in get_current_scene().get_children():
+		if object.get("ignore_pause"): continue
+		object.set_process(unpause)
+		for child in object.get_children():
+			if child is AnimationPlayer:
+				if !unpause: child.playback_speed = 0
+				else: child.playback_speed = 1

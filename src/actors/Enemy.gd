@@ -21,6 +21,8 @@ var damage_data_chart = [3,1,2,4,2,2]
 var is_invulnerable = false
 var was_hit = false
 
+var will_respawn = true
+
 
 func _ready():
 	original_pos = position
@@ -90,13 +92,15 @@ func despawn():
 	call_deferred("disable_all")
 	if in_camera_range(original_pos):
 		broken = true
+	
+	if !will_respawn: self.queue_free()
+	
 	return true
 
 # Checks if a position is within the camera's vision
 func in_camera_range(pos):
 	var camera_pos = Globals.get_current_camera_pos()
-	return camera_pos.x - 432 - 120 < pos.x and camera_pos.x + 432 + 120 > pos.x and (
-		camera_pos.y - 312 - 120 < pos.y and camera_pos.y + 312 + 120 > pos.y)
+	return abs(camera_pos.x - pos.x) < 432 + 120 and abs(camera_pos.y - pos.y) < 312 + 120
 
 # Disables collision, hides sprite, brings it to default position
 func disable_all():

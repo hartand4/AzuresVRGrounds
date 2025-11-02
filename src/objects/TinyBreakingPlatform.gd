@@ -41,8 +41,7 @@ func respawn():
 
 func in_camera_range(pos):
 	var camera_pos = Globals.get_current_camera_pos()
-	return camera_pos.x - 420 - 120 < pos.x and camera_pos.x + 420 + 120 > pos.x and (
-		camera_pos.y - 300 - 120 < pos.y and camera_pos.y + 300 + 120 > pos.y)
+	return abs(camera_pos.x - pos.x) < 420 + 120 and abs(camera_pos.y - pos.y) < 300 + 120
 
 func _on_PlayerCheckArea_area_entered(area: Area2D) -> void:
 	if not area.get_collision_layer_bit(1) or breaking or broken: return

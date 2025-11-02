@@ -101,8 +101,7 @@ func spawn_jetpack_half():
 
 func in_camera_range(pos):
 	var camera_pos = Globals.get_current_camera_pos()
-	return camera_pos.x - 432 - 120 < pos.x and camera_pos.x + 432 + 120 > pos.x and (
-		camera_pos.y - 312 - 120 < pos.y and camera_pos.y + 312 + 120 > pos.y)
+	return abs(camera_pos.x - pos.x) < 432 + 120 and abs(camera_pos.y - pos.y) < 312 + 120
 
 func reset_values():
 	health = 2

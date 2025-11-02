@@ -1,5 +1,7 @@
 extends Actor
 
+var will_respawn = true
+
 func _ready() -> void:
 	max_health = 2
 

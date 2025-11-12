@@ -210,7 +210,9 @@ func _physics_process(_delta: float) -> void:
 			((_velocity.y < 0 and !is_upside_down) or (_velocity.y > 0 and is_upside_down))
 		direction = get_direction_normal()
 		direction.x = recurring_x_dir
-		
+	if dash_timer: dash_timer -= 1
+	if attack_timer: attack_timer -= 1
+	
 	# If still in walljumping state
 	if walljump_momentum_timer:
 		direction = Vector2(recurring_x_dir*(-1.5),0)
@@ -317,17 +319,14 @@ func _process(_delta):
 		$Camera2D.current = false
 	
 	# Bound the health and ammo
-	if health < 0: health = 0
-	elif health > max_health: health = max_health
-	if ammo < 0: ammo = 0
-	elif ammo > max_ammo: ammo = max_ammo
+	health = int(clamp(health, 0, max_health))
+	ammo = int(clamp(ammo, 0, max_ammo))
 	
 	
 	if stop_wallslide_timer: stop_wallslide_timer -= 1
 	if walljump_momentum_timer: walljump_momentum_timer -= 1
-	if dash_timer: dash_timer -= 1
-	elif is_on_floor(): dashing = false
-	if attack_timer: attack_timer -= 1
+	if dash_timer <= 0 and is_on_floor(): dashing = false
+	#if attack_timer: attack_timer -= 1
 	
 	if current_attack == 1 and Input.is_action_pressed("attack") and !Globals.lock_input:
 		charge_shot_timer += 1

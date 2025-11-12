@@ -96,7 +96,7 @@ func _process(_delta) -> void:
 		do_earthquake()
 		eq_timer -= 1
 		if not eq_timer:
-			recenter_camera()
+			stored_camera_for_earthquake.offset = Vector2.ZERO
 	
 	if open_textbox[0]:
 		if is_instance_valid(open_textbox[0]): return
@@ -139,7 +139,7 @@ func get_current_scene():
 # Returns the current camera (usually the player)
 func get_current_camera_pos():
 	var player = Globals.find_player()
-	if player and player.find_node("Camera2D").current:
+	if player and player.find_node("Camera2D") and player.find_node("Camera2D").current:
 		return player.find_node("Camera2D").get_camera_screen_center()
 	elif get_current_camera():
 		return get_current_camera().get_camera_screen_center()
@@ -506,35 +506,13 @@ func start_earthquake(length, intensity=3):
 	eq_intensity = intensity
 	var camera = get_current_camera()
 	stored_camera_for_earthquake = camera
-	var current_scene = get_current_scene()
-	camera.current = false
-	var new_camera = Camera2D.new()
-	new_camera.current = true
-	earthquake_camera = new_camera
-	
-	current_scene.add_child(earthquake_camera)
-	earthquake_camera.global_position = camera.global_position
 	do_earthquake()
 
 # Continue earthquake effect until eq_timer ends
 func do_earthquake():
 	var camera = stored_camera_for_earthquake
 	var variance = eq_intensity if timer % 6 < 2 else 0 if timer % 6 < 4 else -eq_intensity
-	
-	earthquake_camera.limit_top = camera.limit_top - eq_intensity
-	earthquake_camera.limit_bottom = camera.limit_bottom + eq_intensity
-	earthquake_camera.limit_left = camera.limit_left
-	earthquake_camera.limit_right = camera.limit_right
-	camera.current = true
-	earthquake_camera.global_position = camera.get_camera_screen_center() + Vector2(0,variance)
-	earthquake_camera.current = true
-
-# Removes the temporary eq camera from the scene
-func recenter_camera():
-	stored_camera_for_earthquake.current = true
-	var temp_eq_cam = earthquake_camera
-	earthquake_camera = null
-	get_current_scene().remove_child(temp_eq_cam)
+	camera.offset.y = variance
 
 # Returns a list of a random permutation of n integers including 0
 func random_permutation(n):

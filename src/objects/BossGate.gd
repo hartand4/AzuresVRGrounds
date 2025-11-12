@@ -53,6 +53,7 @@ func _process(delta: float) -> void:
 		going_through_timer -= 1
 		if going_through_timer == 0:
 			Globals.lock_input = false
+			Globals.pause_nodes(true)
 			player.find_node("PlayerHitboxArea").find_node("PlayerHitbox").disabled = false
 			player.state = 3
 			used = true

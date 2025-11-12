@@ -32,8 +32,11 @@ func _process(delta: float) -> void:
 
 func stop_update():
 	is_persistent = false
-	player_camera.get_parent().camera_stop_object_update(self, 1)
+	if player_camera and player_camera.get_parent() == Globals.find_player():
+		player_camera.get_parent().camera_stop_object_update(self, 1)
 
 func start_update():
 	is_persistent = true
-	player_camera.get_parent().camera_stop_object_update(self, 2)
+	if player_camera and player_camera.get_parent() == Globals.find_player():
+		player_camera.get_parent().camera_stop_object_update(self, 2)
+	#player_camera.get_parent().camera_stop_object_update(self, 2)

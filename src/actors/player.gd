@@ -942,9 +942,15 @@ func do_hurt_animation(damage):
 		
 		# Just for bookkeeping
 		if $Camera2D.current:
+			$Camera2D.limit_top = Globals.get_current_camera_pos().y-312
+			var camera_global_position = $Camera2D.global_position
 			Globals.set_current_camera_pos($Camera2D.get_camera_screen_center())
+			var cam = $Camera2D
+			self.remove_child(cam)
+			Globals.get_current_scene().add_child(cam)
+			cam.position = camera_global_position
+			
 		
-		$Camera2D.current = false
 		$PlayerHitbox.disabled = true
 		$PlayerHitboxArea/PlayerHitbox.disabled = true
 		$PlayerDashHitbox.disabled = true
@@ -952,7 +958,8 @@ func do_hurt_animation(damage):
 		Globals.lock_input = true
 		animation_timer = 0
 		dying_process = true
-		
+	
+	Globals.start_earthquake(8, 2)
 
 	return
 

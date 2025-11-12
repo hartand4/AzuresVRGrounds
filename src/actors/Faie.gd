@@ -69,9 +69,7 @@ func _process(_delta):
 	$Tail/TailAnimation.playback_speed = 1
 	
 	if health < 0: health = 0
-	if dash_timer: dash_timer -= 1
-	elif is_on_floor(): is_dashing = false
-	if attack_timer: attack_timer -= 1
+	if !dash_timer and is_on_floor(): is_dashing = false
 	
 	if state != ST_AIR:
 		walljump_momentum_timer = 0
@@ -274,6 +272,9 @@ func _physics_process(_delta):
 		elif is_jumping: jump_timer = 30
 		direction = get_direction_normal()
 		direction.x = recurring_x_dir
+	
+	if dash_timer: dash_timer -= 1
+	if attack_timer: attack_timer -= 1
 	
 	if walljump_momentum_timer:
 		direction = Vector2(recurring_x_dir*(-1.5),0)

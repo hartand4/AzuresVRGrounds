@@ -7,7 +7,7 @@ func _ready():
 	$Sprite.frame = 0
 
 
-func _process(_delta):
+func _physics_process(_delta):
 	$AnimationPlayer.playback_speed = 0 if Globals.game_paused else 1
 	if Globals.game_paused: return
 	

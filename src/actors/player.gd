@@ -154,7 +154,11 @@ func _physics_process(_delta: float) -> void:
 	elif state == ST_OFFLOAD:
 		# This offloads the logic onto another script, so we can ignore the physics
 		return
-		
+	
+	if not (state in [ST_HURT, ST_OFFLOAD, ST_ULTIMATE, ST_VICTORY]) and colliding_with_enemy and i_frames == 0:
+		do_hurt_animation(damage_doing)
+		state = ST_HURT
+	
 	# Jump logic
 	if state in [0,1,3,4,5,8]:
 		if jump_timer > 0:
@@ -625,9 +629,9 @@ func update_state():
 		state = 0
 		return update_state()
 	# Consider other states, like wallslide taking damage
-	if not (state in [ST_HURT, ST_OFFLOAD, ST_ULTIMATE]) and colliding_with_enemy and i_frames == 0:
-		do_hurt_animation(damage_doing)
-		return ST_HURT
+	#if not (state in [ST_HURT, ST_OFFLOAD, ST_ULTIMATE]) and colliding_with_enemy and i_frames == 0:
+	#	do_hurt_animation(damage_doing)
+	#	return ST_HURT
 	
 	# STUNNED STATE, SHAKE OUT OF IT
 	if state == ST_STUNNED:
@@ -941,7 +945,7 @@ func do_hurt_animation(damage):
 	if health <= 0:
 		
 		# Just for bookkeeping
-		if $Camera2D.current:
+		if $Camera2D and $Camera2D.current:
 			$Camera2D.limit_top = Globals.get_current_camera_pos().y-312
 			var camera_global_position = $Camera2D.global_position
 			Globals.set_current_camera_pos($Camera2D.get_camera_screen_center())

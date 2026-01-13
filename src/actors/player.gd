@@ -373,10 +373,10 @@ func _process(_delta):
 		print("state: %s" % state)
 		last_state = state
 	
-#	if Input.is_action_just_pressed("move_down") and !Globals.open_textbox[0]:
-#		Globals.create_textbox("[character=]One time, Azure was lonely.\\c[character=azure,1]I'm lonely I guess.\\c"+
-#			"[character=]Then Faie appeared I guess.\\c[character=faie,0]Hi I'm here I guess.\\c"+
-#			"[character=]And all was right or whatever.")
+	if Input.is_action_just_pressed("move_down") and !Globals.open_textbox[0]:
+		Globals.create_textbox("[character=]One time, Azure was lonely.\\c[character=azure,1]I'm lonely I guess.\\c"+
+			"[character=]Then Faie appeared I guess.\\c[character=faie,0]Hi I'm here I guess.\\c"+
+			"[character=]And all was right or whatever. I guess that's what I should be saying if that happened.")
 
 
 # Handles various animations of player using state. Also calls change_dash_hitbox to match dash sprite

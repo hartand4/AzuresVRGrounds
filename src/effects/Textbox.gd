@@ -30,7 +30,7 @@ var clearing_text = false
 
 var is_waiting = false
 
-var create_timer = 67#80
+var create_timer = 34
 var destroy_timer = 0
 var destroy_instantly = false
 
@@ -115,8 +115,12 @@ func _process(_delta):
 		
 		var buffer_next_space = find_space()
 		var char_limit = 30
-		if (buffer_next_space > char_limit-char_amt) or (buffer_next_space < 0 and
-		buffer.length() > char_limit-char_amt):
+		
+		var skip_newline = false
+		if buffer_next_space > char_limit or (buffer_next_space < 0 and buffer.length() > char_limit):
+			skip_newline = true
+		if !skip_newline and ((buffer_next_space > char_limit-char_amt) or (buffer_next_space < 0 and
+		buffer.length() > char_limit-char_amt)):
 			print('print new line')
 			$Blackground/Margins/Label.bbcode_text += "\n"
 			char_amt = 0
@@ -231,37 +235,40 @@ func find_space():
 # Creates a textbox with an animation
 func create_textbox_slow():
 	# 28 frames of this
-	if create_timer < 28:
-		$Blackground.rect_size.y += 12
-		$Blackground.rect_position.y -= 6
-	elif create_timer == 28:
+	if create_timer < 14:
+		$Blackground.rect_size.y += 24
+		$Blackground.rect_position.y -= 12
+	elif create_timer == 14:
 		$Blackground.rect_size.y = 6
 		$Blackground.rect_position.y = 213
-	else:
+	elif create_timer == 15:
 		$Blackground.rect_size.x += 16
 		$Blackground.rect_position.x -= 8
+	else:
+		$Blackground.rect_size.x += 32
+		$Blackground.rect_position.x -= 16
 
 # Destroys the textbox
 func destroy_textbox(instant):
 	if instant:
 		queue_free()
-	destroy_timer = 67
+	destroy_timer = 34
 
 # Does the destroy animation
 func destroy_animation():
 	# 28 frames of this
-	if destroy_timer > 39:
-		$Blackground.rect_size.y -= 12
-		$Blackground.rect_position.y += 6
-		$Blackground/Margins.rect_position.y -= 6
-		$Blackground/Portrait.position.y -= 6
-	elif destroy_timer == 39:
+	if destroy_timer > 20:
+		$Blackground.rect_size.y -= 24
+		$Blackground.rect_position.y += 12
+		$Blackground/Margins.rect_position.y -= 12
+		$Blackground/Portrait.position.y -= 12
+	elif destroy_timer == 20:
 		$Blackground.rect_size.y = 6
 		$Blackground.rect_position.y = 213
 		$Blackground/Margins.visible = false
 		$Blackground/Portrait.visible = false
 	else:
-		$Blackground.rect_size.x -= 16
-		$Blackground.rect_position.x += 8
-		$Blackground/Margins.rect_position.x -= 8
-		$Blackground/Portrait.position.x -= 8
+		$Blackground.rect_size.x -= 32
+		$Blackground.rect_position.x += 16
+		$Blackground/Margins.rect_position.x -= 16
+		$Blackground/Portrait.position.x -= 16
